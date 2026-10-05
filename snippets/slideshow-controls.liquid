@@ -1,0 +1,155 @@
+{%- doc -%}
+  Renders controls for a slider component
+
+  @param {string} [style] - { 'dots' | 'counter' | 'thumbnails' | 'none' } The display style of the controls
+  @param {boolean} [autoplay] - Whether the controls will display an autoplay option
+  @param {boolean} [arrows_on_media] - Whether the controls will display as floating icons on the media
+  @param {boolean} [controls_on_media] - Whether the controls will display as floating controls on the media
+  @param {media[]} [thumbnails] - Array of media to be displayed as thumbnails, sorted.
+  @param {string} [pagination_position] - { 'left' | 'center' | 'right' } Sets the pagination position, defaults to 'center' if none passed
+  @param {string} [icon_style] - The style of the icon, defaults to 'arrow'
+  @param {string} [aspect_ratio] - The aspect ratio of thumbnails, if applicable. defaults to 'adapt'
+  @param {string} [class] - Additional classes to apply to the controls
+  @param {string} [thumbnail_position] - The position of the thumbnails, defaults to 'bottom'
+  @param {string} [thumbnail_direction] - The direction of the thumbnails, defaults to 'horizontal'
+  @param {number} [thumbnail_width] - The width of the thumbnails, defaults to 70px
+  @param {string} [video_type] - The type of video, defaults to 'inline'
+  @param {boolean} [loop] - Whether the slideshow will loop, defaults to false
+  @param {boolean} [show_variant_media_grouped] - Whether the variant media grouped will be shown, defaults to false
+  @example
+  {%- render 'swiper-controls', style: 'dots', video_type: 'inline' -%}
+{%- enddoc -%}
+
+{%- liquid
+  if aspect_ratio == null
+    assign aspect_ratio = 'adapt'
+  endif
+
+  if pagination_position == null
+    assign pagination_position = 'center'
+  endif
+
+  if show_variant_media_grouped == null
+    assign show_variant_media_grouped = false
+  endif
+-%}
+
+<div
+  class="swiper-controls__thumbnails-container {{ class }}"
+  {% if controls_on_media %}
+    controls-on-media
+  {% endif %}
+  {% if arrows_on_media or icon_style == 'none' %}
+    icons-on-media
+  {% endif %}
+  {% if style == 'thumbnails' %}
+    thumbnails
+  {% endif %}
+  data-thumbnail-position="{{ thumbnail_position }}"
+  data-thumbnail-direction="{{ thumbnail_direction }}"
+  {% if thumbnail_position == 'bottom' %}
+    style="
+      {% render 'swiper-style',
+        columns_mobile: 4,
+        columns_tablet: 4,
+        columns_desktop: 4,
+        columns_gap: 16,
+      %}
+      {% if thumbnail_width %}
+        --thumbnail-width: {{ thumbnail_width }}px;
+      {% endif %}
+    "
+  {% endif %}
+>
+  <div 
+    class="swiper swiper-controls__thumbnails"
+    data-thumbnail-position="{{ thumbnail_position }}"
+    data-thumbnail-direction="{{ thumbnail_direction }}"
+    data-loop="{% if loop %}true{% else %}false{% endif %}"
+  >
+    <div
+      class="swiper-wrapper swiper-controls__thumbnails w-full{% if thumbnail_position == 'bottom' %} grid-layout-no-js list-unstyled lg:grid-layout--4 md:grid-layout--4 grid--4-col-mobile{% else %}  grid-layout-no-js grid-mobile-layout-no-js list-unstyled grid--4-col-mobile{% endif %}"
+      style="
+        --card-grid-per-row-desktop: 4;
+        --card-grid-per-row-tablet: 4;
+        --card-grid-per-row-mobile: 4;
+      "
+      pagination-position="{{ pagination_position }}"
+    >
+      {% if autoplay %}
+        <button
+          type="button"
+          class="swiper-control button-secondary button-unstyled icon-pause"
+          aria-label="{{ 'accessibility.slideshow_pause' | t }}"
+        >
+          {{- 'icon-pause.svg' | inline_asset_content -}}
+        </button>
+        <button
+          type="button"
+          class="swiper-control button-secondary button-unstyled icon-play"
+          aria-label="{{ 'accessibility.slideshow_play' | t }}"
+        >
+          {{- 'icon-play.svg' | inline_asset_content -}}
+        </button>
+      {% endif %}
+
+      {% case style %}
+        {% when 'thumbnails' %}
+          {% for media in thumbnails %}
+            {% if media.media_type == 'image' %}
+              <button
+                class="swiper-slide swiper-control button button-unstyled swiper-controls__thumbnail{% if show_variant_media_grouped %} filter-{{ media.alt | escape | downcase | replace: ' ', '-' | replace: '(', '-' | replace: ')', '-' }}{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                aria-label="{{ 'accessibility.slide_status' | t: index: forloop.index, length: forloop.length }}"
+                style="--aspect-ratio: {% if aspect_ratio == 'adapt' %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% else %}{{ aspect_ratio }}{% endif %};"
+              >
+                {% if media.alt == '3D' %}
+                  <span class="easySpinIcon"><svg width="49" height="27" viewBox="0 0 49 27" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21.6378 22.606C21.6378 22.066 21.6271 21.5895 21.6378 21.113C21.6485 20.4777 22.0665 20.2024 22.6237 20.4989C24.2527 21.3671 25.8816 22.2565 27.4891 23.146C27.9714 23.4107 27.9928 23.9295 27.5105 24.1942C25.8602 25.1048 24.2098 26.0048 22.538 26.8836C22.045 27.1377 21.6485 26.8836 21.6271 26.333C21.6164 25.8036 21.6271 25.2742 21.6271 24.6918C21.027 24.6389 20.4483 24.586 19.8696 24.5436C15.9687 24.2577 12.1428 23.5483 8.46702 22.193C5.92717 21.2613 3.51592 20.086 1.6405 18.0742C0.676 17.0577 0.0329992 15.8612 0.000849204 14.4107C-0.0205841 13.3307 0.365216 12.3777 0.986783 11.5095C2.25135 9.75184 4.03032 8.65066 5.93789 7.75066C6.83809 7.32713 7.78115 7.00948 8.70279 6.62831C9.035 6.49066 9.36722 6.46948 9.51725 6.84007C9.678 7.25301 9.32435 7.38007 9.01357 7.49654C7.2989 8.17419 5.65925 8.9789 4.30895 10.2495C3.25872 11.2448 2.49783 12.3777 2.57285 13.9024C2.63715 15.0989 3.21585 16.0518 4.00888 16.8883C5.51994 18.4765 7.43822 19.4401 9.46367 20.2236C12.668 21.4518 16.0116 22.1083 19.4302 22.426C19.7838 22.4577 20.1375 22.5001 20.4911 22.5212C20.8448 22.553 21.1984 22.5742 21.6378 22.606ZM33.2976 24.1095C36.6626 23.5271 39.9312 22.6483 42.9533 21.0389C44.5179 20.2024 45.9647 19.2071 47.0149 17.746C47.69 16.8036 48.0866 15.7554 47.9901 14.5801C47.8722 13.1295 47.1864 11.933 46.179 10.906C44.5393 9.23301 42.5032 8.19537 40.3706 7.31654C40.3063 7.28478 40.2205 7.25301 40.1669 7.27419C39.9633 7.34831 39.6311 7.41184 39.6097 7.52831C39.5775 7.70831 39.6954 8.00478 39.8562 8.12125C40.1134 8.32243 40.4563 8.42831 40.7564 8.58713C42.2781 9.40243 43.7142 10.313 44.6894 11.7742C45.3431 12.7483 45.6539 13.8071 45.3538 14.9824C45.0109 16.3377 44.1107 17.3118 43.0497 18.1377C41.1207 19.6307 38.9131 20.5518 36.5661 21.1554C34.6586 21.6424 32.7081 21.9707 30.7684 22.3307C30.0397 22.4683 29.6217 22.8918 29.686 23.5801C29.7503 24.2154 30.2004 24.5436 30.9399 24.5012C31.7115 24.353 32.5045 24.2471 33.2976 24.1095ZM44.4 2.52007C44.4107 1.13301 43.2212 -0.0105153 41.7959 7.2943e-05C40.4241 0.0106612 39.2346 1.18596 39.2346 2.53066C39.2346 3.87537 40.3384 4.93419 41.7423 4.94478C43.2533 4.95537 44.3893 3.92831 44.4 2.52007ZM43.0819 2.55184C43.0819 3.28243 42.5675 3.8436 41.8923 3.86478C41.185 3.88596 40.5956 3.28243 40.5849 2.53066C40.5742 1.75772 41.0671 1.2389 41.8066 1.22831C42.5782 1.22831 43.0926 1.75772 43.0819 2.55184ZM17.4047 3.34596L15.2614 5.48478L15.5722 6.73419H16.3974C17.5333 6.73419 18.1549 7.13654 18.1549 7.87772C18.1549 8.55537 17.6298 8.96831 16.8796 8.96831C15.9687 8.96831 15.3257 8.58713 14.7041 7.8989L13.3431 9.18007C14.1147 10.0801 15.2292 10.7154 16.8582 10.7154C18.8622 10.7154 20.0946 9.48713 20.0946 7.79301C20.0946 6.13066 18.9158 5.49537 17.6726 5.29419L19.9446 3.14478V1.67301H13.8575V3.34596H17.4047ZM27.6499 2.4989C26.8568 1.87419 26.0531 1.52478 24.8314 1.52478C22.1415 1.52478 20.8876 3.63184 20.8876 6.39537C20.8876 8.17419 21.2949 9.12713 21.9593 9.77301C22.5916 10.3977 23.3846 10.726 24.5527 10.726C26.5032 10.726 27.9821 9.46595 27.9821 7.63419C27.9821 5.77066 26.6103 4.78596 24.8207 4.78596C23.9312 4.78596 23.4061 5.06125 22.956 5.35772C23.0846 4.19301 23.6525 3.3036 24.7671 3.3036C25.5387 3.3036 26.0102 3.56831 26.6103 4.01301L27.6499 2.4989ZM26.0209 7.7189C26.0209 8.49184 25.4529 9.04243 24.4777 9.04243C23.5025 9.04243 22.9131 8.48125 22.9131 7.70831C22.9131 6.94596 23.4811 6.41654 24.4563 6.41654C25.4208 6.40596 26.0209 6.95654 26.0209 7.7189ZM36.7483 6.10949C36.7483 3.51537 35.1623 1.52478 32.7617 1.52478C30.3612 1.52478 28.7537 3.54713 28.7537 6.14125C28.7537 8.73537 30.3397 10.726 32.7403 10.726C35.1408 10.7154 36.7483 8.69301 36.7483 6.10949ZM34.7229 6.13066C34.7229 7.76125 33.962 8.94713 32.7724 8.94713C31.5722 8.94713 30.7898 7.74007 30.7898 6.0989C30.7898 4.45772 31.5507 3.28243 32.7403 3.28243C33.9406 3.28243 34.7229 4.50007 34.7229 6.13066Z" fill="#595959"/></svg></span>
+                  <div class="easySpanOpacity">
+                    {{ media.preview_image | image_url: width: 144 | image_tag: loading: 'lazy', alt: media.alt | escape }}
+                  </div>
+                {% else %}
+                  {{ media.preview_image | image_url: width: 144 | image_tag: loading: 'lazy', alt: media.alt | escape }}
+                {% endif %}
+              </button>
+            {%- elsif media.media_type == 'model' -%}
+              <button
+                class="swiper-slide swiper-control button button-unstyled swiper-controls__thumbnail{% if show_variant_media_grouped %} filter-{{ media.alt | escape | downcase | replace: ' ', '-' | replace: '(', '-' | replace: ')', '-' }}{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                aria-label="{{ 'accessibility.slide_status' | t: index: forloop.index, length: forloop.length }}"
+                style="--aspect-ratio: {% if aspect_ratio == 'adapt' %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% else %}{{ aspect_ratio }}{% endif %};"
+              >
+                {{ media.preview_image | image_url: width: 144 | image_tag: loading: 'lazy', alt: media.alt | escape }}
+
+                <span class="swiper-controls__thumbnail-badge">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                    focusable="false"
+                    class="icon icon-3d-model"
+                    fill="none"
+                    viewBox="0 0 18 21"
+                  >
+                    {% render 'icon', icon: '3d-model' %}
+                  </svg>
+                </span>
+              </button>
+            {%- elsif video_type == 'inline' -%}
+              <button
+                class="swiper-slide swiper-control button button-unstyled swiper-controls__thumbnail{% if show_variant_media_grouped %} filter-{{ media.alt | escape | downcase | replace: ' ', '-' | replace: '(', '-' | replace: ')', '-' }}{% endif %}"
+                data-index="{{ forloop.index0 }}"
+                aria-label="{{ 'accessibility.slide_status' | t: index: forloop.index, length: forloop.length }}"
+                style="--aspect-ratio: {% if aspect_ratio == 'adapt' %}{{ media.preview_image.aspect_ratio | default: 1.0 }}{% else %}{{ aspect_ratio }}{% endif %};"
+              >
+                {{ media.preview_image | image_url: width: 144 | image_tag: loading: 'lazy', alt: media.alt | escape }}
+
+                <span class="swiper-controls__thumbnail-badge">
+                  {{ 'icon-play.svg' | inline_asset_content }}
+                </span>
+              </button>
+            {%- endif-%}
+          {% endfor %}
+      {% endcase %}
+    </div>
+  </div>
+</div>

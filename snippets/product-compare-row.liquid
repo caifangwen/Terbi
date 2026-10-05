@@ -1,0 +1,173 @@
+{%- liquid
+  assign current_variant = product_card_product.selected_or_first_available_variant
+  assign variant_count = product_card_product.variants | size
+  assign product_swatch_option = settings.swatch | downcase
+  assign variant_img = ''
+  assign variant_selected = nil
+
+  for option in product_card_product.options_with_values
+    assign option_name = option.name | downcase
+    if product_swatch_option contains option_name
+      assign variant_selected = option.selected_value
+      for variant in product_card_product.variants limit: 1
+        if variant.image != null
+          assign variant_img = variant.image
+        endif
+      endfor
+      break
+    endif
+  endfor
+
+  assign ratio = 1
+  if product_card_product.featured_media and media_aspect_ratio == 'portrait'
+    assign ratio = 0.8
+  elsif product_card_product.featured_media and media_aspect_ratio == 'adapt'
+    assign ratio = product_card_product.featured_media.aspect_ratio
+  endif
+  if ratio == 0 or ratio == null
+    assign ratio = 1
+  endif
+
+  assign widths = '165, 360, 533, 720'
+  unless lazy_load == false
+    assign loading = 'lazy'
+  endunless
+
+  assign compare_cell_class = 'productCompareTable-item body-s-font-size font-normal'
+-%}
+
+<template
+  data-product-compare-column
+  data-product-compare-id="{{ product_card_product.id }}"
+  data-product-compare-handle="{{ product_card_product.handle }}"
+>
+  <td class="productCompareTable-product" data-product-compare-cell="product" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    <div class="product-compare-card">
+      <a href="{{ product_card_product.url }}" class="product-compare-card__media media media--transparent media--hover-effect">
+        {%- if product_card_product.featured_media -%}
+          {%- if variant_img != blank -%}
+            {{ variant_img | image_url: width: variant_img.width | image_tag: sizes: sizes, widths: widths, loading: loading, alt: variant_img.alt, class: 'motion-reduce', width: variant_img.width, height: variant_img.height }}
+          {%- else -%}
+            {{ product_card_product.featured_media | image_url: width: product_card_product.featured_media.width | image_tag: sizes: sizes, widths: widths, loading: loading, alt: product_card_product.featured_media.alt, class: 'motion-reduce', width: product_card_product.featured_media.width, height: product_card_product.featured_media.height }}
+          {%- endif -%}
+        {%- else -%}
+          {{ 'product-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+      </a>
+
+      {%- if settings.show_badges_on_compare != false -%}
+        <div class="product-compare-card__badge">
+          {%- render 'product-badge-renderer', badge_product: product_card_product, serial: serial -%}
+        </div>
+      {%- endif -%}
+
+      <a
+        class="product-compare-card__title link-underline{% if settings.product_title_line_text != 'full' %} card-title-ellipsis{% endif %}{% if variant_selected != blank %} card-title-change{% endif %}"
+        href="{{ product_card_product.url }}"
+        data-product-title="{{ product_card_product.title | escape }}"
+        data-product-url="{{ product_card_product.url }}"
+      >
+        {{ product_card_product.title | escape }}
+        {%- if variant_selected != blank -%}
+          <span data-change-title> - {{ variant_selected }}</span>
+        {%- endif -%}
+      </a>
+
+      {%- if settings.show_vendor -%}
+        <div class="product-compare-card__vendor">
+          <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+          {{ product_card_product.vendor | link_to_vendor }}
+        </div>
+      {%- endif -%}
+
+      <div class="product-compare-card__rating" style="{{ jm_style }}">
+        <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product_card_product.id }}" data-auto-install="false">
+          {{ product_card_product.metafields.judgeme.badge }}
+        </div>
+      </div>
+
+      <div class="product-compare-card__price">
+        {% render 'price', product: product_card_product, price_class: '' %}
+      </div>
+
+      <button
+        type="button"
+        class="productCompareTable-removeProduct minimum-touch-target-before"
+        data-compare-remove
+        data-compare-item="{{ product_card_product.id }}"
+        aria-label="{{ 'accessibility.remove_item' | t: title: product_card_product.title | escape }}"
+      >
+        {{- 'icon-close.svg' | inline_asset_content -}}
+      </button>
+    </div>
+  </td>
+
+  <td class="{{ compare_cell_class }}" data-product-compare-cell="sku" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    {%- if current_variant.sku != blank -%}
+      <span class="productCompareTable-value">{{ current_variant.sku }}</span>
+    {%- else -%}
+      <span class="productCompareTable-empty">-</span>
+    {%- endif -%}
+  </td>
+
+  {%- assign specification_keys = 'nominal_size_ft,overall_length_cm,interior_length_cm,interior_volume_m3,wall_panel_length_cm,base_length_cm,window_quantity,net_weight_kg,carton_count' | split: ',' -%}
+  {%- assign specifications = product_card_product.metafields.custom.specification_details.value -%}
+  {%- for key in specification_keys -%}
+    {%- assign field_value = specifications[key].value -%}
+    <td class="{{ compare_cell_class }}" data-product-compare-cell="{{ key }}" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+      {%- if field_value != blank -%}{{ field_value | escape | newline_to_br }}{%- else -%}<span class="productCompareTable-empty">-</span>{%- endif -%}
+    </td>
+  {%- endfor -%}
+
+  <td class="{{ compare_cell_class }}" data-product-compare-cell="collection" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    {%- if product_card_product.collections.size > 0 -%}
+      <div class="productCompareTable-tags">
+        {%- for product_collection in product_card_product.collections -%}
+          <span class="productCompareTable-tag">{{ product_collection.title }}</span>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <span class="productCompareTable-empty">-</span>
+    {%- endif -%}
+  </td>
+
+  <td class="{{ compare_cell_class }}" data-product-compare-cell="availability" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    {%- if current_variant.inventory_management -%}
+      {%- assign first_inventory = current_variant.inventory_quantity -%}
+      {%- if first_inventory > 0 -%}
+        <span class="productCompareTable-status productCompareTable-status--in">{{ 'products.product.inventory_in_stock' | t }}</span>
+      {%- else -%}
+        <span class="productCompareTable-status productCompareTable-status--out">{{ 'products.product.inventory_out_of_stock' | t }}</span>
+      {%- endif -%}
+    {%- else -%}
+      <span class="productCompareTable-status productCompareTable-status--in">{{ 'products.product.many_in_stock' | t }}</span>
+    {%- endif -%}
+  </td>
+
+  <td class="{{ compare_cell_class }}" data-product-compare-cell="product_type" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    {%- if product_card_product.type != blank -%}
+      <span class="productCompareTable-value">{{ product_card_product.type | escape }}</span>
+    {%- else -%}
+      <span class="productCompareTable-empty">-</span>
+    {%- endif -%}
+  </td>
+
+  <td class="{{ compare_cell_class }}" data-product-compare-cell="other_details" data-product-compare-id="{{ product_card_product.id }}" data-compare-product-handle="{{ product_card_product.handle }}">
+    {%- if variant_count > 1 and product_card_product.variants[0].title != 'Default Title' -%}
+      <div class="productCompareTable-options">
+        {%- for option in product_card_product.options_with_values -%}
+          <div class="productCompareTable-option">
+            <span class="productCompareTable-optionLabel">{{ option.name }}:</span>
+            <span class="productCompareTable-optionValue">
+              {%- for value in option.values -%}
+                {{ value }}{% unless forloop.last %}, {% endunless %}
+              {%- endfor -%}
+            </span>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <span class="productCompareTable-empty">-</span>
+    {%- endif -%}
+  </td>
+</template>

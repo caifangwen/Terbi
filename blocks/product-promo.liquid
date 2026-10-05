@@ -1,0 +1,277 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign product_resource = closest.product
+
+  if request.visual_preview_mode and product_resource == blank
+    assign product_resource = collections.all.products.first
+  endif
+
+  assign current_variant = product_resource.selected_or_first_available_variant
+  if current_variant == blank and product_resource != blank
+    assign current_variant = product_resource.variants.first
+  endif
+
+  assign discount_percent = block_settings.discount_percent | default: 10
+  assign promo_code = block_settings.code | default: 'TERKKIN'
+  assign promo_id = 'ProductPromo-' | append: block.id
+  assign saving_amount = current_variant.price | times: discount_percent | divided_by: 100
+  assign saving_amount_money = saving_amount | money
+  assign savings_label = block_settings.savings_label | replace: '[amount]', saving_amount_money
+  capture promo_code_html
+    echo '<strong class="product-promo__inline-code">'
+    echo promo_code | escape
+    echo '</strong>'
+  endcapture
+  assign copy_aria_label = block_settings.copy_label | replace: '[code]', promo_code
+-%}
+
+{%- if product_resource != blank and block_settings.enabled -%}
+  {{ 'component-product-promo.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-promo.js' | asset_url }}" defer="defer"></script>
+
+  <product-promo
+    id="{{ promo_id }}"
+    class="product-promo spacing-style"
+    data-code="{{ promo_code | escape }}"
+    data-current-variant-id="{{ current_variant.id }}"
+    data-end="{{ block_settings.ends_at | escape }}"
+    data-copied-text="{{ block_settings.copied_text | escape }}"
+    data-copy-failed-text="{{ block_settings.copy_failed_text | escape }}"
+    style="{% render 'spacing-style', settings: block_settings %}"
+    {{ block.shopify_attributes }}
+  >
+    <details class="product-promo__details" open>
+      <summary class="product-promo__summary">
+        <span class="product-promo__summary-text">
+          {{ discount_percent }}% off with code <strong>{{ promo_code | escape }}</strong>
+        </span>
+
+        {%- if block_settings.show_countdown and block_settings.ends_at != blank -%}
+          <span
+            class="product-promo__countdown"
+            role="timer"
+            aria-label="{{ block_settings.countdown_label | escape }}"
+          >
+            {%- if block_settings.countdown_text != blank -%}
+              <span class="product-promo__ends">{{ block_settings.countdown_text | escape }}</span>
+            {%- endif -%}
+            <span class="product-promo__time" data-product-promo-days>00D</span>
+            <span class="product-promo__separator">:</span>
+            <span class="product-promo__time" data-product-promo-hours>00</span>
+            <span class="product-promo__separator">:</span>
+            <span class="product-promo__time" data-product-promo-minutes>00</span>
+            <span class="product-promo__separator">:</span>
+            <span class="product-promo__time" data-product-promo-seconds>00</span>
+          </span>
+        {%- endif -%}
+      </summary>
+
+      <div class="product-promo__body">
+        {%- if block_settings.heading != blank -%}
+          <p class="product-promo__heading">
+            {{ block_settings.heading | escape }}
+          </p>
+        {%- endif -%}
+
+        {%- if block_settings.text != blank -%}
+          <div class="product-promo__text">
+            {{ block_settings.text
+              | escape
+              | replace: '[promo_code]', promo_code_html
+              | replace: '[discount]', discount_percent
+            }}
+          </div>
+        {%- endif -%}
+
+        <div class="product-promo__offer">
+          {%- if block_settings.show_savings and current_variant != blank -%}
+            <span
+              class="product-promo__saving"
+              data-product-promo-saving
+              data-savings-label="{{ block_settings.savings_label | escape }}"
+            >
+              {{ savings_label | escape }}
+            </span>
+          {%- endif -%}
+        </div>
+
+        <div class="product-promo__footer">
+          <span class="product-promo__code-label">
+            {{ block_settings.code_label | escape }}
+          </span>
+          <button
+            type="button"
+            class="product-promo__code"
+            data-product-promo-copy
+            aria-label="{{ copy_aria_label | escape }}"
+          >
+            {{ promo_code | escape }}
+          </button>
+        </div>
+      </div>
+    </details>
+
+    <script type="application/json" data-product-promo-savings>
+      {
+        {%- for variant in product_resource.variants -%}
+          {%- assign variant_saving = variant.price | times: discount_percent | divided_by: 100 -%}
+          "{{ variant.id }}": {{ variant_saving | money | json }}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      }
+    </script>
+  </product-promo>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product promo",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Enable promo",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Limited-time offer"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Text",
+      "default": "Use code [promo_code] for [discount]% off."
+    },
+    {
+      "type": "text",
+      "id": "code",
+      "label": "Discount code",
+      "default": "TERKKIN"
+    },
+    {
+      "type": "range",
+      "id": "discount_percent",
+      "label": "Discount percent",
+      "min": 0,
+      "max": 80,
+      "step": 1,
+      "unit": "%",
+      "default": 10
+    },
+    {
+      "type": "text",
+      "id": "ends_at",
+      "label": "Ends at",
+      "default": "2026-12-31T18:00:00+08:00",
+      "info": "Use ISO format, for example 2026-08-24T23:59:59+02:00."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_savings",
+      "label": "Show variant savings",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "savings_label",
+      "label": "Savings label",
+      "default": "Save [amount]"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_countdown",
+      "label": "Show countdown",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "countdown_text",
+      "label": "Countdown text",
+      "default": "Ends in"
+    },
+    {
+      "type": "text",
+      "id": "countdown_label",
+      "label": "Countdown aria label",
+      "default": "Promotion countdown"
+    },
+    {
+      "type": "text",
+      "id": "code_label",
+      "label": "Code label",
+      "default": "Code:"
+    },
+    {
+      "type": "text",
+      "id": "copy_label",
+      "label": "Copy button aria label",
+      "default": "Copy discount code [code]"
+    },
+    {
+      "type": "text",
+      "id": "copied_text",
+      "label": "Copied text",
+      "default": "Copied"
+    },
+    {
+      "type": "text",
+      "id": "copy_failed_text",
+      "label": "Copy failed text",
+      "default": "Copy failed"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product promo",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

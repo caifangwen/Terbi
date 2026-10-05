@@ -1,0 +1,38 @@
+{%- doc -%}
+  Renders one accordion item.
+
+  @param {string} heading
+  @param {string} content
+  @param {boolean} [open]
+  @param {string} [item_class]
+  @param {string} [item_style]
+  @param {string} [details_class]
+  @param {string} [details_style]
+  @param {string} [summary_class]
+  @param {string} [summary_style]
+  @param {string} [content_class]
+  @param {string} [attributes]
+{%- enddoc -%}
+
+<accordion-custom
+  class="{{ item_class | default: 'accordion__item' }}"
+  {% if item_style != blank %}style="{{ item_style }}"{% endif %}
+  {% if open %}open-by-default-on-desktop open-by-default-on-mobile{% endif %}
+>
+  <details
+    class="details{% if details_class != blank %} {{ details_class }}{% endif %}"
+    {% if details_style != blank %}style="{{ details_style }}"{% endif %}
+    {{ attributes }}
+    {% if open %}open{% endif %}
+  >
+    <summary
+      class="details__header{% if summary_class != blank %} {{ summary_class }}{% endif %}"
+      {% if summary_style != blank %}style="{{ summary_style }}"{% endif %}
+    >
+      <span class="accordion__summary-text">{{ heading }}</span>
+      <span class="svg-wrapper icon-caret-wrapper icon-animated">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+      <span class="svg-wrapper icon-plus-wrapper">{{- 'icon-plus.svg' | inline_asset_content -}}</span>
+    </summary>
+    <div class="details-content{% if content_class != blank %} {{ content_class }}{% endif %}">{{ content }}</div>
+  </details>
+</accordion-custom>

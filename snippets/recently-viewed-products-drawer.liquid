@@ -1,0 +1,13 @@
+<side-drawer-opener class="target-block product-popup-modal__opener inline-block" data-side-drawer="#popup-recently-viewed">
+  <button class="multi-t__button p-0 flex items-center justify-center relative cursor-pointer bor-none rounded-full" type="button" aria-haspopup="dialog" aria-label="{{ 'content.recently_viewed_products' | t }}"><svg viewBox="0 0 24 24" class="icon icon-recently-viewed" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 9.8 12h-2a8 8 0 1 1-2.3-7.7L14 10h8V2l-3.1 3.1A10 10 0 0 0 12 2Zm-1 5v6l5 3 .9-1.5-4-2.4V7Z"/></svg></button>
+  <span class="target-block--tooltip">{{ 'content.recently_viewed_products' | t }}</span>
+</side-drawer-opener>
+<side-drawer class="multi-t__products drawer__container drawer fixed top-0 left-0 w-screen h-full z-9 flex no-js-hidden" id="popup-recently-viewed" data-drawer-direction="right">
+  <div class="drawer__overlay fixed inset-0 cursor-pointer"></div>
+  <div class="drawer__inner-wrapper" data-drawer-content><div class="drawer__inner" role="dialog" aria-modal="true" aria-label="{{ 'content.recently_viewed' | t }}" tabindex="-1">
+    <div class="drawer__header flex justify-between items-center relative" style="--p: 1.5rem 0;"><h2 class="drawer__heading break m-0 h5">{{ 'content.recently_viewed' | t }}</h2><button class="drawer__close block t-button bor-none rounded-full cursor-pointer" type="button" onclick="this.closest('side-drawer').close()" aria-label="{{ 'accessibility.close_dialog' | t }}">{{- 'icon-close.svg' | inline_asset_content -}}</button></div>
+    <recently-viewed-products class="recently-viewed-products collection cus-scrollbar" id="recently-viewed-drawer-{{ section.id }}" data-url="{{ routes.search_url }}?section_id={{ section.id }}&type=product&q=" data-limit="4" data-id="{{ section.id }}"{% if request.page_type == 'product' %} data-product-id="{{ product.id }}"{% endif %}>
+      {% if request.page_type == 'search' and search.results_count > 0 and search.performed %}<ul class="list-unstyled" role="list">{% assign parsed_terms = search.terms | split: ' OR ' %}{% for parsed_term in parsed_terms %}{% assign product_id = parsed_term | split: 'id:' | last | times: 1 %}{% for product in search.results %}{% if product.id == product_id %}<li class="product-item">{% render 'product-card', card_product: product, media_aspect_ratio: 'square', show_secondary_image: true, quick_add: 'none', section_id: section.id %}</li>{% endif %}{% endfor %}{% endfor %}</ul>{% else %}<div class="recently-viewed__warnings flex flex-column flex-1 justify-center center"><span class="text">{{ 'content.sorry_no_products' | t }}</span></div>{% endif %}
+    </recently-viewed-products>
+  </div></div>
+</side-drawer>

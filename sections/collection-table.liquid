@@ -1,0 +1,97 @@
+{% liquid
+  assign source_collection = section.settings.source_collection | default: collection
+  if section.settings.content_source == 'selected'
+    assign item = section.settings.item
+  else
+    assign item = source_collection.metafields.custom.table.value
+  endif
+  assign location = item.location.value
+  assign heading = item.heading.value
+  assign table_content = item.table.value
+  assign rows = table_content | newline_to_br | split: '<br />'
+%}
+
+{% if item != blank and table_content != blank %}
+  <section class="table-section"{% if location != blank %} id="{{ location | handleize }}"{% endif %}>
+    {% if heading != blank %}<h2>{{ heading | escape }}</h2>{% endif %}
+    <div class="table-section__scroll">
+      <table class="collection-table">
+        <thead>
+          {% assign header_row = rows.first | strip | remove_first: '|' | remove_last: '|' %}
+          {% assign headers = header_row | split: '|' %}
+          <tr>
+            {% for header in headers %}<th scope="col">{% render 'table-cell-text', text: header %}</th>{% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in rows offset: 2 %}
+            {% assign cell_row = row | strip | remove_first: '|' | remove_last: '|' %}
+            {% assign cells = cell_row | split: '|' %}
+            {% unless row == blank %}
+              <tr>
+                {% for cell in cells %}<td>{% render 'table-cell-text', text: cell %}</td>{% endfor %}
+              </tr>
+            {% endunless %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+{% endif %}
+
+{% style %}
+  .table-section { width: 100%; min-width: 0; margin: 0 auto; padding-block: clamp(3.2rem, 4vw, 4.8rem); }
+  .table-section h2 { margin: 0 0 2.4rem; color: var(--shed-text, var(--color-foreground)); font-size: clamp(2.8rem, 3vw, 4.2rem); letter-spacing: -0.04em; }
+  .table-section__scroll { overflow-x: auto; }
+  .table-section table { width: 100%; min-width: 600px; border-collapse: collapse; box-shadow: none; }
+  .table-section th, .table-section td { padding: 1.6rem 1.8rem; text-align: left; vertical-align: top; border: 0; border-bottom: 0.1rem solid var(--shed-border, rgb(var(--color-foreground-rgb) / 0.07)); color: var(--shed-muted, rgb(var(--color-foreground-rgb) / 0.64)); line-height: 1.55; }
+  .table-section th { color: var(--shed-text, var(--color-foreground)); background: var(--shed-surface-muted, rgb(var(--color-foreground-rgb) / 0.024)); font-weight: 700; }
+  .table-section tbody tr:last-child td { border-bottom: 0; }
+  @media screen and (max-width: 749px) {
+    .table-section { padding-block: 3.2rem; }
+    .table-section th, .table-section td { padding: 1.2rem 0.8rem; overflow-wrap: anywhere; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "class": "section",
+  "presets": [
+    {
+      "name": "Comparison table",
+      "category": "Basic"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "content_source",
+      "label": "Data source",
+      "default": "collection",
+      "options": [
+        {
+          "value": "collection",
+          "label": "Collection metafield"
+        },
+        {
+          "value": "selected",
+          "label": "Selected metaobjects"
+        }
+      ]
+    },
+    {
+      "type": "collection",
+      "id": "source_collection",
+      "label": "Source collection",
+      "info": "Leave blank to use the current collection."
+    },
+    {
+      "type": "metaobject",
+      "id": "item",
+      "label": "Table",
+      "metaobject_type": "table"
+    }
+  ]
+}
+{% endschema %}

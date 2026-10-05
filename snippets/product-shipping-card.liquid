@@ -1,0 +1,41 @@
+<details
+  class="shipping-card"
+  id="shipping-card-{{ id }}"
+  data-product-shipping-card
+  open
+>
+  <summary class="shipping-header">
+    <span class="shipping-header__content">
+      <strong>Check delivery date</strong>
+      <span class="shipping-header__action">Free Shipping</span>
+    </span>
+  </summary>
+
+  <div class="shipping-body" data-product-shipping-body>
+    {%- if settings.arrival_link != blank -%}
+      <a
+        href="{{ settings.arrival_link }}"
+        class="shipping-arrival-link"
+        data-product-shipping-link
+      >
+        Check Arrival Dates
+      </a>
+    {%- endif -%}
+
+    <p class="shipping-disclaimer">{{ settings.disclaimer }}</p>
+    <p class="shipping-body__title">Average truck transit times</p>
+
+    <div class="shipping-row">
+      <strong>{{ settings.region_1 }}</strong>
+      <em>{{ settings.time_1 }}</em>
+    </div>
+    <div class="shipping-row">
+      <strong>{{ settings.region_2 }}</strong>
+      <em>{{ settings.time_2 }}</em>
+    </div>
+    <div class="shipping-row">
+      <strong>{{ settings.region_3 }}</strong>
+      <em>{{ settings.time_3 }}</em>
+    </div>
+  </div>
+</details>

@@ -1,0 +1,137 @@
+{% assign groups = section.settings.groups %}
+{% if section.settings.groups_source == 'collection' %}
+  {% assign groups = collection.metafields.custom.shed_difference.value %}
+{% endif %}
+
+{% if groups != blank or request.design_mode %}
+  <div class="section section--page-width page-card-groups spacing-style" style="{% render 'spacing-style', settings: section.settings %}">
+    {% for group in groups %}
+      {% liquid
+        assign cards = group.cards.value | default: group.cards
+        assign heading = group.heading.value | default: group.heading
+        assign style = group.style.value | default: group.style | default: 'cards'
+        assign columns = group.columns.value | default: group.columns | default: 3 | at_least: 2 | at_most: 4
+        assign heading_id = 'PageCardGroup-' | append: section.id | append: '-' | append: forloop.index
+      %}
+      <section class="page-card-group page-card-group--{{ style | escape }}"{% if heading != blank %} aria-labelledby="{{ heading_id }}"{% endif %}>
+        {% if heading != blank or group.description != blank %}
+          <header class="page-card-group__header">
+            {% if heading != blank %}<h2 id="{{ heading_id }}">{{ heading | escape }}</h2>{% endif %}
+            {% if group.description != blank %}<div class="rte">{{ group.description | metafield_tag }}</div>{% endif %}
+          </header>
+        {% endif %}
+
+        {% if cards != blank %}
+          <ul class="page-card-group__grid" role="list" style="--page-card-columns: {{ columns }}">
+            {% for card in cards %}
+              {% liquid
+                assign image = card.image.value | default: card.image
+                assign eyebrow = card.eyebrow.value | default: card.eyebrow
+                assign card_heading = card.heading.value | default: card.heading
+                assign link_label = card.link_label.value | default: card.link_label
+                assign link = card.link.value | default: card.link
+              %}
+              <li class="page-card-group__item">
+                <article class="page-card page-content-card">
+                  {% if image != blank %}
+                    {{ image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '300, 450, 600, 900', class: 'page-card__image', alt: card_heading }}
+                  {% endif %}
+                  <div class="page-card__content">
+                    {% if eyebrow != blank %}<p class="page-card__eyebrow">{{ eyebrow | escape }}</p>{% endif %}
+                    {% if card_heading != blank %}<h3>{{ card_heading | escape }}</h3>{% endif %}
+                    {% if card.description != blank %}<div class="rte">{{ card.description | metafield_tag }}</div>{% endif %}
+                    {% if link != blank %}
+                      <a href="{{ link | escape }}">{{ link_label | default: card_heading | escape }}</a>
+                    {% endif %}
+                  </div>
+                </article>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </section>
+    {% else %}
+      <p class="page-card-groups__notice">Connect this section to a Page card groups metafield.</p>
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .page-card-groups { row-gap: clamp(4.8rem, 7vw, 8rem); }
+  .page-card-group__header { max-width: 72rem; margin: 0 0 clamp(2.4rem, 4vw, 3.6rem); text-align: left; }
+  .page-card-group__header h2 { margin: 0; }
+  .page-card-group__header h2 { font-family: var(--font-heading--family); font-size: clamp(2.8rem, 4vw, 4.4rem); line-height: 1.1; letter-spacing: -0.025em; }
+  .page-card-group--cards .page-card { border: 0; border-top: 1px solid rgb(var(--color-foreground-rgb) / 0.2); border-radius: 0; background: transparent; }
+  .page-card-group--cards .page-card__content { padding: 2rem 0 0; }
+  .page-card-group__header .rte { margin-top: 1.2rem; color: rgb(var(--color-foreground-rgb) / 0.68); }
+  .page-card { display: flex; min-width: 0; flex-direction: column; }
+  .page-card__image { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .page-card__content { flex: 1; padding: var(--page-content-card-padding); }
+  .page-card__content > :first-child { margin-top: 0; }
+  .page-card__content > :last-child { margin-bottom: 0; }
+  .page-card__eyebrow { margin-bottom: 0.8rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+  .page-card__content h3 { margin-block: 0 1.2rem; font-family: var(--font-heading--family); font-size: clamp(2rem, 2.3vw, 2.6rem); line-height: 1.2; }
+  .page-card__content .rte { color: rgb(var(--color-foreground-rgb) / 0.68); line-height: 1.65; }
+  .page-card__content a { display: inline-flex; align-items: center; gap: 0.8rem; margin-top: 1.6rem; color: var(--color-primary); font-weight: 700; text-underline-offset: 0.3rem; }
+  .page-card__content a::after { content: '\2192'; transition: transform 180ms ease; }
+  .page-card-group--stats .page-card { text-align: left; }
+  .page-card-group--stats .page-card__content h3 { color: var(--color-primary); font-size: clamp(3.6rem, 6vw, 6rem); line-height: 1; }
+  .page-card-groups__notice { margin: 0; text-align: center; }
+  @media (hover: hover) {
+    .page-card__content a:hover::after { transform: translateX(0.3rem); }
+  }
+  @media screen and (max-width: 749px) {
+    .page-card-group--stats .page-card-group__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .page-card-group--stats .page-card__content { padding-inline: 1.2rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Page card groups",
+  "settings": [
+    {
+      "type": "select",
+      "id": "groups_source",
+      "label": "Content source",
+      "default": "manual",
+      "options": [
+        { "value": "manual", "label": "Selected card groups" },
+        { "value": "collection", "label": "Collection difference cards" }
+      ]
+    },
+    {
+      "type": "metaobject_list",
+      "id": "groups",
+      "label": "Card groups",
+      "metaobject_type": "page_card_group",
+      "limit": 12
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Page card groups"
+    }
+  ]
+}
+{% endschema %}

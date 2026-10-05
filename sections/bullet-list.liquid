@@ -1,0 +1,164 @@
+{% render 'bullet-list', settings: section.settings, instance_id: section.id %}
+
+{% schema %}
+{
+  "name": "Bullet list",
+  "settings": [
+    {
+      "type": "header",
+      "content": "List items"
+    },
+    {
+      "type": "text",
+      "id": "list_item_1",
+      "label": "Item 1",
+      "default": "First list item"
+    },
+    {
+      "type": "text",
+      "id": "list_item_2",
+      "label": "Item 2",
+      "default": "Second list item"
+    },
+    {
+      "type": "text",
+      "id": "list_item_3",
+      "label": "Item 3",
+      "default": "Third list item"
+    },
+    {
+      "type": "text",
+      "id": "list_item_4",
+      "label": "Item 4"
+    },
+    {
+      "type": "text",
+      "id": "list_item_5",
+      "label": "Item 5"
+    },
+    {
+      "type": "text",
+      "id": "list_item_6",
+      "label": "Item 6"
+    },
+    {
+      "type": "text",
+      "id": "list_item_7",
+      "label": "Item 7"
+    },
+    {
+      "type": "text",
+      "id": "list_item_8",
+      "label": "Item 8"
+    },
+    {
+      "type": "text",
+      "id": "list_item_9",
+      "label": "Item 9"
+    },
+    {
+      "type": "text",
+      "id": "list_item_10",
+      "label": "Item 10"
+    },
+    {
+      "type": "header",
+      "content": "Bullet style"
+    },
+    {
+      "type": "color",
+      "id": "bullet_color",
+      "label": "Bullet color",
+      "default": "#000F9F"
+    },
+    {
+      "type": "range",
+      "id": "bullet_size",
+      "label": "Bullet size",
+      "min": 4,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "bullet_spacing",
+      "label": "Bullet spacing",
+      "min": 4,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "bullet_vertical_offset",
+      "label": "Bullet vertical offset",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Text style"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "line_height",
+      "label": "Line height",
+      "min": 1,
+      "max": 2,
+      "step": 0.1,
+      "default": 1.5
+    },
+    {
+      "type": "range",
+      "id": "item_spacing",
+      "label": "Item spacing",
+      "min": 4,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bullet list"
+    }
+  ]
+}
+{% endschema %}

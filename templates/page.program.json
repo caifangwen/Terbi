@@ -1,0 +1,94 @@
+{
+  "sections": {
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "separator": "slash",
+        "horizontal_alignment": "start",
+        "font_size": "1.4rem",
+        "section_width": "page-width",
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
+    },
+    "program_hero": {
+      "type": "program-page",
+      "settings": {
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "program_highlights": {
+      "type": "page-card-groups",
+      "settings": {
+        "groups": "{{ closest.page.metafields.custom.highlights.value }}",
+        "padding-block-start": 24,
+        "padding-block-end": 48
+      }
+    },
+    "program_content": {
+      "type": "image-with-text-rows",
+      "blocks": {
+        "description-rows": {
+          "type": "image-with-text",
+          "static": true,
+          "settings": {}
+        }
+      },
+      "settings": {
+        "items": "{{ closest.page.metafields.custom.content_section.value }}",
+        "first_image_position": "left",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "program_card_groups": {
+      "type": "page-card-groups",
+      "settings": {
+        "groups": "{{ closest.page.metafields.custom.card_groups.value }}",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "program_form": {
+      "type": "page-kaktus-form",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "program_cta": {
+      "type": "page-cta",
+      "settings": {}
+    },
+    "program_faq": {
+      "type": "faq",
+      "blocks": {
+        "faq": {
+          "type": "accordion",
+          "static": true,
+          "settings": {
+            "content_source": "resource"
+          }
+        }
+      },
+      "block_order": [
+        "faq"
+      ],
+      "settings": {
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "program_hero",
+    "program_highlights",
+    "program_content",
+    "program_card_groups",
+    "program_form",
+    "program_cta",
+    "program_faq"
+  ]
+}

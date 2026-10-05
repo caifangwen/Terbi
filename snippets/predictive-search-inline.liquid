@@ -1,0 +1,63 @@
+<div class="header__search header__search--inline header__search--{{ search_type }}">
+  {%- if settings.predictive_search_enabled -%}
+    <predictive-search class="search-modal__form" data-loading-text="{{ 'accessibility.loading' | t }}">
+  {%- else -%}
+    <search-form class="search-modal__form">
+  {%- endif -%}
+  <form
+    action="{{ routes.search_url }}"
+    method="get"
+    role="search"
+    class="search search--inline search-modal__form{% if color_scheme != blank %} color-{{ color_scheme }}{% endif %}"
+  >
+    <div class="predictive-search--center">
+      <div class="field">
+        <button class="search__button field__button z-2" aria-label="{{ 'content.search' | t }}">
+          <span class="svg-wrapper">
+            {{- 'icon-search.svg' | inline_asset_content -}}
+          </span>
+        </button>
+        {% assign search_label = 'content.search' | t %}
+        {% render 'search-input',
+          input_id: input_id,
+          input_class: 'search__input field__input',
+          placeholder: search_label,
+          predictive: settings.predictive_search_enabled
+        %}
+        <button
+          type="reset"
+          class="reset__button field__button{% if search.terms == blank %} hidden{% endif %}"
+          aria-label="{{ 'content.clear_search_term' | t }}"
+        >
+          <span class="svg-wrapper">
+            {{- 'icon-close.svg' | inline_asset_content -}}
+          </span>
+        </button>
+      </div>
+    </div>
+    {%- if settings.predictive_search_enabled -%}
+      <div
+        id="SearchDropdown"
+        class="details__list absolute w-full top-full right-0 z-1 global-settings-popup"
+        style="--min-w: 100%;"
+        tabindex="-1"
+      >
+        <div
+          class="predictive-search predictive-search--header predictive-search--center cus-scrollbar"
+          tabindex="-1"
+          data-predictive-search
+        >
+          {% render 'predictive-search-empty-state', shadow_opacity: 0.1, products_test_id: products_test_id, resource_direction: 'column' %}
+        </div>
+      </div>
+
+      <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+    {%- endif -%}
+  </form>
+
+  {%- if settings.predictive_search_enabled -%}
+    </predictive-search>
+  {%- else -%}
+    </search-form>
+  {%- endif -%}
+</div>

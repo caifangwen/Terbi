@@ -1,0 +1,24 @@
+<side-drawer
+  class="blog-posts__sidebar-drawer drawer__container"
+  id="Drawer-Blog-Sidebar"
+  data-drawer-direction="left"
+  data-moved="false"
+>
+  <div id="Drawer-Overlay-Blog-Sidebar" class="drawer__overlay fixed inset-0 cursor-pointer lg:none"></div>
+  <div class="blog-posts__sidebar-container" data-drawer-content>
+    <div class="blog-posts__sidebar flex flex-column hide-scrollbar">
+      <div class="drawer__header flex justify-between items-center relative lg:none">
+        <h2 class="drawer__heading break m-0 h5">{{ 'content.sidebar' | t }}</h2>
+        <button
+          class="drawer__close block t-button bor-none rounded-full cursor-pointer"
+          type="button"
+          onclick="this.closest('side-drawer').close()"
+          aria-label="{{ 'accessibility.close_dialog' | t }}"
+        >
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+      </div>
+      {{ children }}
+    </div>
+  </div>
+</side-drawer>

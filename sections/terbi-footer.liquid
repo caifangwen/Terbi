@@ -1,0 +1,57 @@
+{{ 'terbi-footer.css' | asset_url | stylesheet_tag }}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<div class="terbi-footer section section--page-width color-{{ section.settings.color_scheme }}">
+  <div class="terbi-footer__content">
+    <div class="terbi-footer__grid">
+      <div class="terbi-footer__brand">
+        <a href="{{ routes.root_url }}" class="terbi-footer__wordmark">{{ settings.brand_name | default: shop.name | escape }}</a>
+        <p>{{ section.settings.description | escape }}</p>
+        <p class="terbi-footer__notice">{{ section.settings.demo_notice | escape }}</p>
+      </div>
+      {% if section.settings.shop_menu != blank %}
+        <nav aria-label="{{ section.settings.shop_heading | escape }}">
+          <h2 class="h6">{{ section.settings.shop_heading | escape }}</h2>
+          <ul class="list-unstyled">
+            {% for link in section.settings.shop_menu.links %}
+              {% if link.type == 'collection_link' %}
+                <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
+      {% if section.settings.resource_menu != blank %}
+        <nav aria-label="{{ section.settings.resource_heading | escape }}">
+          <h2 class="h6">{{ section.settings.resource_heading | escape }}</h2>
+          <ul class="list-unstyled">
+            {% for link in section.settings.resource_menu.links %}
+              <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
+    </div>
+    <div class="terbi-footer__bottom">
+      <p>&copy; {{ 'now' | date: '%Y' }} {{ settings.brand_name | default: shop.name | escape }}</p>
+      <p>{{ section.settings.caption | escape }}</p>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name":"TERBI footer",
+  "tag":"footer",
+  "enabled_on":{"groups":["footer"]},
+  "settings":[
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"},
+    {"type":"textarea","id":"description","label":"Brand description","default":"Everyday tech, clearly explained. Explore charging, audio and desk essentials."},
+    {"type":"textarea","id":"demo_notice","label":"Demo notice","default":"This is a demo catalogue. Product illustrations, prices and specifications are simulated."},
+    {"type":"link_list","id":"shop_menu","label":"Shop menu"},
+    {"type":"text","id":"shop_heading","label":"Shop heading","default":"Shop"},
+    {"type":"link_list","id":"resource_menu","label":"Resource menu"},
+    {"type":"text","id":"resource_heading","label":"Resource heading","default":"Guides & information"},
+    {"type":"text","id":"caption","label":"Bottom caption","default":"A simpler everyday setup."}
+  ],
+  "presets":[{"name":"TERBI footer"}]
+}
+{% endschema %}

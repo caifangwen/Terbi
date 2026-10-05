@@ -1,0 +1,311 @@
+/* Split from base.css: social share button component styles. */
+
+/* Button - social share */
+.share-button {
+  display: block;
+  position: relative;
+
+  details {
+    width: fit-content;
+  }
+}
+
+.share-button__button {
+  font-size: var(--font-size--sm);
+  display: flex;
+  align-items: center;
+  color: var(--color-primary);
+  margin-left: 0;
+  padding-left: 0;
+  min-height: 4.4rem;
+
+  @media (hover: hover) {
+    &:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.3rem;
+    }
+  }
+
+  .icon-share {
+    height: 1.2rem;
+    margin-inline-end: 1rem;
+    min-width: 1.3rem;
+  }
+}
+
+details[open]>.share-button__fallback {
+  animation: animateMenuOpen var(--duration-default) ease;
+}
+
+.share-button__button,
+.share-button__fallback button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+.share-button__fallback {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 3rem;
+  left: 0.1rem;
+  z-index: 3;
+  width: 100%;
+  min-width: max-content;
+  border-radius: var(--inputs-radius);
+  border: 0;
+
+  &:after {
+    pointer-events: none;
+    content: "";
+    position: absolute;
+    top: var(--inputs-border-width);
+    right: var(--inputs-border-width);
+    bottom: var(--inputs-border-width);
+    left: var(--inputs-border-width);
+    border: 0.1rem solid transparent;
+    border-radius: var(--inputs-radius);
+    box-shadow: 0 0 0 var(--inputs-border-width) var(--color-foreground);
+    transition: box-shadow var(--duration-short) ease;
+    z-index: 1;
+  }
+
+  &:before {
+    background: var(--color-background);
+    pointer-events: none;
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--inputs-radius-outset);
+    box-shadow: var(--inputs-shadow-horizontal-offset) var(--inputs-shadow-vertical-offset) var(--inputs-shadow-blur-radius) var(--color-shadow);
+    z-index: -1;
+  }
+
+  button {
+    width: 4.4rem;
+    height: 4.4rem;
+    padding: 0;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    right: var(--inputs-border-width);
+
+    @media (hover: hover) {
+      &:hover {
+        color: rgb(var(--color-foreground-rgb) / var(--opacity-75));
+      }
+
+      &:hover .svg-wrapper {
+        transform: scale(1.07);
+      }
+    }
+  }
+}
+
+.share-button__close:not(.hidden)+.share-button__copy {
+  display: none;
+}
+
+.share-button__close,
+.share-button__copy {
+  background-color: transparent;
+  color: var(--color-foreground);
+}
+
+.share-button__copy:focus-visible,
+.share-button__close:focus-visible {
+  background: var(--color-background);
+  z-index: 2;
+}
+
+.share-button__copy:focus,
+.share-button__close:focus {
+  background: var(--color-background);
+  z-index: 2;
+}
+
+.field:not(:focus-visible):not(.focused)+.share-button__copy:not(:focus-visible):not(.focused),
+.field:not(:focus-visible):not(.focused)+.share-button__close:not(:focus-visible):not(.focused) {
+  background-color: inherit;
+}
+
+.share-button__fallback .field:after,
+.share-button__fallback .field:before {
+  content: none;
+}
+
+.share-button__fallback .field {
+  border-radius: 0;
+  min-width: auto;
+  min-height: auto;
+  transition: none;
+}
+
+.share-button__fallback .field__input:focus,
+.share-button__fallback .field__input:-webkit-autofill {
+  outline: 0.2rem solid rgb(var(--color-foreground-rgb) / var(--opacity-50));
+  outline-offset: 0.1rem;
+  box-shadow: 0 0 0 0.1rem var(--color-foreground),
+    0 0 0.5rem 0.4rem rgb(var(--color-foreground-rgb) / var(--opacity-30));
+}
+
+.share-button__fallback .field__input {
+  box-shadow: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  filter: none;
+  min-width: auto;
+  min-height: auto;
+}
+
+@media (hover: hover) {
+  .share-button__fallback .field__input:hover {
+    box-shadow: none;
+  }
+}
+
+.share-button__fallback .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.share-button__message:not(:empty) {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 0;
+  padding: 0.8rem 0 0.8rem 1.5rem;
+  margin: var(--inputs-border-width);
+}
+
+.share-button__message:not(:empty):not(.hidden)~* {
+  display: none;
+}
+
+
+/* Additional product share / AddThis social share styles (split from base.css). */
+.share-button {
+  display: block;
+  position: relative;
+}
+
+.add-to-cart-button-container .share-button,
+.add-to-cart-button-container .card-wishlist {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+}
+
+.share-button__button {
+  display: inline-block;
+  vertical-align: top;
+  width: auto;
+  min-width: 10rem;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.share-button__button .icon {
+  width: 2rem;
+  height: 2rem;
+  vertical-align: top;
+  margin: 0;
+}
+
+.share-button__product .button {
+  margin-top: 10px;
+}
+
+.share-button__product .icon-clipboard {
+  height: 2.2rem;
+  width: 2.2rem;
+}
+
+.share-button__message:not(:empty) {
+  display: block;
+  font-size: var(--font-body-size);
+  font-weight: var(--font-weight-normal);
+  text-align: center;
+  line-height: var(--body-line-height);
+  letter-spacing: var(--body-letter-spacing);
+  color: var(--color-text2);
+  margin: 10px 0 0 0;
+}
+
+.at-share-btn-elements .at-icon-wrapper {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  margin: 0 8px 0 0;
+}
+
+.at-share-btn-elements .at-icon-wrapper svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--icon);
+}
+
+.at-share-btn-elements .at-icon-wrapper:last-child {
+  margin-right: 0;
+}
+
+.share-button__button {
+  border: none;
+  min-width: auto;
+  font-size: 0;
+  padding: 1.5rem;
+  line-height: 1;
+}
+
+.share-button__button svg {
+  margin-right: 0;
+}
+
+.share-button__product .share-group {
+  display: flex;
+  justify-content: space-between;
+}
+
+.share-button__product .share-group .button {
+  width: 6rem;
+  margin: 0 0 0 1rem;
+  min-width: auto;
+  align-items: flex-start;
+  font-size: 0;
+}
+
+.share-button__product .share_toolbox {
+  margin-top: 3rem;
+}
+
+.social-share {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.social-share .svg-wrapper {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.social-share li {
+  list-style: none;
+  margin-right: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .at-share-btn-elements .at-icon-wrapper {
+    width: 25px;
+    height: 25px;
+  }
+
+  .share-button__product .share-group .button {
+    width: 50px;
+  }
+}

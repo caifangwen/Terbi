@@ -1,0 +1,33 @@
+{{ 'product-detail-content.css' | asset_url | stylesheet_tag }}
+
+<div class="product-detail-content section section--page-width color-{{ section.settings.color_scheme }}">
+  <nav class="product-detail-content__nav" aria-label="Product information">
+    <a class="product-detail-content__back" href="#MainContent">Product <span aria-hidden="true">↑</span></a>
+    <a href="#product-detail-description">Description</a>
+    <a href="#product-detail-specifications">Specification</a>
+    <a href="#product-detail-reviews">Reviews</a>
+    {% if section.settings.show_qa_link %}<a href="#product-qa">Q&amp;A</a>{% endif %}
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Product detail navigation",
+  "tag": "section",
+  "class": "product-detail-navigation-section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_qa_link",
+      "label": "Show Q&A link",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

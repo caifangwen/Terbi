@@ -1,0 +1,104 @@
+{% if product != blank %}
+
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign low_stock_threshold = 5
+
+    assign stock_state = 'in-stock'
+    assign stock_text = 'In Stock'
+
+    if current_variant.available == false
+      assign stock_state = 'out-of-stock'
+      assign stock_text = 'Out of Stock'
+
+    elsif current_variant.inventory_management != blank and current_variant.inventory_quantity <= 0 and current_variant.inventory_policy == 'continue'
+      assign stock_state = 'available-to-order'
+      assign stock_text = 'Available to Order'
+
+    elsif current_variant.inventory_management != blank and current_variant.inventory_quantity > 0 and current_variant.inventory_quantity <= low_stock_threshold
+      assign stock_state = 'low-stock'
+      assign stock_text = 'Only ' | append: current_variant.inventory_quantity | append: ' left'
+    endif
+  %}
+
+  <div
+    id="inventory-badges-{{ section.id }}-{{ product.id }}"
+    class="inventory-badges"
+    data-product-id="{{ product.id }}"
+    data-low-stock-threshold="{{ low_stock_threshold }}"
+  >
+    <span
+      class="inventory-badge inventory-badge--stock"
+      data-inventory-stock
+      data-state="{{ stock_state }}"
+      aria-live="polite"
+    >
+      <span class="inventory-badge__dot" aria-hidden="true"></span>
+
+      <span data-inventory-stock-text>
+        {{ stock_text }}
+      </span>
+    </span>
+
+    <span class="inventory-badge inventory-badge--shipping">
+      <svg
+        class="inventory-badge__icon"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="M3 6.5h11v10H3v-10Z"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M14 10h3.5l3.5 3.5v3H14V10Z"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linejoin="round"
+        />
+        <circle
+          cx="7"
+          cy="17.5"
+          r="1.8"
+          fill="white"
+          stroke="currentColor"
+          stroke-width="1.7"
+        />
+        <circle
+          cx="18"
+          cy="17.5"
+          r="1.8"
+          fill="white"
+          stroke="currentColor"
+          stroke-width="1.7"
+        />
+      </svg>
+
+      <span>Free Shipping</span>
+    </span>
+  </div>
+
+  <script
+    type="application/json"
+    id="inventory-variants-{{ section.id }}-{{ product.id }}"
+  >
+    [
+      {% for variant in product.variants %}
+        {
+          "id": {{ variant.id | json }},
+          "available": {{ variant.available | json }},
+          "inventory_quantity": {{ variant.inventory_quantity | json }},
+          "inventory_management": {{ variant.inventory_management | json }},
+          "inventory_policy": {{ variant.inventory_policy | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  </script>
+
+  {{ 'product-inventory-badges.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-inventory-badges.js' | asset_url }}" defer="defer"></script>
+
+{% endif %}

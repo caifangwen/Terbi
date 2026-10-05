@@ -1,0 +1,256 @@
+{%- liquid
+  assign current_path = request.path | downcase
+  assign nav_id = 'AboutTabs-' | append: section.id
+-%}
+
+<nav
+  class="about-tabs color-{{ section.settings.color_scheme }}{% if section.settings.sticky %} about-tabs--sticky{% endif %}"
+  aria-label="{{ section.settings.aria_label | escape }}"
+  style="--about-tabs-pt: {{ section.settings.padding_top }}px; --about-tabs-pb: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="about-tabs__inner page-width">
+    {%- if section.settings.label != blank -%}
+      <span class="about-tabs__label">{{ section.settings.label | escape }}</span>
+    {%- endif -%}
+
+    <ul class="about-tabs__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign tab_url = block.settings.link | default: '#'
+          assign tab_path = tab_url | split: '?' | first | split: '#' | first | downcase
+          assign is_current = false
+          if block.settings.force_active
+            assign is_current = true
+          elsif tab_path != blank and tab_path != '#' and current_path == tab_path
+            assign is_current = true
+          endif
+        -%}
+        <li class="about-tabs__item" {{ block.shopify_attributes }}>
+          <a
+            class="about-tabs__link{% if is_current %} is-current{% endif %}"
+            href="{{ tab_url }}"
+            {% if is_current %}aria-current="page"{% endif %}
+          >
+            {{- block.settings.title | escape -}}
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+
+    <div class="about-tabs__select-wrap">
+      <label class="visually-hidden" for="{{ nav_id }}">{{ section.settings.aria_label | escape }}</label>
+      <select
+        id="{{ nav_id }}"
+        class="about-tabs__select"
+        onchange="if (this.value) window.location.href = this.value;"
+      >
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign tab_url = block.settings.link | default: '#'
+            assign tab_path = tab_url | split: '?' | first | split: '#' | first | downcase
+            assign is_current = false
+            if block.settings.force_active
+              assign is_current = true
+            elsif tab_path != blank and tab_path != '#' and current_path == tab_path
+              assign is_current = true
+            endif
+          -%}
+          <option value="{{ tab_url }}" {% if is_current %}selected{% endif %}>{{ block.settings.title | escape }}</option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </div>
+</nav>
+
+{% stylesheet %}
+  .about-tabs {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.12);
+    padding-block: var(--about-tabs-pt, 0) var(--about-tabs-pb, 0);
+  }
+
+  .about-tabs--sticky {
+    position: sticky;
+    top: var(--header-height, 0);
+    z-index: 5;
+  }
+
+  .about-tabs__inner {
+    display: flex;
+    align-items: center;
+    gap: 3.2rem;
+  }
+
+  .about-tabs__label {
+    flex: 0 0 auto;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .about-tabs__list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 3.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .about-tabs__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .about-tabs__link {
+    display: inline-block;
+    padding-block: 1.8rem 1.6rem;
+    border-bottom: 2px solid transparent;
+    color: inherit;
+    font-size: 1.5rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-decoration: none;
+    opacity: 0.72;
+    transition: opacity 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .about-tabs__link:hover {
+    opacity: 1;
+  }
+
+  .about-tabs__link.is-current {
+    opacity: 1;
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .about-tabs__select-wrap {
+    display: none;
+    width: 100%;
+  }
+
+  .about-tabs__select {
+    width: 100%;
+    margin-block: 1.2rem;
+    padding: 1.2rem 4rem 1.2rem 1.6rem;
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.2);
+    border-radius: 0.2rem;
+    background-color: var(--color-background);
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 2rem) 50%, calc(100% - 1.5rem) 50%;
+    background-size: 0.5rem 0.5rem;
+    background-repeat: no-repeat;
+    color: var(--color-foreground);
+    font-size: 1.6rem;
+    appearance: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .about-tabs__label,
+    .about-tabs__list {
+      display: none;
+    }
+
+    .about-tabs__select-wrap {
+      display: block;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "About TERKKIN tabs",
+  "tag": "section",
+  "class": "section-wrapper about-tabs-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Label (desktop only)",
+      "default": "About TERKKIN"
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible name",
+      "default": "About TERKKIN"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Stick below header on scroll",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab",
+      "name": "Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Label",
+          "default": "About Us"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        },
+        {
+          "type": "checkbox",
+          "id": "force_active",
+          "label": "Always show as current",
+          "info": "Normally the current tab is detected from the page URL. Use this only if the link points somewhere else.",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About TERKKIN tabs",
+      "blocks": [
+        { "type": "tab", "settings": { "title": "About Us", "link": "/pages/about-us" } },
+        { "type": "tab", "settings": { "title": "Innovation", "link": "/pages/innovation" } },
+        { "type": "tab", "settings": { "title": "Sustainability", "link": "/pages/sustainability" } },
+        { "type": "tab", "settings": { "title": "Careers", "link": "/pages/careers" } },
+        { "type": "tab", "settings": { "title": "Contractor Licenses", "link": "/pages/contractor-licenses" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

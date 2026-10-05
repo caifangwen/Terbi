@@ -1,0 +1,186 @@
+{
+  "sections": {
+    "main": {
+      "type": "contact-page",
+      "blocks": {
+        "contact": {
+          "type": "contact-form",
+          "name": "t:names.contact_form",
+          "settings": {
+            "gap": 20,
+            "button_label": "Submit Now",
+            "button_style": "outline",
+            "inherit_color_scheme": true,
+            "scheme_background": "#ffffff",
+            "scheme_background_gradient": "",
+            "scheme_foreground_heading": "#000000",
+            "scheme_foreground": "#000000",
+            "scheme_primary": "#000f9f",
+            "scheme_primary_hover": "#000000",
+            "scheme_border": "#e6e6e6",
+            "scheme_shadow": "#000000",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "input_XnJNdi": {
+              "type": "_form-field",
+              "name": "t:names.input",
+              "settings": {
+                "field_type": "text",
+                "order_index": 3,
+                "show_label": true,
+                "label": "Name",
+                "label_type_preset": "paragraph",
+                "label_mb": 8,
+                "input_width": 50,
+                "input_type_preset": "paragraph",
+                "is_required": false,
+                "placeholder": "Name",
+                "padding_left": 15,
+                "padding_right": 15,
+                "padding_top": 12,
+                "padding_bottom": 12,
+                "border_style": "all",
+                "input_border_width": 1,
+                "input_border_radius": 0,
+                "input_alignment": "left"
+              },
+              "blocks": {}
+            },
+            "input_Wx7XUq": {
+              "type": "_form-field",
+              "name": "t:names.input",
+              "settings": {
+                "field_type": "text",
+                "order_index": 3,
+                "show_label": true,
+                "label": "Phone Number",
+                "label_type_preset": "paragraph",
+                "label_mb": 16,
+                "input_width": 50,
+                "input_type_preset": "paragraph",
+                "is_required": true,
+                "placeholder": "Phone Number",
+                "padding_left": 15,
+                "padding_right": 15,
+                "padding_top": 12,
+                "padding_bottom": 12,
+                "border_style": "all",
+                "input_border_width": 1,
+                "input_border_radius": 0,
+                "input_alignment": "left"
+              },
+              "blocks": {}
+            },
+            "textarea_rdRWk3": {
+              "type": "_form-field",
+              "name": "Textarea",
+              "settings": {
+                "field_type": "textarea",
+                "show_label": true,
+                "label": "Your message",
+                "label_type_preset": "paragraph",
+                "label_mb": 8,
+                "text_area_height": 170,
+                "input_width": 100,
+                "input_type_preset": "paragraph",
+                "is_required": false,
+                "placeholder": "Your message",
+                "padding_left": 15,
+                "padding_right": 15,
+                "padding_top": 16,
+                "padding_bottom": 28,
+                "border_style": "all",
+                "input_border_width": 1,
+                "input_border_radius": 0,
+                "input_alignment": "left"
+              },
+              "blocks": {}
+            },
+            "email-input": {
+              "type": "_form-field",
+              "static": true,
+              "settings": {
+                "field_type": "email",
+                "order_index": 2,
+                "show_label": true,
+                "label": "Email",
+                "label_type_preset": "paragraph",
+                "label_mb": 16,
+                "input_width": 50,
+                "input_type_preset": "paragraph",
+                "is_required": true,
+                "placeholder": "Email",
+                "padding_left": 15,
+                "padding_right": 15,
+                "padding_top": 12,
+                "padding_bottom": 12,
+                "border_style": "all",
+                "input_border_width": 1,
+                "input_border_radius": 0,
+                "input_alignment": "left"
+              },
+              "blocks": {}
+            },
+            "order_number": {
+              "type": "_form-field",
+              "settings": {
+                "field_type": "text",
+                "order_index": 3,
+                "show_label": true,
+                "label": "Order Number",
+                "label_type_preset": "paragraph",
+                "label_mb": 8,
+                "input_width": 50,
+                "input_type_preset": "paragraph",
+                "is_required": false,
+                "placeholder": "Order Number",
+                "padding_left": 15,
+                "padding_right": 15,
+                "padding_top": 12,
+                "padding_bottom": 12,
+                "border_style": "all",
+                "input_border_width": 1,
+                "input_border_radius": 0,
+                "input_alignment": "left"
+              }
+            },
+            "country": {
+              "type": "_form-field",
+              "settings": {
+                "field_type": "country",
+                "label": "Country",
+                "input_width": 100
+              }
+            }
+          },
+          "block_order": [
+            "input_XnJNdi",
+            "input_Wx7XUq",
+            "order_number",
+            "country",
+            "textarea_rdRWk3"
+          ],
+          "static": true
+        }
+      },
+      "settings": {
+        "heading": "Contact Us",
+        "description": "Tell us what you need, and we'll point you in the right direction.",
+        "help_heading": "Need Help?",
+        "help_text": "Have a question about your order or our products? Contact our support team and we will be happy to help.",
+        "address": "4245 N Central Expy, Ste 492\nDallas, Texas, 75205\nUnited States",
+        "phone": "+1 (945)-391-1412",
+        "email": "garden@terkkin.com",
+        "hours": "MON to FRI: 8:00AM - 5:00PM",
+        "store_link": "/pages/store-locator"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

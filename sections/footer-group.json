@@ -1,0 +1,17 @@
+{
+  "name": "Footer group",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "terbi-footer",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "shop_menu": "terbi-demo-main",
+        "resource_menu": "terbi-demo-footer"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

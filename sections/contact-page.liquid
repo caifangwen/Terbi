@@ -1,0 +1,80 @@
+<div class="contact-page">
+  <nav class="contact-page__breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">|</span><span>{{ page.title | escape }}</span></nav>
+  <header class="contact-page__header">
+    <h1>{{ section.settings.heading | default: page.title | escape }}</h1>
+    {% if section.settings.description != blank %}<p>{{ section.settings.description | escape }}</p>{% endif %}
+  </header>
+  <div class="contact-page__columns">
+    <div class="contact-page__form">
+      {% content_for 'block', type: 'contact-form', id: 'contact' %}
+    </div>
+    <aside class="contact-page__help">
+      <h2>{{ section.settings.help_heading | escape }}</h2>
+      <p>{{ section.settings.help_text | escape }}</p>
+      <div class="contact-page__detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div><h3>General Office</h3><p>{{ section.settings.address | escape | newline_to_br }}</p></div>
+      </div>
+      <div class="contact-page__detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m7 3 3 5-3 2c2 4 3 5 7 7l2-3 5 3-1 4C10 23 1 14 3 4Z"/></svg>
+        <div><h3>Call Us</h3><p><a href="tel:{{ section.settings.phone | remove: ' ' | remove: '(' | remove: ')' | escape }}">{{ section.settings.phone | escape }}</a></p><p><a href="mailto:{{ section.settings.email | escape }}">{{ section.settings.email | escape }}</a></p></div>
+      </div>
+      <div class="contact-page__detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 5v7h6"/></svg>
+        <div><h3>Working Hours</h3><p>{{ section.settings.hours | escape | newline_to_br }}</p></div>
+      </div>
+      {% if section.settings.store_link != blank %}<a class="contact-page__button" href="{{ section.settings.store_link | escape }}">Find a Store</a>{% endif %}
+    </aside>
+  </div>
+</div>
+
+{% stylesheet %}
+  .contact-page { max-width: 1200px; margin-inline: auto; padding: 24px 32px 56px; color: #000; background: #fff; }
+  .contact-page__breadcrumb { display: flex; gap: 12px; font-size: 13px; margin-bottom: 24px; }
+  .contact-page a { color: inherit; text-decoration: none; }
+  .contact-page a:hover { text-decoration: underline; }
+  .contact-page__breadcrumb span { color: #666; }
+  .contact-page__header { max-width: 720px; margin-bottom: 40px; }
+  .contact-page h1 { font-size: clamp(28px, 3vw, 40px); line-height: 1.2; margin: 0 0 16px; color: #000; }
+  .contact-page p { font-size: 14px; line-height: 1.65; margin: 0; color: #666; }
+  .contact-page__columns { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(230px, 1fr); gap: 32px; }
+  .contact-page__form { min-width: 0; }
+  .contact-page__help { border-left: 1px solid #e5e5e5; padding-left: 28px; }
+  .contact-page h2 { font-size: 25px; line-height: 1.2; margin: 0 0 14px; color: #000; }
+  .contact-page h3 { font-size: 16px; margin: 0 0 6px; color: #000; }
+  .contact-page__detail { display: flex; gap: 14px; margin-top: 24px; }
+  .contact-page__detail svg { width: 24px; height: 24px; flex: none; color: #2637c9; }
+  .contact-page .contact-form-stack { display: flex; flex-wrap: wrap; gap: 20px 24px; }
+  .contact-page .contact-form-row { width: calc(var(--formRowWidth, 100%) - 12px); flex-grow: 1; margin: 0; }
+  .contact-page .form-label { display: block; margin-bottom: 8px; font-size: 14px; color: #000; }
+  .contact-page .form-control { min-height: 46px; padding: 12px 20px; border: 0; border-radius: 999px; background: #eee; color: #000; box-shadow: none; font-size: 14px; }
+  .contact-page .form-control--textarea { height: 170px; border-radius: 8px; resize: vertical; }
+  .contact-page .form-control:focus-visible, .contact-page a:focus-visible, .contact-page button:focus-visible { outline: 2px solid #2637c9; outline-offset: 3px; }
+  .contact-page .block-contact-form button, .contact-page .contact-page__button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 12px 30px; margin-top: 24px; border: 0; border-radius: 999px; background: #000; color: #fff; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .contact-page .block-contact-form button:hover, .contact-page .contact-page__button:hover { background: #333; }
+  @media (max-width: 749px) {
+    .contact-page { padding: 20px 20px 40px; }
+    .contact-page__columns { grid-template-columns: 1fr; gap: 36px; }
+    .contact-page__help { border-left: 0; border-top: 1px solid #e5e5e5; padding: 28px 0 0; }
+    .contact-page .contact-form-row { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact page",
+  "enabled_on": { "templates": ["page"] },
+  "blocks": [{ "type": "contact-form" }],
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Contact Us" },
+    { "type": "textarea", "id": "description", "label": "Introduction" },
+    { "type": "text", "id": "help_heading", "label": "Help heading", "default": "Need Help?" },
+    { "type": "textarea", "id": "help_text", "label": "Help description" },
+    { "type": "textarea", "id": "address", "label": "Office address" },
+    { "type": "text", "id": "phone", "label": "Phone" },
+    { "type": "text", "id": "email", "label": "Email" },
+    { "type": "textarea", "id": "hours", "label": "Working hours" },
+    { "type": "url", "id": "store_link", "label": "Store locator link" }
+  ]
+}
+{% endschema %}

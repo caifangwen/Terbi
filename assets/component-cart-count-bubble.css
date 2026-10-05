@@ -1,0 +1,46 @@
+/* Split from base.css: cart and wishlist count bubble styles. */
+
+/* component-cart-count-bubble */
+.cart-count-bubble:empty,
+.wishlist-count-bubble:empty {
+  display: none;
+}
+
+.cart-count-bubble,
+.wishlist-count-bubble {
+  position: absolute;
+  color: var(--color-secondary-button-text);
+  background-color: var(--color-secondary-button-background);
+  /* color: var(--color-primary-button-text);
+  background-color: var(--color-primary-button-hover-text); */
+  height: 1.7rem;
+  width: 1.7rem;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  top: -1rem;
+  right: 0rem;
+  line-height: 1;
+
+  &.cart-page-count-bubble {
+    position: relative;
+  }
+}
+
+
+/* Header-specific bubble positioning overrides (split from base.css). */
+.cart-count-bubble,
+.wishlist-count-bubble {
+  top: 0;
+  left: calc(50% + 12px);
+  right: 0;
+  transform: translateX(-50%);
+}
+
+.header__icon--text .wishlist-count-bubble {
+  top: -1.2rem;
+  left: unset;
+  transform: none;
+}

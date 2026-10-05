@@ -1,0 +1,151 @@
+<section
+  id="FlexibleLayout-{{ section.id }}"
+  class="
+    flexible-layout
+    flexible-layout--{{ section.settings.layout }}
+    flexible-layout--{{ section.settings.width }}
+  "
+  style="
+    --columns-desktop: {{ section.settings.columns_desktop }};
+    --columns-mobile: {{ section.settings.columns_mobile }};
+    --gap: {{ section.settings.gap }}px;
+    --padding-top: {{ section.settings.padding_top }}px;
+    --padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="flexible-layout__inner">
+    {% content_for 'blocks' %}
+  </div>
+</section>
+
+{% style %}
+
+  #FlexibleLayout-{{ section.id }} {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  /* ================================
+     WIDTH
+  ================================= */
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--page {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--narrow {
+    max-width: 800px;
+    margin-inline: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--full {
+    width: 100%;
+  }
+
+
+  /* ================================
+     GRID
+  ================================= */
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--grid
+  .flexible-layout__inner {
+    display: grid;
+
+    grid-template-columns:
+      repeat(
+        var(--columns-desktop),
+        minmax(0, 1fr)
+      );
+
+    gap: var(--gap);
+  }
+
+
+  /* ================================
+     FLEX
+  ================================= */
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--flex
+  .flexible-layout__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap);
+  }
+
+
+  /* ================================
+     STACK
+  ================================= */
+
+  #FlexibleLayout-{{ section.id }}.flexible-layout--stack
+  .flexible-layout__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+
+  /* ================================
+     MOBILE
+  ================================= */
+
+  @media screen and (max-width: 749px) {
+
+    #FlexibleLayout-{{ section.id }}.flexible-layout--grid
+    .flexible-layout__inner {
+      grid-template-columns:
+        repeat(
+          var(--columns-mobile),
+          minmax(0, 1fr)
+        );
+    }
+
+  }
+
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Flexible layout",
+
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grid"
+        },
+        {
+          "value": "flex",
+          "label": "Flex"
+        },
+        {
+          "value": "stack",
+          "label": "Stack"
+        }
+      ],
+      "default": "grid"
+    }
+  ],
+
+  "blocks": [
+    {
+      "type": "@theme"
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Flexible layout"
+    }
+  ]
+}
+{% endschema %}

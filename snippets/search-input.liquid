@@ -1,0 +1,28 @@
+<input
+  class="form-field-input {{ input_class }}"
+  id="{{ input_id }}"
+  type="search"
+  name="q"
+  value="{{ search.terms | default: '' | escape }}"
+  aria-label="{{ label | default: placeholder | default: 'Search' | escape }}"
+  placeholder="{{ label | default: placeholder | default: ' ' | escape }}"
+  {% if predictive %}
+    role="combobox"
+    aria-expanded="false"
+    aria-owns="predictive-search-results"
+    aria-controls="predictive-search-results"
+    aria-haspopup="listbox"
+    aria-autocomplete="list"
+    autocorrect="off"
+    autocomplete="off"
+    autocapitalize="off"
+    spellcheck="false"
+  {% endif %}
+>
+{% if label != blank %}
+  <label class="visually-hidden" for="{{ input_id }}">{{ label }}</label>
+{% endif %}
+<input type="hidden" name="options[prefix]" value="last">
+{% if result_type != blank and result_type != 'all' %}
+  <input type="hidden" name="type" value="{{ result_type }}">
+{% endif %}

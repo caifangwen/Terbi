@@ -1,0 +1,434 @@
+{
+  "products": [
+    {
+      "id": "gid://shopify/Product/15418189316377",
+      "handle": "terbi-demo-usb-c-charger",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660699336985",
+            "price": "29.00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189381913",
+      "handle": "terbi-demo-power-bank",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660700614937",
+            "price": "39.00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189447449",
+      "handle": "terbi-demo-wireless-earbuds",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660700909849",
+            "price": "59.00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189512985",
+      "handle": "terbi-demo-mechanical-keyboard",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660700975385",
+            "price": "79.00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189545753",
+      "handle": "terbi-demo-wireless-mouse",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660701008153",
+            "price": "24.00"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189611289",
+      "handle": "terbi-demo-usb-c-hub",
+      "status": "ACTIVE",
+      "variants": {
+        "nodes": [
+          {
+            "id": "gid://shopify/ProductVariant/67660701073689",
+            "price": "49.00"
+          }
+        ]
+      }
+    }
+  ],
+  "collections": [
+    {
+      "id": "gid://shopify/Collection/519057309977",
+      "handle": "terbi-tech",
+      "title": "Everyday Tech"
+    },
+    {
+      "id": "gid://shopify/Collection/519057375513",
+      "handle": "terbi-charging",
+      "title": "Charging"
+    },
+    {
+      "id": "gid://shopify/Collection/519057408281",
+      "handle": "terbi-audio",
+      "title": "Audio"
+    },
+    {
+      "id": "gid://shopify/Collection/519057441049",
+      "handle": "terbi-desk",
+      "title": "Desk Essentials"
+    }
+  ],
+  "pages": [
+    {
+      "id": "gid://shopify/Page/167657308441",
+      "handle": "terbi-tech-guide",
+      "title": "A guide to your everyday tech"
+    },
+    {
+      "id": "gid://shopify/Page/167657341209",
+      "handle": "terbi-demo-information",
+      "title": "About this demo store"
+    }
+  ],
+  "files": [
+    {
+      "id": "gid://shopify/MediaImage/53317602017561",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-charger.png?v=1791214754"
+      },
+      "kind": "charger"
+    },
+    {
+      "id": "gid://shopify/MediaImage/53317602476313",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-powerbank.png?v=1791214763"
+      },
+      "kind": "powerbank"
+    },
+    {
+      "id": "gid://shopify/MediaImage/53317602672921",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-earbuds.png?v=1791214772"
+      },
+      "kind": "earbuds"
+    },
+    {
+      "id": "gid://shopify/MediaImage/53317603000601",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-keyboard.png?v=1791214783"
+      },
+      "kind": "keyboard"
+    },
+    {
+      "id": "gid://shopify/MediaImage/53317603721497",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-mouse.png?v=1791214792"
+      },
+      "kind": "mouse"
+    },
+    {
+      "id": "gid://shopify/MediaImage/53317603852569",
+      "fileStatus": "READY",
+      "image": {
+        "url": "https://cdn.shopify.com/s/files/1/1030/5781/7881/files/terbi-demo-hub.png?v=1791214801"
+      },
+      "kind": "hub"
+    }
+  ],
+  "currency": "USD",
+  "logoAsset": "terkkin-original-logo.svg",
+  "verified": [
+    {
+      "id": "gid://shopify/Product/15418189316377",
+      "handle": "terbi-demo-usb-c-charger",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623171076377",
+          "fields": [
+            {
+              "key": "name",
+              "value": "Compact USB-C Charger"
+            },
+            {
+              "key": "model",
+              "value": "C30 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "USB-C"
+            },
+            {
+              "key": "power",
+              "value": "30 W (simulated)"
+            },
+            {
+              "key": "material",
+              "value": "Matte polymer"
+            },
+            {
+              "key": "dimensions",
+              "value": "42 × 35 × 28 mm (simulated)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189381913",
+      "handle": "terbi-demo-power-bank",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623171240217",
+          "fields": [
+            {
+              "key": "name",
+              "value": "Pocket Power Bank"
+            },
+            {
+              "key": "model",
+              "value": "P10 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "USB-C input / output"
+            },
+            {
+              "key": "power",
+              "value": "10,000 mAh; 20 W (simulated)"
+            },
+            {
+              "key": "material",
+              "value": "Matte polymer"
+            },
+            {
+              "key": "dimensions",
+              "value": "105 × 64 × 24 mm (simulated)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189447449",
+      "handle": "terbi-demo-wireless-earbuds",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623171502361",
+          "fields": [
+            {
+              "key": "name",
+              "value": "Everyday Wireless Earbuds"
+            },
+            {
+              "key": "model",
+              "value": "A1 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "Bluetooth (simulated)"
+            },
+            {
+              "key": "power",
+              "value": "USB-C charging case"
+            },
+            {
+              "key": "material",
+              "value": "Matte polymer"
+            },
+            {
+              "key": "dimensions",
+              "value": "Case: 60 × 45 × 25 mm (simulated)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189512985",
+      "handle": "terbi-demo-mechanical-keyboard",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623171764505",
+          "fields": [
+            {
+              "key": "name",
+              "value": "Compact Mechanical Keyboard"
+            },
+            {
+              "key": "model",
+              "value": "K75 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "Wired USB-C"
+            },
+            {
+              "key": "power",
+              "value": "USB bus powered"
+            },
+            {
+              "key": "material",
+              "value": "Polymer enclosure"
+            },
+            {
+              "key": "dimensions",
+              "value": "320 × 130 × 35 mm (simulated)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189545753",
+      "handle": "terbi-demo-wireless-mouse",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623171895577",
+          "fields": [
+            {
+              "key": "name",
+              "value": "Everyday Wireless Mouse"
+            },
+            {
+              "key": "model",
+              "value": "M1 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "2.4 GHz USB receiver (simulated)"
+            },
+            {
+              "key": "power",
+              "value": "USB-C rechargeable (simulated)"
+            },
+            {
+              "key": "material",
+              "value": "Matte polymer"
+            },
+            {
+              "key": "dimensions",
+              "value": "110 × 62 × 38 mm (simulated)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189611289",
+      "handle": "terbi-demo-usb-c-hub",
+      "status": "ACTIVE",
+      "publishedOnPublication": true,
+      "media": {
+        "nodes": [
+          {
+            "status": "READY"
+          }
+        ]
+      },
+      "metafield": {
+        "reference": {
+          "id": "gid://shopify/Metaobject/623172157721",
+          "fields": [
+            {
+              "key": "name",
+              "value": "USB-C Desk Hub"
+            },
+            {
+              "key": "model",
+              "value": "H6 — demo model"
+            },
+            {
+              "key": "connectivity",
+              "value": "USB-C; USB-A; HDMI (simulated)"
+            },
+            {
+              "key": "power",
+              "value": "USB-C pass-through (simulated)"
+            },
+            {
+              "key": "material",
+              "value": "Aluminium concept enclosure"
+            },
+            {
+              "key": "dimensions",
+              "value": "115 × 42 × 15 mm (simulated)"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

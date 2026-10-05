@@ -1,0 +1,279 @@
+<link rel="stylesheet" href="{{ 'component-cart.css' | asset_url }}" media="print" fetchpriority="low" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}" media="print" fetchpriority="low" onload="this.media='all'">
+<link rel="stylesheet" href="{{ 'quantity-popover.css' | asset_url }}" media="print" fetchpriority="low" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="{{ 'component-cart.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'component-cart-items.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'quantity-popover.css' | asset_url }}">
+</noscript>
+
+<cart-items-component
+  id="main-cart"
+  class="cart-items-component color-{{ section.settings.color_scheme }} relative z-0{% if cart == empty %} is-empty{% else %} spacing{% endif %}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <div
+    class="section section--main-cart color-{{ section.settings.color_scheme }} section--{{ section.settings.section_width }}"
+    style="
+      {% if section.settings.section_width == 'custom' %}
+        --page-content-width: {{ section.settings.page_width_custom | divided_by: 10 }}rem;
+        --page-width: calc(var(--page-content-width) + var(--page-margin) * 2);
+      {% endif %}
+    "
+  >
+    <div class="cart-page__title">
+      <div class="title-wrapper-with-link cart-title spacing-style left" style="--padding-block-end: 24px;">
+        <h1 class="title title--primary h5"><strong>My cart</strong> {% render 'cart-bubble' %}</h1>
+        <a class="cart-page__continue" href="{{ routes.all_products_collection_url }}">{{ 'content.continue_shopping' | t }} <span aria-hidden="true">&rarr;</span></a>
+      </div>
+    </div>
+
+    {%- unless cart.empty? -%}
+      <div class="cart-page__shipping">
+        {%- if settings.show_calculator_free_shipping_message -%}
+          <div class="cart-shipping-message spacing-style left" style="--padding-block-end: 24px;">
+            <div class="cart-message">{% render 'free-shipping-component' %}</div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endunless -%}
+
+    <div class="cart-page__message">
+      {% assign countdown_product = all_products['game-cover-23'] %}
+      <div class="cart-countdown spacing-style center color-scheme-custom" style="--color-background: #fbf8e5; --color-foreground: #8b714a; --margin-block-end: 45px; --padding-block-start: 7px; --padding-block-end: 14px; --padding-inline-start: 10px; --padding-inline-end: 10px;">
+        <cart-countdown-component data-minutes="60" role="alert" aria-live="assertive">
+          {% capture icon %}<svg class="svg-wrapper" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" stroke="none" fill="currentColor">{%- render 'icon', icon: 'alert' -%}</svg>{% endcapture %}
+          {% capture time %}<span class="time font-bold">60:00</span>{% endcapture %}
+          {% capture product %}{% if countdown_product != blank %}<a href="{{ countdown_product.url }}" class="cart-countdown-product"><span class="text">{{ countdown_product.title }}</span></a>{% endif %}{% endcapture %}
+          <div class="cart-countdown-message">
+            {% if cart.empty? %}
+              {{ '[icon] Please, hurry! The [product] product is being sold at a shocking promotional price. We will keep it for you for [time] minutes.' | replace: '[icon]', icon | replace: '[time]', time | replace: '[product]', product }}
+            {% else %}
+              {{ '[icon] Please, hurry! Someone has placed an order on one of the items you have in the cart. We will keep it for you for [time] minutes.' | replace: '[icon]', icon | replace: '[time]', time }}
+            {% endif %}
+          </div>
+        </cart-countdown-component>
+      </div>
+      <script src="{{ 'cart-countdown.js' | asset_url }}" defer="defer"></script>
+    </div>
+
+    <div
+      class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
+      style="{% render 'spacing-style', settings: section.settings %}"
+    >
+      <div class="cart-page__items">
+        {% capture cart_items_footer %}{% content_for 'block', id: 'cart-items-footer', type: 'image-with-content' %}{% endcapture %}
+        <div id="main-cart-products" class="cart__products-container{% if cart.empty? %} is-empty{% endif %}" data-id="{{ section.id }}">
+          <div class="cart__products-inner cart__products">
+            {% render 'cart-products', settings: section.settings, page: true %}
+            {% unless cart.empty? %}
+              <div class="cart-gift-card spacing-style left">{% render 'cart-gift-card' %}</div>
+              <div class="cart-note spacing-style left">
+                {%- if settings.show_cart_note -%}
+                  <span class="cart-note__label block font-bold" style="--mb: var(--size-9)">{{ 'content.note' | t }}</span>
+                  <cart-note class="cart__note">
+                    <div class="field">
+                      <label class="visually-hidden" for="cart-note">{{ 'content.note' | t }}</label>
+                      <textarea
+                        class="text-area field__input"
+                        name="note"
+                        form="cart"
+                        id="cart-note"
+                        placeholder="{{ 'content.note_placeholder' | t }}"
+                      >{{ cart.note }}</textarea>
+                    </div>
+                  </cart-note>
+                {%- endif -%}
+              </div>
+              {{ cart_items_footer }}
+            {% endunless %}
+          </div>
+        </div>
+      </div>
+
+      {%- unless cart.empty? -%}
+        <div class="cart-page__summary">
+          <div id="main-cart-summary" class="cart__summary-container{% if cart.empty? %} is-empty{% endif %}" data-id="{{ section.id }}">
+            <div class="cart__summary-inner cart__blocks">
+              <div class="cart__summary w-full">
+                <div class="spacing-style text-block flex-column border-bottom" style="--b-width: 2px; --padding-block-start: 14px; --padding-block-end: 12px;">
+                  <p class="text-block__text uppercase font-bold">{{ 'content.cart.order_summary' | t }}</p>
+                </div>
+                <details class="cart-shipping-calculator cart-page__disclosure">
+                  <summary>{{ 'content.calculator_shipping.title' | t }}</summary>
+                  {% render 'cart-shipping-calculator', id: section.id, hidden_label: true %}
+                </details>
+                <div class="divider spacing-style" style="--divider-justify-content: center; --padding-block-start: 25px; --padding-block-end: 25px;"><span class="divider__line" style="--divider-border-thickness: 1px; --divider-border-rounded: 0; --divider-flex-basis: 100%;"></span></div>
+                <div class="cart-discounts spacing-style left">{% render 'cart-discounts', section: section %}</div>
+                <div class="divider spacing-style" style="--divider-justify-content: center; --padding-block-start: 25px; --padding-block-end: 25px;"><span class="divider__line" style="--divider-border-thickness: 1px; --divider-border-rounded: 0; --divider-flex-basis: 100%;"></span></div>
+                <div class="js-contents cart-total spacing-style left">{% render 'cart-total' %}</div>
+                <div class="divider spacing-style" style="--divider-justify-content: center; --padding-block-start: 25px; --padding-block-end: 25px;"><span class="divider__line" style="--divider-border-thickness: 1px; --divider-border-rounded: 0; --divider-flex-basis: 100%;"></span></div>
+                <div class="cart-checkout spacing-style left">
+                  <div class="cart__ctas">
+                    <button type="submit" id="checkout" class="cart__checkout-button button" name="checkout" form="cart">
+                      <span class="button-overflow relative overflow-hidden" data-button-text="{{ 'content.checkout' | t }}">
+                        <span class="button-text-main inline-block relative z-1">{{- 'content.checkout' | t -}}</span>
+                      </span>
+                    </button>
+                  </div>
+                  {%- if additional_checkout_buttons -%}
+                    <div class="cart__dynamic-checkout-buttons additional-checkout-buttons">
+                      {{ content_for_additional_checkout_buttons }}
+                    </div>
+                  {%- endif -%}
+                  <div id="cart-errors"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {%- endunless -%}
+
+      <div class="cart-page__more-blocks">
+        {%- content_for 'blocks' -%}
+      </div>
+    </div>
+  </div>
+</cart-items-component>
+
+<script src="{{ 'cart.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "t:names.cart",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "icon"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "video"
+    },
+    {
+      "type": "group"
+    },
+    {
+      "type": "spacer"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        {
+          "value": "page-width",
+          "label": "t:options.page"
+        },
+        {
+          "value": "full-width",
+          "label": "t:options.full"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "page_width_custom",
+      "min": 1000,
+      "max": 2000,
+      "step": 10,
+      "default": 1570,
+      "unit": "px",
+      "label": "t:settings.page_width",
+      "visible_if": "{{ section.settings.section_width == 'custom' }}"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "t:settings.gap",
+      "min": 10,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "t:settings.aspect_ratio",
+      "options": [
+        { "value": "adapt", "label": "t:options.auto" },
+        { "value": "portrait", "label": "t:options.portrait" },
+        { "value": "square", "label": "t:options.square" }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "checkbox",
+      "id": "border",
+      "label": "t:settings.border",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "vendor",
+      "label": "t:settings.vendor",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,321 @@
+{%- comment -%}
+  News & Press section
+  ---------------------------------------------------------------------------
+  A three-column editorial grid:
+    - Left column   -> 2 stacked blog articles (image on top, eyebrow / title / byline)
+    - Center column -> 1 featured blog article with a fixed "News & Press" eyebrow
+    - Right column  -> 4 compact blog articles (text left, thumbnail right),
+                       one per category (Buying Guides, Comparison Guides, Ideas, How To & Setup)
+
+  Install:
+    1. Save this file as  sections/news-and-press.liquid
+    2. Save the companion CSS as  assets/section-news-and-press.css
+    3. Add the section to a template/page (e.g. Guides & Resources) via the
+       theme editor, or reference it directly in a JSON template:
+       "news_and_press": { "type": "news-and-press" }
+{%- endcomment -%}
+
+{{ 'section-news-and-press.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign featured_block = null
+
+  for block in section.blocks
+    if block.type == 'featured' and featured_block == null
+      assign featured_block = block
+    endif
+    if block.settings.article != blank
+      assign has_articles = true
+    endif
+  endfor
+-%}
+
+{%- if has_articles or request.design_mode -%}
+<div class="news-press{% if section.settings.section_heading != blank %} news-press--has-heading{% endif %}" style="--np-category-color: {{ section.settings.category_color }};">
+
+  {%- if section.settings.section_eyebrow != blank or section.settings.section_heading != blank or section.settings.section_subheading != blank -%}
+    <div class="news-press__container">
+      <div class="news-press__header">
+        {%- if section.settings.section_eyebrow != blank -%}
+          <p class="news-press__eyebrow">{{ section.settings.section_eyebrow }}</p>
+        {%- endif -%}
+        {%- if section.settings.section_heading != blank -%}
+          <h2 class="news-press__section-heading">{{ section.settings.section_heading }}</h2>
+        {%- endif -%}
+        {%- if section.settings.section_subheading != blank -%}
+          <p class="news-press__section-subheading">{{ section.settings.section_subheading }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="news-press__container">
+    <div class="news-press__grid">
+
+      {%- comment -%} LEFT COLUMN {%- endcomment -%}
+      <div class="news-press__col news-press__col--left">
+        {%- assign left_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'side_left' and left_count < 2 -%}
+            {%- assign left_count = left_count | plus: 1 -%}
+            {%- assign article = block.settings.article -%}
+            {%- if article != blank or request.design_mode -%}
+            <article class="news-press-card news-press-card--left" {{ block.shopify_attributes }}>
+              {%- if article != blank -%}
+                <a href="{{ article.url }}" class="news-press-card__image-link" aria-hidden="true" tabindex="-1">
+                  {%- if article.image -%}
+                    <img
+                      class="news-press-card__image"
+                      src="{{ article.image | image_url: width: 800 }}"
+                      srcset="{{ article.image | image_url: width: 400 }} 400w, {{ article.image | image_url: width: 800 }} 800w"
+                      sizes="(max-width: 749px) 100vw, 25vw"
+                      alt="{{ article.image.alt | escape }}"
+                      loading="lazy"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  {%- else -%}
+                    <div class="news-press-card__image news-press-card__image--placeholder"></div>
+                  {%- endif -%}
+                </a>
+                <div class="news-press-card__body">
+                  {%- assign eyebrow = block.settings.category_label | default: article.tags.first -%}
+                  {%- if eyebrow != blank -%}
+                    <p class="news-press-card__eyebrow">{{ eyebrow }}</p>
+                  {%- endif -%}
+                  <h3 class="news-press-card__title">
+                    <a href="{{ article.url }}">{{ block.settings.title_override | default: article.title }}</a>
+                  </h3>
+                  {%- if section.settings.show_author and article.author != blank -%}
+                    <p class="news-press-card__byline">By {{ article.author }}</p>
+                  {%- endif -%}
+                </div>
+              {%- elsif request.design_mode -%}
+                <div class="news-press-card__placeholder-text">Select an article in the theme editor</div>
+              {%- endif -%}
+            </article>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      {%- comment -%} CENTER COLUMN {%- endcomment -%}
+      <div class="news-press__col news-press__col--center">
+        {%- if featured_block.settings.article != blank or request.design_mode -%}
+        <article class="news-press-card news-press-card--featured">
+          {%- if featured_block and featured_block.settings.article != blank -%}
+            {%- assign article = featured_block.settings.article -%}
+            <a href="{{ article.url }}" class="news-press-card__image-link">
+              {%- if article.image -%}
+                <img
+                  class="news-press-card__image"
+                  src="{{ article.image | image_url: width: 1200 }}"
+                  srcset="{{ article.image | image_url: width: 600 }} 600w, {{ article.image | image_url: width: 900 }} 900w, {{ article.image | image_url: width: 1200 }} 1200w"
+                  sizes="(max-width: 749px) 100vw, 45vw"
+                  alt="{{ article.image.alt | escape }}"
+                  loading="eager"
+                  width="{{ article.image.width }}"
+                  height="{{ article.image.height }}"
+                >
+              {%- else -%}
+                <div class="news-press-card__image news-press-card__image--placeholder"></div>
+              {%- endif -%}
+            </a>
+            <div class="news-press-card__body news-press-card__body--center">
+              <p class="news-press-card__eyebrow">{{ featured_block.settings.category_label | default: 'News & Press' }}</p>
+              <h2 class="news-press-card__title news-press-card__title--featured">
+                <a href="{{ article.url }}">{{ featured_block.settings.title_override | default: article.title }}</a>
+              </h2>
+              <p class="news-press-card__meta">
+                {{ article.published_at | time_tag: format: 'date' }}
+                {%- if section.settings.show_author and article.author != blank %}<span>{{ article.author }}</span>{% endif -%}
+              </p>
+              <p class="news-press-card__summary">{{ article.excerpt_or_content | strip_html | truncatewords: 26 }}</p>
+              <a class="news-press-card__button" href="{{ article.url }}">{{ 'blogs.article.read_more' | t }}</a>
+            </div>
+          {%- elsif request.design_mode -%}
+            <div class="news-press-card__placeholder-text">Add a "Featured Article (Center)" block and select an article</div>
+          {%- endif -%}
+        </article>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} RIGHT COLUMN {%- endcomment -%}
+      <div class="news-press__col news-press__col--right">
+        {%- assign right_count = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'side_right' and right_count < 4 -%}
+            {%- assign right_count = right_count | plus: 1 -%}
+            {%- assign article = block.settings.article -%}
+            {%- if article != blank or request.design_mode -%}
+            <article class="news-press-card news-press-card--right" {{ block.shopify_attributes }}>
+              {%- if article != blank -%}
+                <a href="{{ article.url }}" class="news-press-card__image-link" aria-hidden="true" tabindex="-1">
+                  {%- if article.image -%}
+                    <img
+                      class="news-press-card__image"
+                      src="{{ article.image | image_url: width: 500 }}"
+                      srcset="{{ article.image | image_url: width: 300 }} 300w, {{ article.image | image_url: width: 500 }} 500w"
+                      sizes="(max-width: 749px) 100vw, 25vw"
+                      alt="{{ article.image.alt | escape }}"
+                      loading="lazy"
+                      width="{{ article.image.width }}"
+                      height="{{ article.image.height }}"
+                    >
+                  {%- else -%}
+                    <div class="news-press-card__image news-press-card__image--placeholder"></div>
+                  {%- endif -%}
+                </a>
+                <div class="news-press-card__body">
+                  {%- assign eyebrow = block.settings.category_label -%}
+                  {%- if eyebrow != blank -%}
+                    <p class="news-press-card__eyebrow">{{ eyebrow }}</p>
+                  {%- endif -%}
+                  <h3 class="news-press-card__title news-press-card__title--small">
+                    <a href="{{ article.url }}">{{ block.settings.title_override | default: article.title }}</a>
+                  </h3>
+                  {%- if section.settings.show_author and article.author != blank -%}
+                    <p class="news-press-card__byline">By {{ article.author }}</p>
+                  {%- endif -%}
+                </div>
+              {%- elsif request.design_mode -%}
+                <div class="news-press-card__placeholder-text">Select an article in the theme editor</div>
+              {%- endif -%}
+            </article>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "News & Press",
+  "tag": "section",
+  "class": "shopify-section--news-press",
+  "settings": [
+    {
+      "type": "text",
+      "id": "section_eyebrow",
+      "label": "Eyebrow label",
+      "default": "NEWS"
+    },
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section heading",
+      "default": "News & Press",
+      "info": "Optional heading shown above the whole grid. Leave blank to hide."
+    },
+    {
+      "type": "text",
+      "id": "section_subheading",
+      "label": "Section subheading",
+      "default": "The latest stories, guides, and updates from TERKKIN."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show author byline",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "category_color",
+      "label": "Category label color",
+      "default": "#0044cc"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "featured",
+      "name": "Featured Article (Center)",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Article"
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Eyebrow label",
+          "default": "News & Press",
+          "info": "Replaces the article's own category with this label."
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title override (optional)",
+          "info": "Leave blank to use the article's own title."
+        }
+      ]
+    },
+    {
+      "type": "side_left",
+      "name": "Left Article",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Article"
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Category label (optional)",
+          "info": "Leave blank to use the article's first tag."
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title override (optional)"
+        }
+      ]
+    },
+    {
+      "type": "side_right",
+      "name": "Right Article",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "article",
+          "id": "article",
+          "label": "Article"
+        },
+        {
+          "type": "text",
+          "id": "category_label",
+          "label": "Category label",
+          "info": "e.g. Buying Guides, Comparison Guides, Ideas, How To & Setup"
+        },
+        {
+          "type": "text",
+          "id": "title_override",
+          "label": "Title override (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "News & Press",
+      "blocks": [
+        { "type": "featured" },
+        { "type": "side_left" },
+        { "type": "side_left" },
+        { "type": "side_right", "settings": { "category_label": "Buying Guides" } },
+        { "type": "side_right", "settings": { "category_label": "Comparison Guides" } },
+        { "type": "side_right", "settings": { "category_label": "Ideas" } },
+        { "type": "side_right", "settings": { "category_label": "How To & Setup" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

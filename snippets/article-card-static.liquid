@@ -1,0 +1,21 @@
+{% comment %}Shared article card used by blog indexes and article lists across the theme.{% endcomment %}
+<article class="guide-article-card article-card-static">
+  <a href="{{ article.url }}" class="guide-article-card__media article-card-static__media" aria-label="{{ article.title | escape }}">
+    {% if article.image %}
+      {{ article.image | image_url: width: 900 | image_tag: alt: article.title, class: 'guide-article-card__image article-card-static__image', loading: 'lazy' }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+    {% endif %}
+  </a>
+  <div class="guide-article-card__content">
+    {% assign article_category = article.tags.first | default: blog.title %}
+    {% if article_category != blank %}<p class="guide-article-card__eyebrow">{{ article_category | escape }}</p>{% endif %}
+    <h3 class="guide-article-card__title article-card-static__title">
+      <a href="{{ article.url }}">{{ article.title | escape }}</a>
+    </h3>
+    <div class="guide-article-card__meta">
+      <span>{{ article.published_at | time_tag: format: 'date' }}</span>
+      {% if article.author != blank %}<span>{{ article.author | escape }}</span>{% endif %}
+    </div>
+  </div>
+</article>

@@ -1,0 +1,192 @@
+{%- liquid
+  assign items = content_items
+  assign is_list = true
+  assign layout = display_layout | default: 'alternate'
+  assign first_image_position = section.settings.first_image_position | default: 'left'
+  assign show_all_tabs = false
+
+  if section.settings.tab_content_display == 'all'
+    assign show_all_tabs = true
+  endif
+
+  assign section_id = 'ImageWithText-' | append: block.id
+-%}
+
+{% if items != blank %}
+  <div id="{{ section_id }}" class="image-with-text-list image-with-text-list--{{ layout }}" style="--image-with-text-ratio: {{ section.settings.image_ratio | default: '4 / 3' }};" {{ block.shopify_attributes }}>
+    {% if layout == 'tabs' %}
+      <tabs-component class="image-with-text-tabs{% if show_all_tabs %} image-with-text-tabs--all{% endif %}">
+        <div class="image-with-text-list__tabs" aria-label="Image with text">
+          {% for content in items %}
+            {% assign heading = content.heading.value | default: content.heading %}
+            {% assign panel_id = section_id | append: '-panel-' | append: forloop.index0 %}
+            <a href="#{{ panel_id }}" class="image-with-text-list__tab tabs-component-panel-trigger{% if forloop.first %} --active{% endif %}">
+              {{ heading | default: 'Item' }}
+            </a>
+          {% endfor %}
+        </div>
+
+        {% for content in items %}
+          {%- liquid
+            assign image = content.image.value | default: content.image
+            assign heading = content.heading.value | default: content.heading
+            assign description = content.description.value | default: content.description
+            assign panel_id = section_id | append: '-panel-' | append: forloop.index0
+            assign index = forloop.index0 | modulo: 2
+            assign reverse = false
+            if first_image_position == 'left' and index == 1
+              assign reverse = true
+            elsif first_image_position == 'right' and index == 0
+              assign reverse = true
+            endif
+          -%}
+          <div id="{{ panel_id }}" class="image-with-text tabs-component-content{% if forloop.first %} --active{% endif %}{% if reverse %} image-with-text--reverse{% endif %}">
+            {% if image != blank %}
+              {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', class: 'image-with-text__image' }}
+            {% endif %}
+            <div class="image-with-text__content rte">
+              {% if heading != blank %}<h2>{{ heading }}</h2>{% endif %}
+              {% if description != blank %}<p>{{ description | escape | newline_to_br }}</p>{% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </tabs-component>
+    {% elsif layout == 'feature-list' %}
+      <div class="image-with-text-feature">
+        {% for content in items %}
+          {% assign input_id = section_id | append: '-feature-' | append: forloop.index0 %}
+          <input class="image-with-text-feature__input" type="radio" name="{{ section_id }}" id="{{ input_id }}"{% if forloop.first %} checked{% endif %}>
+        {% endfor %}
+        <div class="image-with-text-feature__images">
+          {% for content in items %}
+            {% liquid
+              assign image = content.image.value | default: content.image
+              assign heading = content.heading.value | default: content.heading
+              assign image_class = 'image-with-text-feature__image image-with-text-feature__image--' | append: forloop.index0
+            %}
+            {% if image != blank %}
+              {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', class: image_class, alt: heading }}
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="image-with-text-feature__content">
+          {% if section.settings.feature_heading != blank %}<h2>{{ section.settings.feature_heading }}</h2>{% endif %}
+          <fieldset>
+            <legend class="visually-hidden">{{ section.settings.feature_heading | default: 'Features' }}</legend>
+            {% for content in items %}
+              {% liquid
+                assign heading = content.heading.value | default: content.heading
+                assign description = content.description.value | default: content.description
+                assign input_id = section_id | append: '-feature-' | append: forloop.index0
+              %}
+              <label class="image-with-text-feature__item" for="{{ input_id }}">
+                <span class="image-with-text-feature__number">{{ forloop.index }}</span>
+                <span><strong>{{ heading }}</strong>{% if description != blank %}<small>{{ description | escape | newline_to_br }}</small>{% endif %}</span>
+              </label>
+            {% endfor %}
+          </fieldset>
+        </div>
+      </div>
+    {% elsif is_list %}
+      {% for content in items %}
+        {%- liquid
+          assign image = content.image.value | default: content.image
+          assign heading = content.heading.value | default: content.heading
+          assign description = content.description.value | default: content.description
+          assign index = forloop.index0 | modulo: 2
+          assign reverse = false
+          if first_image_position == 'left' and index == 1
+            assign reverse = true
+          elsif first_image_position == 'right' and index == 0
+            assign reverse = true
+          endif
+        -%}
+        <div class="image-with-text{% if reverse %} image-with-text--reverse{% endif %}">
+          {% if image != blank %}
+            {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', class: 'image-with-text__image' }}
+          {% endif %}
+          <div class="image-with-text__content rte">
+            {% if heading != blank %}<h2>{{ heading }}</h2>{% endif %}
+            {% if description != blank %}<p>{{ description | escape | newline_to_br }}</p>{% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      {% assign image = items.image.value | default: items.image %}
+      {% assign heading = items.heading.value | default: items.heading %}
+      {% assign description = items.description.value | default: items.description %}
+      <div class="image-with-text{% if first_image_position == 'right' %} image-with-text--reverse{% endif %}">
+        {% if image != blank %}
+          {{ image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200', class: 'image-with-text__image' }}
+        {% endif %}
+        <div class="image-with-text__content rte">
+          {% if heading != blank %}<h2>{{ heading }}</h2>{% endif %}
+          {% if description != blank %}<p>{{ description | escape | newline_to_br }}</p>{% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% style %}
+  .image-with-text { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; align-items: center; margin-bottom: 40px; }
+  .image-with-text--reverse .image-with-text__image { order: 2; }
+  .image-with-text__image { display: block; width: 100%; height: auto; aspect-ratio: var(--image-with-text-ratio, auto); object-fit: cover; }
+  .image-with-text__content > :first-child { margin-top: 0; }
+  .image-with-text__content > :last-child { margin-bottom: 0; }
+  .image-with-text-list__tabs { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 32px; }
+  .image-with-text-list__tab { border: 0; border-bottom: 2px solid transparent; background: none; padding: 8px 0; color: inherit; font: inherit; font-weight: 600; white-space: nowrap; cursor: pointer; text-decoration: none; }
+  .image-with-text-list__tab.--active { border-color: currentColor; }
+  tabs-component.image-with-text-tabs .image-with-text.tabs-component-content.--active,
+  tabs-component.image-with-text-tabs--all .image-with-text.tabs-component-content { display: grid !important; }
+  .image-with-text-feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 56px; align-items: center; }
+  .image-with-text-feature__input { position: absolute; opacity: 0; }
+  .image-with-text-feature__images { grid-column: 1; grid-row: 1; }
+  .image-with-text-feature__image { display: none; width: 100%; height: auto; aspect-ratio: var(--image-with-text-ratio, 1 / 1); object-fit: cover; border-radius: 8px; }
+  .image-with-text-feature__content { grid-column: 2; grid-row: 1; }
+  .image-with-text-feature__content h2 { margin: 0 0 32px; font-size: clamp(2.4rem, 3vw, 4.2rem); }
+  .image-with-text-feature fieldset { display: grid; gap: 20px; margin: 0; padding: 0; border: 0; }
+  .image-with-text-feature__item { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; align-items: start; cursor: pointer; }
+  .image-with-text-feature__number { display: grid; place-items: center; width: 36px; height: 36px; color: #727272; background: #f1f1f1; border-radius: 50%; font-weight: 700; }
+  .image-with-text-feature__item strong { display: block; font-size: 1.8rem; line-height: 1.35; }
+  .image-with-text-feature__item small { display: block; margin-top: 6px; font-size: 1.5rem; line-height: 1.5; }
+  {% for content in items %}
+    {% assign input_id = section_id | append: '-feature-' | append: forloop.index0 %}
+    #{{ input_id }}:checked ~ .image-with-text-feature__images .image-with-text-feature__image--{{ forloop.index0 }} { display: block; }
+    #{{ input_id }}:checked ~ .image-with-text-feature__content label[for="{{ input_id }}"] { color: #1645c9; }
+    #{{ input_id }}:checked ~ .image-with-text-feature__content label[for="{{ input_id }}"] .image-with-text-feature__number { color: #fff; background: #1645c9; }
+    #{{ input_id }}:focus-visible ~ .image-with-text-feature__content label[for="{{ input_id }}"] { outline: 2px solid currentColor; outline-offset: 4px; }
+  {% endfor %}
+  body.template-collection .image-with-text { gap: clamp(32px, 6vw, 88px); margin: 0; padding: clamp(32px, 5vw, 72px) 0; }
+  body.template-collection .image-with-text__image { aspect-ratio: var(--image-with-text-ratio, 4 / 3); object-fit: cover; border-radius: 10px; box-shadow: 0 14px 32px rgb(16 30 50 / 0.08); }
+  body.template-collection .image-with-text__content { max-width: 540px; }
+  body.template-collection .image-with-text__content h2,
+  body.template-collection .image-with-text-feature__content h2 { color: var(--shed-text, var(--color-foreground)); font-size: clamp(28px, 3.2vw, 48px); line-height: 1.08; letter-spacing: -0.04em; }
+  body.template-collection .image-with-text__content p { color: #445064; font-size: 16px; line-height: 1.7; }
+  body.template-collection .image-with-text-list__tabs { gap: 0.4rem; margin: 0; padding: 0; }
+  body.template-collection .image-with-text-list__tab { min-height: 3.6rem; padding: 0.6rem 1rem; border: 0; border-radius: 0.4rem; color: rgb(var(--color-foreground-rgb) / 0.68); font-size: 1.4rem; letter-spacing: 0; }
+  body.template-collection .image-with-text-list__tab.--active { color: #0f62d6; border-color: transparent; background: rgb(15 98 214 / 0.08); }
+  body.template-collection .image-with-text-feature { gap: clamp(32px, 6vw, 88px); padding: clamp(32px, 5vw, 72px) 0; }
+  body.template-collection .image-with-text-feature__image { border-radius: 10px; box-shadow: 0 14px 32px rgb(16 30 50 / 0.08); }
+  body.template-collection .image-with-text-feature__number { color: #fff; background: #0f62d6; }
+  body.template-collection .image-with-text-feature__item { padding: 12px 0; }
+  @media screen and (max-width: 749px) {
+    .image-with-text { grid-template-columns: 1fr; gap: 20px; }
+    .image-with-text--reverse .image-with-text__image { order: initial; }
+    .image-with-text-feature { grid-template-columns: 1fr; gap: 28px; }
+    .image-with-text-feature__images, .image-with-text-feature__content { grid-column: 1; grid-row: auto; }
+    body.template-collection .image-with-text { padding: 32px 0; }
+    body.template-collection .image-with-text-list__tabs { gap: 0.4rem; margin-inline: calc(var(--page-margin) * -1); padding: 0 var(--page-margin); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
+    body.template-collection .image-with-text-list__tabs::-webkit-scrollbar { display: none; }
+    body.template-collection .image-with-text-list__tab { display: inline-flex; flex: 0 0 auto; align-items: center; min-height: 3.6rem; padding: 0.6rem 1rem; border: 0; border-radius: 0.4rem; background: transparent; line-height: 1.2; scroll-snap-align: start; }
+    body.template-collection .image-with-text-list__tab.--active { color: #0f62d6; border-color: transparent; background: rgb(15 98 214 / 0.08); }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Image with text",
+  "tag": null,
+  "settings": []
+}
+{% endschema %}

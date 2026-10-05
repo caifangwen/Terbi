@@ -1,0 +1,207 @@
+{% comment %}
+  Renders a product card
+
+  Accepts:
+  - card_product: {Object} Product Liquid object (optional)
+  - media_aspect_ratio: {String} Size of the product image card. Values are "square" and "portrait". Default is "square" (optional)
+  - image_shape: {String} Image mask to apply to the product image card. Values are "arch", "blob", "chevronleft", "chevronright", "diamond", "parallelogram", and "round". (optional)
+  - show_secondary_image: {Boolean} Show the secondary image on hover. Default: false (optional)
+  - show_vendor: {Boolean} Show the product vendor. Default: false
+  Product type and available ratings are always displayed on catalog cards.
+  - extend_height: {Boolean} Card height extends to available container space. Default: true (optional)
+  - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
+  - quick_add: {Boolean} Show the quick add button.
+  - section_id: {String} The ID of the section that contains this card.
+  - horizontal_class: {Boolean} Add a card--horizontal class if set to true. Default: false (optional)
+  - horizontal_quick_add: {Boolean} Changes the quick add button styles when set to true. Default: false (optional)
+  - placeholder_image: {String} The placeholder image to use when no product exists. Default: 'product-apparel-2' (optional)
+  - show_card_actions: {Boolean} Show wishlist, quick view, and compare actions. Default: false (optional)
+  - show_badges: {Boolean} Show product badges. Default: true (optional)
+  - show_countdown: {Boolean} Show card countdown. Default: settings.show_countdown (optional)
+  - show_marquee: {Boolean} Show product marquee. Default: settings.show_product_marquee (optional)
+  - show_swatches: {Boolean} Show color swatches. Default: false (optional)
+
+  Usage:
+  {% render 'product-card', show_vendor: section.settings.show_vendor %}
+{% endcomment %}
+
+{%- if card_product and card_product != empty -%}
+  {%- liquid
+    assign ratio = 1
+    if card_product.featured_media and media_aspect_ratio == 'portrait'
+      assign ratio = 0.8
+    elsif card_product.featured_media and media_aspect_ratio == 'adapt'
+      assign ratio = card_product.featured_media.aspect_ratio
+    endif
+    if ratio == 0 or ratio == null
+      assign ratio = 1
+    endif
+
+    assign enable_card_actions = show_card_actions
+    if enable_card_actions == nil
+      assign enable_card_actions = false
+    endif
+    assign enable_badges = show_badges
+    if enable_badges == nil
+      assign enable_badges = true
+    endif
+    assign enable_countdown = show_countdown
+    if enable_countdown == nil
+      assign enable_countdown = settings.show_countdown
+    endif
+    assign enable_marquee = show_marquee
+    if enable_marquee == nil
+      assign enable_marquee = settings.show_product_marquee
+    endif
+    assign enable_swatches = show_swatches
+    if enable_swatches == nil
+      assign enable_swatches = false
+    endif
+    assign enable_quick_view = false
+    assign enable_wishlist = false
+    assign enable_compare = settings.enable_compare
+    if enable_card_actions
+      assign enable_quick_view = settings.enable_quick_view
+      assign enable_wishlist = settings.enable_wishlist
+      assign enable_compare = settings.enable_compare
+    endif
+  -%}
+  {%- assign check_pos_badge = settings.badge_position | replace: ' ', '-' -%}
+  <div class="card-wrapper product-card-wrapper">
+    <div
+      class="card card--standard
+        {% if card_product.featured_media %} card--media{% else %} card--text{% endif %}
+        {% if image_shape and image_shape != 'default' %} card--shape{% endif %}
+        {% if extend_height %} card--extend-height{% endif %}
+        {% if horizontal_class %} card--horizontal{% endif %}"
+      style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+    >
+      <div
+        class="card__inner color-{{ settings.card_color_scheme }} ratio card-badge-is-{{ check_pos_badge }}"
+        style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+      >
+        {%- render 'product-card-media', show_secondary_image: show_secondary_image, card_product: card_product -%}
+
+          {% render 'product-card-actions',
+            card_product: card_product,
+            section_id: section_id,
+            enable_wishlist: enable_wishlist,
+            enable_quick_view: enable_quick_view,
+            enable_compare: enable_compare
+          %}
+        <div class="card__content">
+          {%- if enable_badges and settings.show_badges_on_product_cards != false -%}
+            <div class="card__badge absolute {{ settings.badge_position }}" style="{%- render 'badge-position-style' -%}">
+              {%- render 'product-badge-renderer', badge_product: card_product -%}
+            </div>
+          {%- endif -%}
+        </div>
+        {%- if enable_countdown -%}
+          {%- liquid
+            assign countdown_type = settings.countdown_type
+            assign countdown_time = settings.countdown_time
+            assign countdown_collection = settings.countdown_collection | downcase | handle
+          -%}
+          <div class="card__countdown absolute-c-x z-2">
+            {% render 'product-countdown',
+              type: 'card',
+              product: card_product,
+              countdown_type: countdown_type,
+              countdown_time: countdown_time,
+              countdown_collection: countdown_collection
+            %}
+          </div>
+        {%- endif -%}
+
+        {%- if enable_marquee -%}
+          {% render 'product-card-marquee', product: card_product %}
+        {%- endif -%}
+      </div>
+      <div class="card__content">
+
+        {% render 'product-card-information',
+          card_product: card_product,
+          show_vendor: show_vendor,
+          show_product_type: true,
+          show_rating: true,
+          quick_add: quick_add
+        %}
+      </div>
+      {% if enable_swatches %}
+        {%- capture product_swatch -%}
+          {%- liquid
+            assign swatch_option_names = settings.swatch | downcase
+            assign swatch_option_index = nil
+            assign swatch_variant_selected = nil
+
+            for option in card_product.options_with_values
+              assign option_name = option.name | downcase | strip
+              if swatch_option_names contains option_name
+                assign swatch_option_index = forloop.index0
+                assign swatch_variant_selected = option.selected_value
+                break
+              endif
+            endfor
+          -%}
+          {%- if swatch_option_index != nil -%}
+            {%- render 'product-swatch',
+              product: card_product,
+              variant_selected: swatch_variant_selected,
+              index: swatch_option_index
+            -%}
+          {%- endif -%}
+        {%- endcapture -%}
+        {%- if product_swatch != blank -%}
+          <div class="card__bottom">
+            {{ product_swatch }}
+          </div>
+        {%- endif -%}
+      {% endif %}
+    </div>
+  </div>
+{%- else -%}
+  {%- liquid
+    assign ratio = 1
+    if media_aspect_ratio == 'portrait'
+      assign ratio = 0.8
+    endif
+  -%}
+  <div class="card-wrapper product-card-wrapper">
+    <div
+      class="card card--standard{% if extend_height %} card--extend-height{% endif %}{% if image_shape and image_shape != 'default' %} card--shape{% endif %}"
+      style="--ratio-percent: {{ 1 | divided_by: ratio | times: 100 }}%;"
+    >
+      <div
+        class="card__inner color-{{ settings.card_color_scheme }} ratio"
+      >
+        <div
+          class="card__media {% if image_shape and image_shape != 'default' %} shape--{{ image_shape }} color-{{ settings.card_color_scheme }}{% endif %}"
+        >
+          <div class="media media--transparent">
+            {%- if placeholder_image -%}
+              {{ placeholder_image | placeholder_svg_tag: 'placeholder-svg' }}
+            {%- else -%}
+              {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading card__heading--placeholder h5">
+            <a role="link" aria-disabled="true" class="full-unstyled-link">
+              {{ 'content.product_title' | t }}
+            </a>
+          </h3>
+          <div class="card-information">
+            {%- if show_vendor -%}
+              <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+              <div class="caption-with-letter-spacing light">{{ 'products.product.vendor' | t }}</div>
+            {%- endif -%}
+            {% render 'price', show_compare_at_price: true %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- endif -%}

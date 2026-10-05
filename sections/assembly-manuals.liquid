@@ -1,0 +1,698 @@
+{%- liquid
+  assign section_id = 'AssemblyManuals-' | append: section.id
+  assign selected_collections = section.settings.collections
+  assign pdf_metafield_key = section.settings.pdf_metafield_key | default: 'assembly_manual_pdf'
+  assign video_metafield_key = section.settings.video_metafield_key | default: 'assembly_video_url'
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="assembly-manuals color-{{ section.settings.color_scheme }}"
+  style="
+    --assembly-padding-top: {{ section.settings.padding_top }}px;
+    --assembly-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="assembly-manuals__inner" id="assembly-manuals">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="assembly-manuals__heading">{{ section.settings.heading }}</h2>
+    {%- endif -%}
+
+    {%- if selected_collections != blank -%}
+    <div class="assembly-manuals__layout">
+      <div class="assembly-manuals__tabs" role="tablist" aria-label="{{ section.settings.tab_label | escape }}">
+        {%- if section.settings.tab_label != blank -%}
+          <p class="assembly-manuals__tab-title">{{ section.settings.tab_label }}</p>
+        {%- endif -%}
+
+        {%- for manual_collection in selected_collections -%}
+          {%- liquid
+            assign tab_id = section_id | append: '-tab-' | append: forloop.index0
+            assign panel_id = section_id | append: '-panel-' | append: forloop.index0
+          -%}
+          <button
+            class="assembly-manuals__tab{% if forloop.first %} is-active{% endif %}"
+            type="button"
+            role="tab"
+            id="{{ tab_id }}"
+            aria-controls="{{ panel_id }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            data-assembly-tab="{{ forloop.index0 }}"
+          >
+            <span>{{ manual_collection.title }}</span>
+            {%- assign collection_product_count = manual_collection.all_products_count | default: manual_collection.products_count -%}
+            {%- if collection_product_count > 0 -%}
+              <small>{{ collection_product_count }} products</small>
+            {%- endif -%}
+          </button>
+        {%- endfor -%}
+      </div>
+
+      <div class="assembly-manuals__panels">
+        {%- for manual_collection in selected_collections -%}
+          {%- liquid
+            assign tab_id = section_id | append: '-tab-' | append: forloop.index0
+            assign panel_id = section_id | append: '-panel-' | append: forloop.index0
+            assign previous_group = ''
+            assign rendered_products = 0
+          -%}
+          <div
+            class="assembly-manuals__panel{% if forloop.first %} is-active{% endif %}"
+            role="tabpanel"
+            id="{{ panel_id }}"
+            aria-labelledby="{{ tab_id }}"
+            data-assembly-panel="{{ forloop.index0 }}"
+          >
+            <div class="assembly-manuals__panel-head">
+              <h3>{{ manual_collection.title }}</h3>
+              {%- if manual_collection.description != blank -%}
+                <p>{{ manual_collection.description | strip_html }}</p>
+              {%- endif -%}
+            </div>
+
+            <div class="assembly-manuals__list">
+              {%- for product in manual_collection.products -%}
+                {%- liquid
+                  assign pdf_metafield = product.metafields.custom[pdf_metafield_key]
+                  assign video_metafield = product.metafields.custom[video_metafield_key]
+                  assign group_metafield = product.metafields.custom.assembly_group
+                  assign size_metafield = product.metafields.custom.assembly_size
+                  assign current_variant = product.selected_or_first_available_variant
+                  assign pdf_url = ''
+                  assign video_url = ''
+                  assign manual_group = product.type | default: group_metafield.value | default: group_metafield
+                  assign manual_size = ''
+                  assign product_sku = current_variant.sku
+
+                  for option in product.options_with_values
+                    assign option_name = option.name | downcase
+                    if option_name contains 'size' or option.name contains '尺寸'
+                      case option.position
+                        when 1
+                          assign manual_size = current_variant.option1
+                        when 2
+                          assign manual_size = current_variant.option2
+                        when 3
+                          assign manual_size = current_variant.option3
+                      endcase
+                      break
+                    endif
+                  endfor
+
+                  if manual_size == blank
+                    assign manual_size = size_metafield.value | default: size_metafield
+                  endif
+
+                  if pdf_metafield != blank
+                    if pdf_metafield.type == 'file_reference'
+                      assign pdf_url = pdf_metafield.value.url
+                    else
+                      assign pdf_url = pdf_metafield.value | default: pdf_metafield
+                    endif
+                  endif
+
+                  if video_metafield != blank
+                    assign video_url = video_metafield.value | default: video_metafield
+                  endif
+                -%}
+
+                {%- if section.settings.hide_products_without_manuals and pdf_url == blank and video_url == blank -%}
+                  {%- continue -%}
+                {%- endif -%}
+
+                {%- assign rendered_products = rendered_products | plus: 1 -%}
+
+                {%- if manual_group != blank and manual_group != previous_group -%}
+                  <h4 class="assembly-manuals__group">{{ manual_group }}</h4>
+                  {%- assign previous_group = manual_group -%}
+                {%- endif -%}
+
+                <article class="assembly-manuals__item">
+                  <div class="assembly-manuals__item-main">
+                    <h5><a href="{{ product.url }}">{{ product.title | escape }}</a></h5>
+                    {%- if product_sku != blank -%}
+                      <span>SKU: {{ product_sku }}</span>
+                    {%- endif -%}
+                  </div>
+
+                  <span class="assembly-manuals__size">{{ manual_size }}</span>
+
+                  <div class="assembly-manuals__actions">
+                    {%- if pdf_url != blank -%}
+                      <a class="assembly-manuals__button" href="{{ pdf_url }}" target="_blank" rel="noopener">
+                        {{ section.settings.pdf_label }}
+                      </a>
+                    {%- endif -%}
+
+                    {%- if video_url != blank -%}
+                      <button class="assembly-manuals__button assembly-manuals__button--video" type="button" data-video-url="{{ video_url | escape }}">
+                        {{ section.settings.video_label }}
+                      </button>
+                    {%- endif -%}
+                  </div>
+                </article>
+              {%- endfor -%}
+
+              {%- if rendered_products == 0 -%}
+                <p class="assembly-manuals__empty">{{ section.settings.empty_text }}</p>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+    {%- else -%}
+      <p class="assembly-manuals__empty">{{ section.settings.empty_text }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="assembly-manuals__modal" hidden>
+    <div class="assembly-manuals__modal-box" role="dialog" aria-modal="true" aria-label="{{ section.settings.video_label | escape }}">
+      <button class="assembly-manuals__close" type="button" aria-label="Close">&times;</button>
+      <iframe title="{{ section.settings.video_label | escape }}" src="" allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    padding-block: var(--assembly-padding-top) var(--assembly-padding-bottom);
+    --manual-ink: #161719;
+    --manual-muted: #6b6f76;
+    --manual-line: #e3e5e8;
+    --manual-soft: #f6f7f8;
+    color: var(--manual-ink);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  #{{ section_id }} *,
+  #{{ section_id }} *::before,
+  #{{ section_id }} *::after { box-sizing: border-box; }
+
+  #{{ section_id }} .assembly-manuals__inner {
+    width: min(var(--page-content-width), calc(100% - var(--page-margin) * 2));
+    margin-inline: auto;
+    scroll-margin-top: 100px;
+  }
+
+  #{{ section_id }} .assembly-manuals__heading {
+    margin: 0 0 24px;
+    color: var(--manual-ink);
+    font-family: var(--font-heading--family);
+    font-size: clamp(26px, 2.5vw, 34px);
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+  }
+
+  #{{ section_id }} .assembly-manuals__layout {
+    display: grid;
+    grid-template-columns: minmax(200px, 260px) minmax(0, 1fr);
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+  }
+
+  #{{ section_id }} .assembly-manuals__tabs {
+    display: grid;
+    gap: 10px;
+  }
+
+  #{{ section_id }} .assembly-manuals__tab-title {
+    margin: 0 0 2px;
+    color: var(--manual-muted);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  #{{ section_id }} .assembly-manuals__tab {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    padding: 13px 16px;
+    border: 1px solid var(--manual-line);
+    border-radius: var(--content-card-radius);
+    background: #fff;
+    color: var(--manual-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+
+  #{{ section_id }} .assembly-manuals__tab:hover { border-color: #bcc0c6; }
+  #{{ section_id }} .assembly-manuals__tab.is-active { background: #eceeef; }
+  #{{ section_id }} .assembly-manuals__tab:focus-visible,
+  #{{ section_id }} .assembly-manuals__button:focus-visible,
+  #{{ section_id }} .assembly-manuals__close:focus-visible { outline: 2px solid var(--manual-ink); outline-offset: 2px; }
+
+  #{{ section_id }} .assembly-manuals__tab span {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  #{{ section_id }} .assembly-manuals__tab small {
+    color: var(--manual-muted);
+    font-size: 12.5px;
+    line-height: 1.35;
+  }
+
+  #{{ section_id }} .assembly-manuals__panels { min-width: 0; }
+
+  #{{ section_id }} .assembly-manuals__panel { display: none; }
+
+  #{{ section_id }} .assembly-manuals__panel.is-active { display: block; }
+
+  #{{ section_id }} .assembly-manuals__panel-head {
+    margin-bottom: 20px;
+  }
+
+  #{{ section_id }} .assembly-manuals__panel-head h3 {
+    margin: 0 0 6px;
+    color: var(--manual-ink);
+    font-family: var(--font-heading--family);
+    font-size: clamp(22px, 2.2vw, 30px);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  #{{ section_id }} .assembly-manuals__panel-head p {
+    margin: 0;
+    color: var(--manual-muted);
+    font-size: 14px;
+  }
+
+  #{{ section_id }} .assembly-manuals__list { display: grid; gap: 10px; }
+
+  #{{ section_id }} .assembly-manuals__group {
+    margin: 18px 0 0;
+    padding: 0 0 4px;
+    color: var(--manual-muted);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .03em;
+  }
+
+  #{{ section_id }} .assembly-manuals__group:first-child { margin-top: 0; }
+
+  #{{ section_id }} .assembly-manuals__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(80px, auto) auto;
+    align-items: center;
+    gap: 10px 20px;
+    padding: 16px 18px;
+    border: 1px solid var(--manual-line);
+    border-radius: var(--content-card-radius);
+    background: #fff;
+  }
+
+  #{{ section_id }} .assembly-manuals__empty {
+    margin: 0;
+    padding: 20px;
+    border: 1px dashed var(--manual-line);
+    border-radius: var(--content-card-radius);
+    background: var(--manual-soft);
+    color: var(--manual-muted);
+    font-size: 14px;
+  }
+
+  #{{ section_id }} .assembly-manuals__item-main {
+    min-width: 0;
+  }
+
+  #{{ section_id }} .assembly-manuals__item-main h5 {
+    margin: 0 0 4px;
+    color: var(--manual-ink);
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  #{{ section_id }} .assembly-manuals__item-main h5 a { color: inherit; text-decoration: none; }
+  #{{ section_id }} .assembly-manuals__item-main h5 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  #{{ section_id }} .assembly-manuals__item-main span,
+  #{{ section_id }} .assembly-manuals__size {
+    color: var(--manual-muted);
+    font-size: 13px;
+  }
+
+  #{{ section_id }} .assembly-manuals__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  #{{ section_id }} .assembly-manuals__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 8px 13px;
+    border: 1px solid var(--manual-line);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--manual-ink);
+    font: inherit;
+    font-size: 13.5px;
+    font-weight: 550;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+  }
+
+  #{{ section_id }} .assembly-manuals__button:hover {
+    border-color: #bcc0c6;
+    background: var(--manual-soft);
+  }
+
+  #{{ section_id }} .assembly-manuals__button--video {
+    border-color: var(--manual-ink);
+    background: var(--manual-ink);
+    color: #fff;
+  }
+
+  #{{ section_id }} .assembly-manuals__button--video:hover {
+    border-color: #000;
+    background: #000;
+    color: #fff;
+  }
+
+  #{{ section_id }} .assembly-manuals__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+  }
+
+  #{{ section_id }} .assembly-manuals__modal[hidden] {
+    display: none;
+  }
+
+  #{{ section_id }} .assembly-manuals__modal-box {
+    position: relative;
+    width: min(90vw, 800px);
+    padding: 20px;
+    border-radius: var(--content-card-radius);
+    background: #fff;
+  }
+
+  #{{ section_id }} .assembly-manuals__close {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 0;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  #{{ section_id }} .assembly-manuals__modal iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+
+  @media (max-width: 768px) {
+    #{{ section_id }} .assembly-manuals__layout { grid-template-columns: 1fr; gap: 24px; }
+
+    #{{ section_id }} .assembly-manuals__tabs {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+    }
+
+    #{{ section_id }} .assembly-manuals__tab-title {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    #{{ section_id }} .assembly-manuals__item { grid-template-columns: 1fr; }
+    #{{ section_id }} .assembly-manuals__size:empty { display: none; }
+    #{{ section_id }} .assembly-manuals__actions { width: 100%; justify-content: flex-start; }
+    #{{ section_id }} .assembly-manuals__button { flex: 1; }
+  }
+
+  @media (max-width: 480px) {
+    #{{ section_id }} .assembly-manuals__tabs { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #{{ section_id }} .assembly-manuals__tab,
+    #{{ section_id }} .assembly-manuals__button { transition: none; }
+  }
+</style>
+
+{% stylesheet %}
+  .template-suffix-psc-assembly-manuals {
+    --am-ink: #161719;
+    --am-muted: #6b6f76;
+    --am-line: #e3e5e8;
+    --am-soft: #f6f7f8;
+  }
+
+  .template-suffix-psc-assembly-manuals .am-hero h1 {
+    margin: 0;
+    max-width: 18ch;
+    color: #fff;
+    font-family: var(--font-heading--family);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 500;
+    line-height: 1.08;
+  }
+
+  .template-suffix-psc-assembly-manuals .am-hero .section-content-wrapper {
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .template-suffix-psc-assembly-manuals .am-hero .section-content-wrapper > .text-block p {
+    max-width: 58ch;
+    color: #fff;
+    font-size: clamp(15px, 1.5vw, 18px);
+    line-height: 1.55;
+  }
+
+  .template-suffix-psc-assembly-manuals .am-hero .button-secondary {
+    min-height: 44px;
+    padding: 10px 18px;
+    border: 1px solid #fff;
+    border-radius: 9px;
+    background: transparent;
+    color: #fff;
+  }
+
+  .template-suffix-psc-assembly-manuals .am-hero .button-secondary:hover {
+    background: #fff;
+    color: var(--am-ink);
+  }
+
+  .template-suffix-psc-assembly-manuals .assembly-manuals {
+    border-top: 1px solid var(--am-line);
+  }
+
+  .template-suffix-psc-assembly-manuals .faq-section__heading,
+  .template-suffix-psc-assembly-manuals .page-cta__heading {
+    margin: 0 0 20px;
+    color: var(--am-ink);
+    font-family: var(--font-heading--family);
+    font-size: clamp(26px, 2.5vw, 34px);
+    font-weight: 500;
+    line-height: 1.2;
+  }
+
+  .template-suffix-psc-assembly-manuals .faq-section {
+    border-top: 1px solid var(--am-line);
+  }
+
+  .template-suffix-psc-assembly-manuals .page-cta__content {
+    background: var(--am-ink);
+    border-radius: var(--content-card-radius);
+  }
+
+  .template-suffix-psc-assembly-manuals .page-cta__heading {
+    color: #fff;
+  }
+
+{% endstylesheet %}
+
+<script>
+  (() => {
+    const root = document.getElementById({{ section_id | json }});
+    if (!root) return;
+
+    const tabs = root.querySelectorAll('[data-assembly-tab]');
+    const panels = root.querySelectorAll('[data-assembly-panel]');
+    const modal = root.querySelector('.assembly-manuals__modal');
+    const iframe = root.querySelector('.assembly-manuals__modal iframe');
+    const closeButton = root.querySelector('.assembly-manuals__close');
+
+    const toEmbedUrl = (url) => {
+      try {
+        const parsed = new URL(url);
+        if (parsed.hostname.includes('youtube.com') && parsed.searchParams.get('v')) {
+          return `https://www.youtube.com/embed/${parsed.searchParams.get('v')}`;
+        }
+        if (parsed.hostname.includes('youtu.be')) {
+          return `https://www.youtube.com/embed/${parsed.pathname.replace('/', '')}`;
+        }
+      } catch (error) {
+        return url;
+      }
+
+      return url;
+    };
+
+    const switchTab = (index) => {
+      tabs.forEach((tab, tabIndex) => {
+        const isActive = tabIndex === index;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', String(isActive));
+      });
+
+      panels.forEach((panel, panelIndex) => {
+        panel.classList.toggle('is-active', panelIndex === index);
+      });
+    };
+
+    const closeModal = () => {
+      if (!modal || !iframe) return;
+      modal.hidden = true;
+      iframe.src = '';
+      document.body.style.overflow = '';
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => switchTab(index));
+    });
+
+    root.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-video-url]');
+      if (!button || !modal || !iframe) return;
+
+      iframe.src = toEmbedUrl(button.dataset.videoUrl);
+      modal.hidden = false;
+      document.body.style.overflow = 'hidden';
+    });
+
+    closeButton?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (event) => {
+      if (event.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeModal();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Assembly manuals",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shed Assembly & Downloads"
+    },
+    {
+      "type": "text",
+      "id": "tab_label",
+      "label": "Tab label",
+      "default": "Choose Product"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Product collections",
+      "info": "Select the collections whose products should appear in this manual list."
+    },
+    {
+      "type": "text",
+      "id": "pdf_label",
+      "label": "PDF button label",
+      "default": "Installation PDF"
+    },
+    {
+      "type": "text",
+      "id": "video_label",
+      "label": "Video button label",
+      "default": "Watch Video"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_products_without_manuals",
+      "label": "Hide products without PDF or video",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pdf_metafield_key",
+      "label": "PDF metafield key",
+      "default": "assembly_manual_pdf",
+      "info": "Uses product metafields in the custom namespace."
+    },
+    {
+      "type": "text",
+      "id": "video_metafield_key",
+      "label": "Video metafield key",
+      "default": "assembly_video_url",
+      "info": "Uses product metafields in the custom namespace."
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Empty text",
+      "default": "No manuals are available for this collection yet."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    }
+  ],
+  "presets": [
+    {
+      "name": "Assembly manuals"
+    }
+  ]
+}
+{% endschema %}

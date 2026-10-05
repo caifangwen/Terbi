@@ -1,0 +1,37 @@
+<section class="section section--page-width product-support-finder" aria-labelledby="product-support-title">
+  <div class="product-support-finder__inner">
+    <p class="product-support-finder__eyebrow">Product help</p>
+    <h1 id="product-support-title">{{ page.title | default: 'Product Support' | escape }}</h1>
+    {% if page.content != blank %}
+      <div class="rte">{{ page.content }}</div>
+    {% else %}
+      <p>Find the right guidance for your TERKKIN product and model.</p>
+    {% endif %}
+    <form action="{{ routes.search_url }}" method="get" role="search" class="product-support-finder__form">
+      <label for="support-product-query">Find support for your product</label>
+      <div class="product-support-finder__fields">
+        <input id="support-product-query" type="search" name="q" placeholder="Product name, model or SKU" required>
+        <button class="button" type="submit">Find product</button>
+      </div>
+    </form>
+    <p class="product-support-finder__hint">Check the product label or your order details for the model number. For serial number help, <a href="/pages/contact-product-support">contact Product Support</a>.</p>
+  </div>
+</section>
+
+{% stylesheet %}
+  .product-support-finder { padding-block: clamp(4rem, 7vw, 8rem); }
+  .product-support-finder__inner { max-width: 78rem; }
+  .product-support-finder__eyebrow { margin: 0 0 1rem; color: var(--color-primary); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+  .product-support-finder h1 { margin: 0; font-family: var(--font-heading--family); font-size: clamp(3.6rem, 6vw, 6.4rem); }
+  .product-support-finder__form { margin-top: 3rem; }
+  .product-support-finder__form label { display: block; margin-bottom: 1rem; font-weight: 700; }
+  .product-support-finder__fields { display: flex; gap: 1rem; }
+  .product-support-finder__fields input { min-width: 0; flex: 1; padding: 1.2rem 1.6rem; border: 1px solid currentColor; border-radius: .4rem; background: transparent; color: inherit; }
+  .product-support-finder__fields button { min-height: 4.4rem; }
+  .product-support-finder__hint { margin-top: 1.2rem; font-size: 1.4rem; }
+  @media (max-width: 749px) { .product-support-finder__fields { flex-direction: column; } .product-support-finder__fields button { width: 100%; } }
+{% endstylesheet %}
+
+{% schema %}
+{"name":"Product support finder","settings":[]}
+{% endschema %}

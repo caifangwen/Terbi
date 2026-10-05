@@ -1,0 +1,44 @@
+<article class="testimonial-metaobject testimonial-metaobject--{{ block_id }}">
+	{% if image != blank %}
+		{% if product != blank %}<a class="testimonial-metaobject__product-link" href="{{ product.url }}">{% endif %}
+			{{ image | image_url: width: 700 | image_tag: class: 'testimonial-metaobject__image', loading: 'lazy', alt: customer }}
+		{% if product != blank %}</a>{% endif %}
+	{% endif %}
+	<div class="testimonial-metaobject__content">
+		{% assign rating = rating | plus: 0 | at_least: 0 | at_most: 5 %}
+		<div class="testimonial-metaobject__rating">
+			<span class="testimonial-metaobject__stars" role="img" aria-label="{{ rating }} out of 5 stars" style="--rating-fill: {{ rating | times: 20 }}%"><span aria-hidden="true">★★★★★</span><span class="testimonial-metaobject__stars-fill" aria-hidden="true">★★★★★</span></span>
+			<span class="testimonial-metaobject__score" aria-hidden="true"><strong>{{ rating }}</strong> / 5</span>
+		</div>
+		{% if content != blank %}
+			<blockquote class="testimonial-metaobject__review">
+				{% assign review_text = content | strip %}
+				{% if review_text.size > 105 %}
+					<details class="testimonial-metaobject__details">
+						<summary><span class="testimonial-metaobject__preview">{{ review_text | truncate: 96 | escape }}</span><span class="testimonial-metaobject__read-more"><span class="testimonial-metaobject__expand">Read full review</span><span class="testimonial-metaobject__collapse">Show less</span></span></summary>
+						<p>{{ review_text | escape | newline_to_br }}</p>
+					</details>
+				{% else %}
+					<p>{{ review_text | escape | newline_to_br }}</p>
+				{% endif %}
+			</blockquote>
+		{% endif %}
+		{% if customer != blank %}
+			<strong class="testimonial-metaobject__customer">
+				{{ customer | escape }}
+				<svg class="testimonial-metaobject__verified" width="16" height="16" viewBox="0 0 16 16" fill="none" role="img" aria-label="Verified customer" focusable="false">
+					<circle cx="8" cy="8" r="8" fill="#1877F2"></circle>
+					<path d="M4.8 8.4l2.1 2.1 4.4-4.9" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+			</strong>
+		{% endif %}
+		{% if product != blank %}
+			<a class="testimonial-metaobject__product" href="{{ product.url }}">
+				{% if product.featured_image != blank %}
+					{{ product.featured_image | image_url: width: 120 | image_tag: class: 'testimonial-metaobject__product-image', widths: '60, 120', sizes: '52px', loading: 'lazy', alt: '' }}
+				{% endif %}
+				<span>{{ product.title | escape }}</span>
+			</a>
+		{% endif %}
+	</div>
+</article>

@@ -1,0 +1,153 @@
+/* Split from base.css: media gallery zoom dialog and shimmer. */
+/* Media gallery zoom dialog */
+.pills__pill {
+  --pills-pill-background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5-15));
+
+  color: var(--color-foreground);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap-sm);
+  min-width: 48px;
+  padding: 6px 12px;
+  border-radius: var(--style-border-radius-pills);
+  cursor: pointer;
+  background-color: var(--pills-pill-background-color);
+  transition: background-color var(--animation-speed) var(--animation-easing);
+
+  @media (hover: hover) {
+    &:hover {
+      --pills-pill-background-color: rgb(var(--color-foreground-rgb) / var(--opacity-10-25));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    padding: var(--padding-xs) var(--padding-md);
+  }
+}
+
+.pills__pill > .svg-wrapper {
+  --close-icon-opacity: 0.4;
+  --icon-stroke-width: 1px;
+
+  color: var(--color-foreground);
+}
+
+.pills__pill--swatch {
+  @media screen and (max-width: 749px) {
+    padding-inline-start: var(--padding-sm);
+  }
+}
+
+.pills__pill--swatch .swatch {
+  margin-right: -4px;
+}
+
+.pills__pill--desktop-small {
+  @media screen and (min-width: 750px) {
+    font-size: var(--font-size--xs);
+  }
+}
+
+.swiper-main {
+  width: 100%;
+}
+
+product-info .swiper-main .swiper-pagination-progressbar {
+  width: 100%;
+}
+
+.swiper-controls__thumbnail-badge {
+  position: absolute;
+  top: var(--padding-2xs);
+  right: var(--padding-2xs);
+  width: clamp(32px, 25%, 44px);
+  height: clamp(32px, 25%, 44px);
+  background-color: var(--color-background);
+  border-radius: var(--style-border-radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 1px rgb(var(--color-foreground-rgb) / var(--opacity-50));
+}
+
+.swiper-controls__thumbnail-badge svg {
+  width: 60%;
+  height: 60%;
+  fill: var(--color-foreground);
+  opacity: 0.6;
+}
+
+.color-scheme-custom {
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+
+.alertBox {
+  display: flex;
+  gap: var(--gap-sm);
+  width: 100%;
+  font-size: var(--font-size--sm);
+  padding: var(--size-20) var(--size-17);
+  border-radius: var(--inputs-radius);
+}
+
+.alertBox--success {
+  color: var(--color-success-text);
+  background-color: var(--color-success-background);
+}
+
+.alertBox--error {
+  color: var(--color-error-text);
+  background-color: var(--color-error-background);
+}
+
+.alertBox--info {
+  color: var(--color-info-text);
+  background-color: var(--color-info-background);
+}
+
+.alertBox--warning {
+  color: var(--color-warning-text);
+  background-color: var(--color-warning-background);
+}
+
+text-loader-component {
+  --shimmer-text-color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
+  --shimmer-color-light: rgb(var(--color-foreground-rgb) / var(--opacity-10));
+  --shimmer-speed: 1.25s;
+
+  display: inline-block;
+  position: relative;
+  transition: color var(--animation-speed-slow) ease;
+  line-height: 1;
+
+  &::after {
+    content: attr(value);
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    opacity: 0;
+    transition: opacity var(--animation-speed-slow) var(--animation-easing);
+    pointer-events: none;
+    background-image: linear-gradient(
+      -85deg,
+      var(--shimmer-text-color) 10%,
+      var(--shimmer-color-light) 50%,
+      var(--shimmer-text-color) 90%
+    );
+    background-clip: text;
+    background-size: 200% 100%;
+    background-position: 100% 0;
+    place-content: center;
+  }
+
+  &[shimmer] {
+    color: transparent;
+
+    &::after {
+      opacity: 1;
+      animation: text-shimmer var(--shimmer-speed) infinite linear;
+    }
+  }
+}

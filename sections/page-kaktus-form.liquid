@@ -1,0 +1,90 @@
+{% liquid
+  assign form_data = page.metafields.custom.form.value
+  assign heading = form_data.heading.value | default: form_data.heading
+  assign description = form_data.description.value | default: form_data.description
+  assign form_id = form_data.form_id.value | default: form_data.form_id
+%}
+
+{% if form_data != blank and form_id != blank %}
+  <section id="contact-form-link" class="section section--page-width page-kaktus-form">
+    {% if heading != blank or description != blank %}
+      <div class="page-kaktus-form__intro">
+        {% if heading != blank %}<h2>{{ heading | escape }}</h2>{% endif %}
+        {% if description != blank %}<p>{{ description | escape | newline_to_br }}</p>{% endif %}
+      </div>
+    {% endif %}
+
+    <div class="page-kaktus-form__embed">
+      {% content_for 'blocks', closest.page: page %}
+    </div>
+  </section>
+{% elsif request.design_mode %}
+  <section id="contact-form-link" class="section section--page-width page-kaktus-form">
+    <p class="page-kaktus-form__notice">Select a Form metaobject and enter its form id in the page custom data.</p>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .page-kaktus-form {
+    overflow: clip;
+    padding-block: clamp(4.8rem, 7vw, 8rem);
+  }
+
+  .page-kaktus-form__intro {
+    max-width: 70rem;
+    margin: 0 auto clamp(2.8rem, 4vw, 4rem);
+    text-align: left;
+  }
+
+  .page-kaktus-form__intro h2 {
+    margin: 0;
+    font-size: clamp(3rem, 4vw, 4.6rem);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .page-kaktus-form__intro p {
+    margin: 1.2rem 0 0;
+    color: rgb(var(--color-foreground-rgb) / 0.68);
+    font-size: clamp(1.5rem, 1.4vw, 1.7rem);
+    line-height: 1.6;
+  }
+
+  .page-kaktus-form__embed {
+    width: 100%;
+    min-width: 0;
+    margin-inline: auto;
+    padding-block: clamp(1.6rem, 3vw, 3.2rem);
+    overflow: clip;
+    background: rgb(var(--color-foreground-rgb) / 0.025);
+    border-radius: 0.4rem;
+  }
+
+  .page-kaktus-form__embed > * {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .page-kaktus-form__notice {
+    margin: 0;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .page-kaktus-form__embed { padding-block: 1.2rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kaktus form",
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": []
+}
+{% endschema %}

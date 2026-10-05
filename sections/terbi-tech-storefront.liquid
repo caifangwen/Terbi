@@ -1,0 +1,109 @@
+{{ 'terbi-tech-storefront.css' | asset_url | stylesheet_tag }}
+{{ 'component-resource-card.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign catalog = section.settings.collection
+  if collection != blank
+    assign catalog = collection
+  endif
+  assign hero = catalog.metafields.custom.hero.value
+  assign hero_image = hero.image.value | default: section.settings.hero_image
+  assign hero_heading = hero.heading.value | default: section.settings.heading
+  assign hero_eyebrow = hero.eyebrow.value | default: section.settings.eyebrow
+  assign hero_button = hero.button_label.value | default: section.settings.button_label
+  assign hero_link = hero.button_link.value | default: catalog.url
+  assign guide_cta = catalog.metafields.custom.cta.value
+-%}
+<div class="section-background color-{{ section.settings.color_scheme }}"></div>
+<section class="terbi-tech section section--page-width color-{{ section.settings.color_scheme }}">
+  <div class="terbi-tech__content">
+    {% if section.settings.show_intro %}
+      <div class="terbi-tech__hero">
+        <div class="terbi-tech__hero-copy">
+          <p class="terbi-tech__eyebrow">{{ hero_eyebrow | escape }}</p>
+          <h1>{{ hero_heading | escape | newline_to_br }}</h1>
+          {% if hero.description != blank %}
+            <div class="terbi-tech__intro rte">{{ hero.description | metafield_tag }}</div>
+          {% else %}
+            <p class="terbi-tech__intro">{{ section.settings.intro | escape }}</p>
+          {% endif %}
+          {% if catalog != blank %}
+            <a href="{{ hero_link | escape }}" class="button">{{ hero_button | escape }}</a>
+          {% endif %}
+          <p class="terbi-tech__note">{{ section.settings.demo_notice | escape }}</p>
+        </div>
+        {% if hero_image != blank %}
+          <div class="terbi-tech__hero-image">
+            {{ hero_image | image_url: width: 1400 | image_tag: widths: '375, 550, 750, 1100, 1400', sizes: '(min-width: 750px) 50vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: section.settings.hero_alt }}
+          </div>
+        {% endif %}
+      </div>
+    {% else %}
+      <header class="terbi-tech__collection-heading">
+        <h1>{{ catalog.title | escape }}</h1>
+        <div class="rte">{{ catalog.description }}</div>
+      </header>
+    {% endif %}
+    <nav class="terbi-tech__categories" aria-label="{{ 'content.collections' | t | escape }}">
+      {% for link in linklists['terbi-demo-main'].links %}
+        {% if link.type == 'collection_link' %}
+          <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+    {% if section.settings.show_intro %}
+      <div class="terbi-tech__catalog-heading">
+        <h2>{{ section.settings.catalog_heading | escape }}</h2>
+        <p>{{ section.settings.catalog_intro | escape }}</p>
+      </div>
+    {% endif %}
+    {% paginate catalog.products by 12 %}
+      <ul class="terbi-tech__grid list-unstyled" role="list">
+        {% for item in catalog.products %}
+          <li>
+            {% render 'resource-card', resource: item, resource_type: 'product', resource_direction: 'column', image_width: 800, image_aspect_ratio: '1 / 1', image_hover: false, image_sizes: '(min-width: 1100px) 33vw, (min-width: 750px) 50vw, 100vw' %}
+          </li>
+        {% endfor %}
+      </ul>
+      {% if paginate.pages > 1 %}{% render 'pagination', paginate: paginate %}{% endif %}
+    {% endpaginate %}
+    {% if section.settings.show_intro %}
+      <aside class="terbi-tech__guide">
+        <div><h2>{{ guide_cta.heading.value | default: section.settings.guide_heading | escape }}</h2><p>{{ guide_cta.content.value | default: section.settings.guide_intro | escape }}</p></div>
+        <a class="button-secondary" href="{{ guide_cta.link.value | default: '/pages/terbi-tech-guide' | escape }}">{{ guide_cta.button.value | default: section.settings.guide_label | escape }}</a>
+      </aside>
+    {% endif %}
+    {% if catalog.metafields.custom.faq.value != blank %}
+      <section class="terbi-tech__faq">
+        <h2>{{ section.settings.faq_heading | escape }}</h2>
+        {% for faq in catalog.metafields.custom.faq.value %}
+          {% capture answer %}{{ faq.answer | metafield_tag }}{% endcapture %}
+          {% render 'accordion', heading: faq.question.value, content: answer, content_class: 'rte', item_class: 'accordion__item faq__item' %}
+        {% endfor %}
+      </section>
+    {% endif %}
+  </div>
+</section>
+{% schema %}
+{
+  "name": "3C storefront",
+  "settings": [
+    {"type":"checkbox","id":"show_intro","label":"Show homepage introduction","default":true},
+    {"type":"collection","id":"collection","label":"Product collection"},
+    {"type":"color_scheme","id":"color_scheme","label":"Color scheme","default":"scheme-1"},
+    {"type":"image_picker","id":"hero_image","label":"Hero illustration"},
+    {"type":"text","id":"hero_alt","label":"Hero image description","default":"Wireless earbuds concept illustration for the demo store"},
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"EVERYDAY TECH / 3C CONCEPT STORE"},
+    {"type":"textarea","id":"heading","label":"Heading","default":"Small essentials. A better everyday setup."},
+    {"type":"textarea","id":"intro","label":"Introduction","default":"Explore charging, audio and desk essentials."},
+    {"type":"text","id":"button_label","label":"Button label","default":"Explore the collection"},
+    {"type":"text","id":"demo_notice","label":"Demo notice","default":"Demo catalogue · Illustrations, prices and specifications are simulated."},
+    {"type":"text","id":"catalog_heading","label":"Catalogue heading","default":"Meet your everyday essentials"},
+    {"type":"textarea","id":"catalog_intro","label":"Catalogue introduction","default":"Six concepts for your desk, commute and everyday carry."},
+    {"type":"text","id":"guide_heading","label":"Guide heading","default":"Make room for a simpler setup."},
+    {"type":"textarea","id":"guide_intro","label":"Guide introduction","default":"Start with your devices, then check connections, power and dimensions."},
+    {"type":"text","id":"guide_label","label":"Guide link label","default":"Read the tech guide"},
+    {"type":"text","id":"faq_heading","label":"FAQ heading","default":"Questions, clearly answered"}
+  ],
+  "presets":[{"name":"3C storefront"}]
+}
+{% endschema %}

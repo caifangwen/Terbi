@@ -1,0 +1,39 @@
+{% comment %}
+  Shared swatch checkbox used by desktop and mobile facets.
+
+  Accepts:
+  - show_label: {Boolean} Show the swatch label and count.
+{% endcomment %}
+
+<div class="{{ label_class }}" style="--font-size: {{ text_label_font_size }};">
+  <div class="swatch-input-wrapper {{ value.swatch }}">
+    <input
+      type="checkbox"
+      id="{{ input_id }}"
+      name="{{ value.param_name }}"
+      value="{{ value.value }}"
+      form="{{ form_id }}"
+      class="swatch-input__input{% if disabled %} visually-disabled{% endif %}"
+      {% if value.active %}checked{% endif %}
+      {% if disabled %}disabled{% endif %}
+    >
+    <label for="{{ input_id }}" class="swatch-input__label" title="{{ value.label | escape }}">
+      {% liquid
+        assign background_image = value.value | strip | handleize | handle | append: '.' | append: png
+        if images[background_image] != blank
+          assign background_image = background_image | file_url
+        else
+          assign background_image = ''
+        endif
+      %}
+      <span
+        class="swatch block color-swacth-color--{{ value.value | handle }}"
+        style="
+          --swatch--background-color: {{ value.value | split: ' ' | last | handle }};
+          {% if background_image != blank %}--swatch--background: url({{ background_image }});{% endif %}
+        "
+      ></span>
+      <span{% unless show_label %} class="visually-hidden"{% endunless %}>{{ text_value }}</span>
+    </label>
+  </div>
+</div>

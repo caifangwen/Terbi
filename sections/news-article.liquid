@@ -1,0 +1,35 @@
+{%- capture category -%}{%- render 'newsroom-category', article: article -%}{%- endcapture -%}
+<article class="news-article section section--page-width">
+  <nav class="news-article__breadcrumb" aria-label="Breadcrumb"><a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span><a href="/pages/news-press">News &amp; Press</a></nav>
+  <header class="news-article__header">
+    {%- if category != blank -%}<p class="news-article__meta">{{ category | replace: 'product', 'Product & Innovation' | replace: 'partnerships', 'Partnerships & Channels' | replace: 'sustainability', 'Sustainability & Community' | replace: 'events', 'Events & Recognition' | upcase }} <span>{{ article.published_at | date: '%b %d, %Y' | upcase }}</span></p>{%- endif -%}
+    <h1>{{ article.title | escape }}</h1>
+    {%- if article.excerpt != blank -%}<p class="news-article__standfirst">{{ article.excerpt | strip_html }}</p>{%- endif -%}
+  </header>
+  {%- if article.image -%}<figure class="news-article__hero">{{ article.image | image_url: width: 1800 | image_tag: widths: '600, 900, 1200, 1500, 1800', sizes: '(min-width: 1200px) 1200px, 100vw', loading: 'eager' }}{%- if article.image.alt != blank -%}<figcaption>{{ article.image.alt | escape }}</figcaption>{%- endif -%}</figure>{%- endif -%}
+  <div class="news-article__body rte">{{ article.content }}</div>
+  <footer class="news-article__footer"><a href="/pages/news-press">← Back to News &amp; Press</a></footer>
+</article>
+{% stylesheet %}
+  .news-article { color: #292b28; padding-block: 32px 96px; }
+  .news-article a { color: inherit; }
+  .news-article__breadcrumb { display: flex; gap: 10px; font-size: 12px; margin-bottom: clamp(56px, 7vw, 100px); }
+  .news-article__header { max-width: 900px; margin: 0 auto clamp(38px, 5vw, 64px); text-align: center; }
+  .news-article__meta { display: flex; justify-content: center; gap: 16px; font-size: 11px; font-weight: 600; letter-spacing: .13em; margin: 0 0 22px; }
+  .news-article__meta span { color: #73776f; }
+  .news-article h1 { font-family: var(--font-heading--family); font-size: clamp(42px, 5.5vw, 76px); font-weight: 400; letter-spacing: -.04em; line-height: 1.12; margin: 0; }
+  .news-article__standfirst { font-size: clamp(17px, 2vw, 22px); line-height: 1.6; margin: 24px auto 0; max-width: 720px; }
+  .news-article__hero { margin: 0 auto clamp(48px, 6vw, 80px); max-width: 1200px; }
+  .news-article__hero img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+  .news-article__hero figcaption { color: #747872; font-size: 12px; margin-top: 12px; }
+  .news-article__body { max-width: 740px; margin: auto; font-size: 17px; line-height: 1.8; }
+  .news-article__body > * + * { margin-top: 1.5em; }
+  .news-article__body h2, .news-article__body h3 { font-family: var(--font-heading--family); font-weight: 400; line-height: 1.2; margin-top: 2em; }
+  .news-article__body img { max-width: 100%; height: auto; }
+  .news-article__body figure { margin-inline: 0; }
+  .news-article__body figcaption { font-size: 12px; line-height: 1.5; color: #747872; margin-top: 10px; }
+  .news-article__footer { max-width: 740px; margin: 70px auto 0; border-top: 1px solid #d8d7d0; padding-top: 24px; font-size: 13px; }
+{% endstylesheet %}
+{% schema %}
+{ "name": "News article", "settings": [], "presets": [{ "name": "News article" }] }
+{% endschema %}

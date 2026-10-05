@@ -1,0 +1,113 @@
+{% assign items = section.settings.items %}
+
+{% if items != blank or request.design_mode %}
+  <div class="section section--page-width spacing-style page-image-text" style="{% render 'spacing-style', settings: section.settings %}">
+    {% content_for 'block', type: 'image-with-text', id: 'description-rows', content_items: items, display_layout: section.settings.display_layout %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .page-image-text { overflow: clip; }
+  .page-image-text .image-with-text-list { display: grid; gap: clamp(4rem, 7vw, 8rem); }
+  .page-image-text .image-with-text { gap: clamp(3.2rem, 6vw, 8rem); margin: 0; }
+  .page-image-text .image-with-text__image { aspect-ratio: var(--image-with-text-ratio, 4 / 3); object-fit: cover; border-radius: 0.4rem; }
+  .page-image-text .image-with-text__content { max-width: 58rem; }
+  .page-image-text .image-with-text__content h2 { margin-bottom: 1.6rem; font-family: var(--font-heading--family); font-size: clamp(3rem, 4vw, 4.8rem); line-height: 1.08; letter-spacing: -0.03em; text-wrap: balance; }
+  .page-image-text .image-with-text__content p { color: rgb(var(--color-foreground-rgb) / 0.7); font-size: clamp(1.55rem, 1.4vw, 1.7rem); line-height: 1.7; }
+  .page-image-text .image-with-text:not(:has(.image-with-text__content h2, .image-with-text__content p)),
+  .page-image-text .image-with-text:not(:has(.image-with-text__image)) { grid-template-columns: 1fr; }
+  .page-image-text .image-with-text:not(:has(.image-with-text__content h2, .image-with-text__content p)) .image-with-text__image { max-height: 62rem; }
+  @media screen and (max-width: 749px) {
+    .page-image-text .image-with-text-list { gap: 4.8rem; }
+    .page-image-text .image-with-text { gap: 2.4rem; }
+    .page-image-text .image-with-text__content h2 { font-size: clamp(2.8rem, 9vw, 3.8rem); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Image with text rows",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Original"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "items",
+      "label": "Content items",
+      "metaobject_type": "image_with_text",
+      "limit": 12
+    },
+    {
+      "type": "select",
+      "id": "display_layout",
+      "label": "Layout",
+      "options": [
+        { "value": "alternate", "label": "Rows" },
+        { "value": "feature-list", "label": "Feature list" }
+      ],
+      "default": "alternate"
+    },
+    {
+      "type": "text",
+      "id": "feature_heading",
+      "label": "Feature list heading"
+    },
+    {
+      "type": "select",
+      "id": "first_image_position",
+      "label": "First image position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.bottom",
+      "default": 52
+    }
+  ]
+}
+{% endschema %}

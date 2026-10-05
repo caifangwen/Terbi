@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "tech": {
+      "type": "terbi-tech-storefront",
+      "settings": {
+        "show_intro": true,
+        "collection": "terbi-tech",
+        "hero_image": "shopify://shop_images/terbi-demo-earbuds.png",
+        "heading": "Small essentials.\nA better everyday setup.",
+        "intro": "Explore charging, audio and desk essentials designed as product concepts for this 3C demo store.",
+        "button_label": "Explore the collection",
+        "catalog_heading": "Meet your everyday essentials",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "tech"
+  ]
+}

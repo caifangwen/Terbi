@@ -1,0 +1,65 @@
+{% comment %}
+  Renders product card action buttons.
+
+  Accepts:
+  - card_product: {Object} Product Liquid object.
+  - section_id: {String} Section id used by compare inputs.
+  - enable_wishlist: {Boolean}
+  - enable_quick_view: {Boolean}
+  - enable_compare: {Boolean}
+{% endcomment %}
+
+<div class="card-product__group-wrapper">
+  <div class="card-product__group card-product__hover-actions flex flex-column absolute right-0 z-2">
+    {%- liquid
+      assign class_button = 'card-product__group-btn quick-add__submit rounded-full bor-none center cursor-pointer flex items-center justify-center relative'
+      assign class_text = 'text pointer-events-none absolute-c-y z--1'
+      assign class_text_inner = 'text-inner'
+      assign class_add_button = class_button | append: ' add-to-cart-button'
+    -%}
+
+    {% render 'product-card-quick-add',
+      card_product: card_product,
+      quick_add: 'standard',
+      section_id: section_id,
+      button_class: class_button,
+      add_button_class: class_add_button,
+      quick_add_type_icon: true,
+      icon_class: 'card-product__quick-add-icon',
+      text_class: class_text,
+      text_inner_class: class_text_inner
+    %}
+
+    {%- if enable_wishlist -%}
+      <div class="card-product__group-item card-wishlist">
+        <wish-list>
+          <button type="button" title="{{ 'content.add' | t }}" class="{{ class_button }} wishlist-button " data-wishlist data-wishlist-handle="{{ card_product.handle }}" data-product-id="{{ card_product.id }}">
+            <span class="{{ class_text }}">
+              <span class="{{ class_text_inner }}">{{ 'content.add' | t }}</span>
+            </span>
+            {% render 'icon', icon: 'heart' %}
+          </button>
+        </wish-list>
+      </div>
+    {%- endif -%}
+
+    {%- if enable_quick_view -%}
+      {% render 'quick-view-button',
+        card_product: card_product,
+        class_button: class_button,
+        class_text: class_text,
+        class_text_inner: class_text_inner
+      %}
+    {%- endif -%}
+
+    {%- if enable_compare -%}
+      {% render 'product-compare-button',
+        card_product: card_product,
+        class_button: class_button,
+        class_text: class_text,
+        class_text_inner: class_text_inner,
+        sectionId: section_id
+      %}
+    {%- endif -%}
+  </div>
+</div>

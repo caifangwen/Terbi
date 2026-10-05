@@ -1,0 +1,140 @@
+
+{% if cards.size > 0 %}
+  <div class="shop-by shop-by--featured">
+    <div class="shop-by__header">
+      {% if heading != blank %}<h2 class="shop-by__heading">{{ heading | escape }}</h2>{% endif %}
+      {% if all_label != blank and all_link != blank %}<a class="shop-by__all" href="{{ all_link | escape }}">{{ all_label | escape }}</a>{% endif %}
+    </div>
+    <div class="shop-by__grid">
+      {% for card in cards %}
+        {% liquid
+          assign category = card.settings.collection
+          assign image = card.settings.image | default: category.featured_image
+          assign title = card.settings.title | default: category.title
+        %}
+        {% if category != blank %}
+          <a class="shop-by__card" href="{{ category.url }}" {{ card.shopify_attributes }}>
+            {% if image != blank %}
+              {{ image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '400, 600, 800, 1200, 1600', sizes: '(max-width: 749px) calc(100vw - 40px), (max-width: 1600px) calc((100vw - 80px) / 2), 780px', class: 'shop-by__image', alt: '' }}
+            {% endif %}
+            <span class="shop-by__content">
+              <span class="shop-by__label">{{ title | escape }}</span>
+              {% if card.settings.description != blank %}<span class="shop-by__description">{{ card.settings.description | escape }}</span>{% endif %}
+            </span>
+            <span class="shop-by__featured-arrow" aria-hidden="true">→</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% elsif shop_by_entries != blank %}
+  <div class="shop-by">
+    {% for shop_by in shop_by_entries %}
+      {% assign heading = shop_by.shop_by_name.value | default: shop_by.shop_by_name %}
+      {% assign collections = shop_by.collections.value %}
+      {% if collections != blank %}
+        {% liquid
+          assign column_count = collections.size | at_most: 6
+          assign tablet_column_count = collections.size | at_most: 3
+          assign grid_width = column_count | times: 16.6667
+          assign tablet_grid_width = tablet_column_count | times: 33.3333
+        %}
+        <section class="shop-by__group" style="--shop-by-columns: {{ column_count }}; --shop-by-tablet-columns: {{ tablet_column_count }}; --shop-by-width: {{ grid_width }}%; --shop-by-tablet-width: {{ tablet_grid_width }}%;">
+          <div class="shop-by__header">
+            {% if heading != blank %}<h2 class="shop-by__heading">{{ heading | escape }}</h2>{% endif %}
+          </div>
+          <div class="shop-by__grid">
+            {% for item in collections %}
+              {% assign image = item.featured_image | default: item.image %}
+              <a class="shop-by__card" href="{{ item.url }}">
+                <span class="shop-by__media">
+                  {% if image != blank %}
+                    {{ image | image_url: width: 300 | image_tag: loading: 'lazy', widths: '100, 200, 300', sizes: '100px', class: 'shop-by__image' }}
+                  {% endif %}
+                </span>
+                <span class="shop-by__label">{{ item.title | escape }}</span>
+              </a>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% style %}
+  .shop-by__group + .shop-by__group { margin-top: 48px; }
+  .shop-by__header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 36px; }
+  .shop-by__heading { margin: 0; font-size: 32px; font-weight: 700; line-height: 1.2; }
+  .shop-by__all { display: inline-flex; align-items: center; gap: 10px; margin-left: auto; color: inherit; font-size: 15px; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .shop-by__arrow { display: flex; width: 12px; transform: rotate(-90deg); }
+  .shop-by__arrow svg { width: 100%; height: auto; }
+  .shop-by__grid { display: grid; grid-template-columns: repeat(var(--shop-by-columns, 6), minmax(0, 1fr)); overflow: hidden; border: 1px solid #e3e3e3; border-radius: 10px; background: #fff; }
+  .shop-by:not(.shop-by--featured) .shop-by__grid { width: var(--shop-by-width, 100%); }
+  .shop-by__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 24px 12px 32px;
+    color: #111;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 1px 0 #e3e3e3, 0 1px #e3e3e3;
+  }
+  .shop-by__media { display: block; width: 100px; height: 100px; flex-shrink: 0; overflow: hidden; border-radius: 50%; background: #f3f3f3; }
+  .shop-by__image { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .shop-by__label { display: block; font-size: 15px; font-weight: 400; line-height: 24px; overflow-wrap: anywhere; }
+  .shop-by__card:hover .shop-by__label, .shop-by__all:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .shop-by__card:focus-visible { outline: 2px solid currentColor; outline-offset: -3px; }
+  @media screen and (min-width: 750px) and (max-width: 1023px) {
+    .shop-by__grid { grid-template-columns: repeat(var(--shop-by-tablet-columns, 3), minmax(0, 1fr)); }
+    .shop-by:not(.shop-by--featured) .shop-by__grid { width: var(--shop-by-tablet-width, 100%); }
+  }
+  @media screen and (max-width: 749px) {
+    .shop-by__group + .shop-by__group { margin-top: 36px; }
+    .shop-by__header { flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+    .shop-by__heading { font-size: 26px; }
+    .shop-by__all { font-size: 14px; }
+    .shop-by__grid { width: 100%; grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 50%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; cursor: grab; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+    .shop-by:not(.shop-by--featured) .shop-by__grid { width: 100%; }
+    .shop-by__grid::-webkit-scrollbar { display: none; }
+    .shop-by__grid.is-dragging { cursor: grabbing; scroll-snap-type: none; user-select: none; }
+    .shop-by__grid :is(a, img) { -webkit-user-drag: none; }
+    .shop-by__card { scroll-snap-align: start; }
+  }
+  .shop-by--featured { width: 100%; min-width: 0; }
+  .shop-by--featured .shop-by__header { flex-wrap: wrap; gap: 12px 24px; margin-bottom: clamp(20px, 3vw, 36px); }
+  .shop-by--featured .shop-by__heading { font-size: clamp(28px, 3vw, 44px); }
+  .shop-by--featured .shop-by__all { white-space: normal; }
+  .shop-by--featured .shop-by__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; border: 0; border-radius: 0; background: transparent; overflow: visible; }
+  .shop-by--featured .shop-by__card { position: relative; isolation: isolate; aspect-ratio: 16 / 9; justify-content: flex-end; align-items: stretch; padding: clamp(20px, 2.5vw, 30px); overflow: hidden; border-radius: 6px; background: #e8e8e8; box-shadow: none; text-align: left; color: #fff; }
+  .shop-by--featured .shop-by__card:hover,
+  .shop-by--featured .shop-by__card:focus-visible,
+  .shop-by--featured .shop-by__card:hover .shop-by__label,
+  .shop-by--featured .shop-by__card:focus-visible .shop-by__label { color: #fff; }
+  .shop-by--featured .shop-by__image { position: absolute; inset: 0; z-index: -2; }
+  .shop-by--featured .shop-by__card::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(transparent 30%, rgb(0 0 0 / .65)); }
+  .shop-by--featured .shop-by__content { padding-right: 40px; }
+  .shop-by--featured .shop-by__label { font-family: var(--font-heading--family); font-size: clamp(22px, 2vw, 28px); font-weight: var(--font-heading--weight); line-height: 1.2; letter-spacing: -0.01em; }
+  .shop-by--featured .shop-by__description { display: block; max-height: 0; margin-top: 0; overflow: hidden; color: rgb(255 255 255 / .88); font-family: var(--font-body--family); font-size: clamp(14px, 1.2vw, 16px); font-weight: var(--font-body--weight); line-height: 1.55; }
+  .shop-by--featured .shop-by__featured-arrow { position: absolute; right: 24px; bottom: 30px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: #fff url('{{ 'icon-arrow.svg' | asset_url }}') center / 16px auto no-repeat; color: #111; font-size: 0; }
+  .shop-by--featured .shop-by__featured-arrow::after { display: none; }
+  .shop-by--featured .shop-by__featured-arrow::after { content: '→'; font-size: 22px; color: #111; }
+  @media (hover: hover) and (pointer: fine) {
+    .shop-by--featured .shop-by__description, .shop-by--featured .shop-by__featured-arrow { opacity: 0; transition: opacity .2s, max-height .2s ease, margin-top .2s ease; }
+    .shop-by--featured .shop-by__card:hover .shop-by__description, .shop-by--featured .shop-by__card:focus-visible .shop-by__description,
+    .shop-by--featured .shop-by__card:hover .shop-by__featured-arrow, .shop-by--featured .shop-by__card:focus-visible .shop-by__featured-arrow { opacity: 1; }
+    .shop-by--featured .shop-by__card:hover .shop-by__description, .shop-by--featured .shop-by__card:focus-visible .shop-by__description { max-height: 8em; margin-top: 10px; }
+  }
+  @media (max-width: 749px) {
+    .shop-by--featured .shop-by__grid { grid-template-columns: none; grid-auto-columns: calc((100% - 16px) / 2); gap: 16px; }
+    .shop-by--featured .shop-by__all { margin-left: 0; }
+    .shop-by--featured .shop-by__card { aspect-ratio: 4 / 3; }
+    .shop-by--featured .shop-by__description { max-height: none; margin-top: 8px; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .shop-by--featured .shop-by__description, .shop-by--featured .shop-by__featured-arrow { transition: none; }
+  }
+{% endstyle %}

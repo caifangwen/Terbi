@@ -1,0 +1,46 @@
+{% doc %}
+  Renders product cards for predictive search results and recommendations.
+  @param {product[]} products - Products to display.
+  @param {string} title - Accessible title for the product list.
+  @param {string} [products_test_id] - Identifier for the result state.
+{% enddoc %}
+
+{% if settings.search_layout == 'default' %}
+  <h6 class="predictive-search__heading body-m-font-size">
+    {{ title }}
+  </h6>
+{% endif %}
+<div
+  id="predictive-search-products"
+  class="predictive-search-results__products"
+  {% if products_test_id %}
+    data-testid="{{ products_test_id }}"
+  {% endif %}
+>
+  <ul
+    class="predictive-search-results__list predictive-search-results__wrapper-products list-unstyled"
+    role="listbox"
+    aria-label="{{ title }}"
+  >
+    {% liquid
+      assign limit = settings.quick_products_to_show | default: 9
+    %}
+    {% for product in products limit: limit %}
+      <li
+        id="predictive-search-option-product-{{ forloop.index }}"
+        class="predictive-search-results__card predictive-search-results__card--product"
+        role="option"
+        aria-selected="false"
+      >
+        {% render 'resource-card',
+          resource_type: 'product',
+          resource: product,
+          image_width: 240,
+          image_sizes: '80px',
+          image_hover: false,
+          image_aspect_ratio: '1 / 1'
+        %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>

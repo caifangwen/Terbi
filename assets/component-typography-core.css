@@ -1,0 +1,574 @@
+/* Core typography styles merged from presets, headings, custom typography and links. */
+/* Typography presets */
+
+.text-body {
+  font-size: var(--font-body--size);
+  letter-spacing: 0.06rem;
+  line-height: var(--font-body--line-height);
+  font-family: var(--font-body--family);
+  font-style: var(--font-body--style);
+  font-weight: var(--font-body--weight);
+  color: var(--color-foreground);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5 {
+  overflow-wrap: break-word;
+}
+
+h1,
+.h1,
+.text-block.h1 > * {
+  font-family: var(--font-h1--family);
+  font-style: var(--font-h1--style);
+  font-weight: var(--font-h1--weight);
+  font-size: var(--font-size--h1);
+  letter-spacing: var(--font-h1--letter-spacing);
+  text-transform: var(--font-h1--case);
+  line-height: var(--font-h1--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h1,
+  textarea.h1,
+  select.h1 {
+    font-size: max(1rem, var(--font-h1--size));
+  }
+}
+
+h2,
+.h2,
+.text-block.h2 > * {
+  font-family: var(--font-h2--family);
+  font-style: var(--font-h2--style);
+  font-weight: var(--font-h2--weight);
+  font-size: var(--font-size--h2);
+  letter-spacing: var(--font-h2--letter-spacing);
+  text-transform: var(--font-h2--case);
+  line-height: var(--font-h2--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h2,
+  textarea.h2,
+  select.h2 {
+    font-size: max(1rem, var(--font-h2--size));
+  }
+}
+
+h3,
+.h3,
+.text-block.h3 > * {
+  font-family: var(--font-h3--family);
+  font-style: var(--font-h3--style);
+  font-weight: var(--font-h3--weight);
+  font-size: var(--font-size--h3);
+  letter-spacing: var(--font-h3--letter-spacing);
+  text-transform: var(--font-h3--case);
+  line-height: var(--font-h3--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h3,
+  textarea.h3,
+  select.h3 {
+    font-size: max(1rem, var(--font-h3--size));
+  }
+}
+
+h4,
+.h4,
+.text-block.h4 > * {
+  font-family: var(--font-h4--family);
+  font-style: var(--font-h4--style);
+  font-weight: var(--font-h4--weight);
+  font-size: var(--font-size--h4);
+  letter-spacing: var(--font-h4--letter-spacing);
+  text-transform: var(--font-h4--case);
+  line-height: var(--font-h4--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h4,
+  textarea.h4,
+  select.h4 {
+    font-size: max(1rem, var(--font-h4--size));
+  }
+}
+
+h5,
+.h5,
+.text-block.h5 > * {
+  font-family: var(--font-h5--family);
+  font-style: var(--font-h5--style);
+  font-weight: var(--font-h5--weight);
+  font-size: var(--font-size--h5);
+  letter-spacing: var(--font-h5--letter-spacing);
+  text-transform: var(--font-h5--case);
+  line-height: var(--font-h5--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h5,
+  textarea.h5,
+  select.h5 {
+    font-size: max(1rem, var(--font-h5--size));
+  }
+}
+
+h6,
+.h6,
+.text-block.h6 > * {
+  font-family: var(--font-h6--family);
+  font-style: var(--font-h6--style);
+  font-weight: var(--font-h6--weight);
+  font-size: var(--font-size--h6);
+  letter-spacing: var(--font-h6--letter-spacing);
+  text-transform: var(--font-h6--case);
+  line-height: var(--font-h6--line-height);
+}
+
+@media screen and (max-width: 1024px) {
+  input.h6,
+  textarea.h6,
+  select.h6 {
+    font-size: max(1rem, var(--font-h6--size));
+  }
+}
+
+blockquote {
+  font-style: italic;
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-75));
+  border-left: 0.2rem solid rgb(var(--color-foreground-rgb) / var(--opacity-20));
+  padding-left: 1rem;
+}
+
+@media screen and (min-width: 750px) {
+  blockquote {
+    padding-left: 1.5rem;
+  }
+}
+
+.caption {
+  font-size: var(--font-size--3xs);
+  letter-spacing: 0.07rem;
+}
+
+@media screen and (min-width: 750px) {
+  .caption {
+    font-size: var(--font-size--2xs);
+  }
+}
+
+.caption-with-letter-spacing {
+  font-size: var(--font-size--3xs);
+  letter-spacing: 0.05rem;
+  text-transform: uppercase;
+}
+
+.caption-with-letter-spacing--medium {
+  font-size: var(--font-size--2xs);
+  letter-spacing: 0.05rem;
+}
+
+.caption-with-letter-spacing--large {
+  font-size: var(--font-size--sm);
+  letter-spacing: 0.1rem;
+}
+
+.caption-large,
+.customer .field input,
+.customer select,
+.field__input,
+.form__label,
+.select__select {
+  font-size: var(--font-size--sm);
+  letter-spacing: 0.04rem;
+}
+
+.color-foreground {
+  color: var(--color-foreground);
+}
+
+table:not([class]) {
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: var(--font-size--sm);
+  border-style: hidden;
+  box-shadow: 0 0 0 0.1rem rgb(var(--color-foreground-rgb) / var(--opacity-20));
+}
+
+table:not([class]) td,
+table:not([class]) th {
+  padding: 1em;
+  border: 0.1rem solid rgb(var(--color-foreground-rgb) / var(--opacity-20));
+}
+
+.visibility-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (prefers-reduced-motion) {
+  .motion-reduce {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+.underlined-link,
+.inline-richtext a {
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 0.1rem;
+  transition: text-decoration-thickness ease 100ms;
+}
+
+.underlined-link,
+.customer a:not(.button) {
+  color: rgb(var(--color-primary-rgb) / var(--opacity-85));
+}
+
+.inline-richtext a,
+.rte.inline-richtext a {
+  color: currentColor;
+}
+
+@media screen and (min-width: 1025px) {
+  .underlined-link:hover,
+  .customer a:not(.button):hover,
+  .inline-richtext a:hover {
+    color: var(--color-primary);
+    text-decoration-thickness: 0.2rem;
+  }
+}
+
+.icon-arrow {
+  width: 1.5rem;
+}
+
+h3 .icon-arrow,
+.h3 .icon-arrow {
+  width: 1.5rem;
+}
+
+
+/* Base text and heading styles */
+.paragraph:not(.button, .button-secondary),
+.paragraph:not(.button, .button-secondary) > * {
+  font-family: var(--font-body--family);
+  font-style: var(--font-body--style);
+  font-weight: var(--font-body--weight);
+  font-size: var(--font-body--size);
+  line-height: var(--font-body--line-height);
+  text-transform: var(--font-body--case);
+  -webkit-font-smoothing: antialiased;
+  color: var(--color, var(--color-foreground));
+}
+
+.paragraph > small {
+  font-size: smaller;
+}
+
+.body-xxs-font-size,
+.body-l-font-size,
+.body-s-font-size,
+.body-xxs-font-size {
+  line-height: var(--line-height--body-normal);
+}
+
+.body-3xl-font-size,
+.body-2xl-font-size,
+.body-xl-font-size,
+.body-m-font-size,
+.body-xs-font-size {
+  line-height: var(--line-height--body-medium);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h0,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+  color: var(--color, var(--color-foreground-heading));
+}
+
+h1,
+.h1,
+.text-block.h1 > * {
+  font-size: var(--font-size--h1);
+  letter-spacing: var(--font-h1--letter-spacing);
+  text-transform: var(--font-h1--case);
+  line-height: var(--font-h1--line-height);
+}
+
+h2,
+.h2,
+.text-block.h2 > * {
+  font-size: var(--font-size--h2);
+  letter-spacing: var(--font-h2--letter-spacing);
+  text-transform: var(--font-h2--case);
+  line-height: var(--font-h2--line-height);
+}
+
+h3,
+.h3,
+.text-block.h3 > * {
+  font-size: var(--font-size--h3);
+  letter-spacing: var(--font-h3--letter-spacing);
+  text-transform: var(--font-h3--case);
+  line-height: var(--font-h3--line-height);
+}
+
+h4,
+.h4,
+.text-block.h4 > * {
+  font-size: var(--font-size--h4);
+  letter-spacing: var(--font-h4--letter-spacing);
+  text-transform: var(--font-h4--case);
+  line-height: var(--font-h4--line-height);
+}
+
+h5,
+.h5,
+.text-block.h5 > * {
+  font-size: var(--font-size--h5);
+  letter-spacing: var(--font-h5--letter-spacing);
+  text-transform: var(--font-h5--case);
+  line-height: var(--font-h5--line-height);
+}
+
+h6,
+.h6,
+.text-block.h6 > * {
+  font-size: var(--font-size--h6);
+  letter-spacing: var(--font-h6--letter-spacing);
+  text-transform: var(--font-h6--case);
+  line-height: var(--font-h6--line-height);
+}
+
+
+/* Custom Typography style */
+.custom-typography,
+.custom-typography > *,
+.custom-typography.heading-border--solid .text > * {
+  font-family: var(--font-family);
+  font-weight: var(--font-weight);
+  text-transform: var(--text-transform);
+  text-wrap: var(--text-wrap);
+  line-height: var(--line-height);
+  letter-spacing: var(--letter-spacing);
+}
+
+.custom-font-size,
+.custom-font-size > *,
+.custom-font-size.heading-border--solid .text > * {
+  font-size: var(--font-size);
+}
+
+.custom-font-weight,
+.custom-font-weight > *,
+.custom-font-weight.heading-border--solid .text > * {
+  font-weight: var(--weight);
+}
+
+
+/* Links */
+a {
+  --button-color: var(--color, var(--color-primary));
+  color: var(--button-color);
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.075em;
+  text-underline-offset: 0.125em;
+  transition: text-decoration-color var(--animation-speed) var(--animation-easing),
+    color var(--animation-speed) var(--animation-easing);
+
+  @media screen and (min-width: 1025px) {
+    &:not(.button, .button-secondary):hover {
+      color: var(--color-primary-hover);
+    }
+  }
+}
+@media (hover: hover) {
+  :is(h1, h2, h3, h4, h5, h6, p) > a:hover {
+    --button-color: var(--color, var(--color-primary-hover));
+  }
+}
+
+p:not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-primary, .button-secondary)),
+.rte
+  :is(p, ul, ol, table):not(.h1, .h2, .h3, .h4, .h5, .h6)
+  a:where(:not(.button, .button-primary, .button-secondary)) {
+  text-decoration-color: currentcolor;
+
+  @media (hover: hover) {
+    &:hover {
+      text-decoration-color: transparent;
+      color: var(--color-primary-hover);
+    }
+  }
+}
+
+@supports (text-wrap: pretty) {
+  p,
+  .inline-richtext,
+  .rte {
+    text-wrap: pretty;
+  }
+}
+
+/* Moved from component-theme-helpers.css bucket. */
+.link {
+  font-style: var(--font-style);
+}
+
+.italic {
+  font-style: italic;
+}
+
+/* Text truncation */
+.text-clamp-style .card__heading .text-block .text {
+  --lineHeight: calc(var(--line-height) * var(--font-size));
+  --row: var(--text-clamp);
+  height: calc(var(--lineHeight) * var(--row));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: var(--row);
+  -webkit-box-orient: vertical;
+}
+
+/* Rich text */
+.rte::after {
+  clear: both;
+  content: '';
+  display: block;
+}
+
+.rte > *:first-child {
+  margin-top: 0;
+}
+
+.rte > *:last-child {
+  margin-bottom: 0;
+}
+
+.rte table {
+  table-layout: fixed;
+}
+
+@media screen and (min-width: 750px) {
+  .rte table td {
+    padding-inline: 1.2rem;
+  }
+}
+
+.rte img {
+  height: auto;
+  max-width: 100%;
+}
+
+.rte ul,
+.rte ol {
+  list-style-position: inside;
+  padding-left: 2rem;
+}
+
+.rte li {
+  list-style: inherit;
+}
+
+.rte li:last-child {
+  margin-bottom: 0;
+}
+
+.terkkin-product-tabs .tab-content ul,
+.terkkin-product-tabs .tab-content ol {
+  list-style-position: outside;
+  padding-left: 2rem;
+}
+
+.terkkin-product-tabs .tab-content ul {
+  list-style-type: disc;
+}
+
+.terkkin-product-tabs .tab-content ol {
+  list-style-type: decimal;
+}
+
+.terkkin-product-tabs .tab-content li {
+  display: list-item;
+  list-style: inherit;
+}
+
+.terkkin-product-tabs .tab-content li + li {
+  margin-top: 0.4rem;
+}
+
+.terkkin-product-tabs .tabs {
+  top: calc(var(--header-height) - 2px) !important;
+  gap: 2rem !important;
+}
+
+.terkkin-product-tabs .product-back .arrow {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  color: inherit;
+  font-size: 0 !important;
+  line-height: 0 !important;
+}
+
+.terkkin-product-tabs .product-back .arrow::after {
+  display: block;
+  width: 0.5rem;
+  height: 0.5rem;
+  content: '';
+  border-top: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  transform: rotate(45deg) translate(0.1rem, 0.1rem);
+}
+
+.rte a {
+  color: rgb(var(--color-primary-rgb) / var(--opacity-85));
+  text-underline-offset: 0.3rem;
+  text-decoration-thickness: 0.1rem;
+  transition: text-decoration-thickness var(--duration-short) ease;
+}
+
+@media (hover: hover) {
+  .rte a:hover {
+    color: var(--color-primary);
+    text-decoration-thickness: 0.2rem;
+  }
+}
+
+.rte blockquote {
+  display: inline-flex;
+
+  & > * {
+    margin: -0.5rem 0;
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "finder": {
+      "type": "product-support-finder",
+      "settings": {}
+    },
+    "routes": {
+      "type": "page-card-groups",
+      "settings": {
+        "groups_source": "manual",
+        "groups": "{{ closest.page.metafields.custom.card_groups.value }}",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "contact": {
+      "type": "page-cta",
+      "settings": {}
+    },
+    "breadcrumb": {
+      "type": "breadcrumb",
+      "settings": {
+        "separator": "slash",
+        "horizontal_alignment": "start",
+        "font_size": "1.4rem",
+        "section_width": "page-width",
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
+    }
+  },
+  "order": [
+    "breadcrumb",
+    "finder",
+    "routes",
+    "contact"
+  ]
+}

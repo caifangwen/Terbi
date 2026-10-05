@@ -1,0 +1,79 @@
+{%- doc -%}
+  Renders a storefront search bar.
+
+  @param {string} id
+  @param {string} [placeholder]
+  @param {string} [placeholder_color]
+  @param {string} [result_type]
+  @param {string} [bar_background]
+  @param {string} [bar_text_color]
+  @param {string} [icon_color]
+  @param {string} [icon_circle_color]
+  @param {boolean} [predictive]
+  @param {number} [max_width]
+  @param {number} [bar_height]
+  @param {number} [padding_block_start]
+  @param {number} [padding_block_end]
+  @param {number} [padding_inline_start]
+  @param {number} [padding_inline_end]
+{%- enddoc -%}
+
+{%- liquid
+  assign placeholder = placeholder | default: 'Search entire store here'
+  assign result_type = result_type | default: 'all'
+  assign input_id = 'Search-Block-' | append: id
+-%}
+
+<div
+  class="search-block w-full spacing-style"
+  style="
+    --padding-block-start: {{ padding_block_start | default: 0 }}px;
+    --padding-block-end: {{ padding_block_end | default: 0 }}px;
+    --padding-inline-start: {{ padding_inline_start | default: 0 }}px;
+    --padding-inline-end: {{ padding_inline_end | default: 0 }}px;
+    --search-bar-bg: {{ bar_background | default: '#b8ff00' }};
+    --search-bar-text: {{ bar_text_color | default: '#202020' }};
+    --search-placeholder-color: {{ placeholder_color | default: '#202020' }};
+    --search-icon-color: {{ icon_color | default: '#202020' }};
+    --search-icon-circle-color: {{ icon_circle_color | default: '#202020' }};
+    --search-bar-max-width: {{ max_width | default: 880 }}px;
+    --search-bar-height: {{ bar_height | default: 64 }}px;
+  "
+>
+  <div class="search-block__form">
+    {%- if predictive -%}
+      <predictive-search class="search-block__search-form" data-loading-text="{{ 'accessibility.loading' | t }}">
+    {%- else -%}
+      <search-form class="search-block__search-form">
+    {%- endif -%}
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search search-block__search">
+        <div class="search-block__field">
+          {% render 'search-input',
+            input_id: input_id,
+            input_class: 'search-block__input',
+            placeholder: placeholder,
+            result_type: result_type,
+            predictive: predictive
+          %}
+
+          <button type="submit" class="search-block__button button button-unstyled" aria-label="{{ 'content.search' | t }}">
+            <span class="svg-wrapper">
+              {{- 'icon-search.svg' | inline_asset_content -}}
+            </span>
+          </button>
+
+          {%- if predictive -%}
+            <div class="predictive-search predictive-search--search-template search-block__results" tabindex="-1" data-predictive-search>
+              {%- render 'loading-spinner', class: 'predictive-search__loading-state' -%}
+            </div>
+            <span class="predictive-search-status visually-hidden" role="status" aria-hidden="true"></span>
+          {%- endif -%}
+        </div>
+      </form>
+    {%- if predictive -%}
+      </predictive-search>
+    {%- else -%}
+      </search-form>
+    {%- endif -%}
+  </div>
+</div>

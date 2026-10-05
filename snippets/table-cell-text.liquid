@@ -1,0 +1,19 @@
+{%- liquid
+  assign text = text | strip
+  assign parts = text | append: ' ' | split: '**'
+-%}
+{%- for part in parts -%}
+  {%- assign cell_text = part -%}
+  {%- assign parity = forloop.index0 | modulo: 2 -%}
+  {%- if forloop.last -%}
+    {%- assign length = part.size | minus: 1 -%}
+    {%- assign cell_text = part | slice: 0, length -%}
+  {%- endif -%}
+  {%- if parity == 0 -%}
+    {{- cell_text | escape -}}
+  {%- elsif forloop.last -%}
+    **{{- cell_text | escape -}}
+  {%- else -%}
+    <strong>{{- cell_text | escape -}}</strong>
+  {%- endif -%}
+{%- endfor -%}

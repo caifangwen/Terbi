@@ -1,0 +1,36 @@
+<article class="guide-hub section section--page-width">
+  <nav class="guide-hub__breadcrumb" aria-label="Breadcrumb">
+    <a href="{{ routes.root_url }}">Home</a><span aria-hidden="true">/</span>
+    <a href="/pages/guides-resources">Guides &amp; Resources</a><span aria-hidden="true">/</span>
+    <span aria-current="page">{{ page.title | escape }}</span>
+  </nav>
+  <header class="guide-hub__hero">
+    <p class="guide-hub__eyebrow">TERKKIN GUIDES</p>
+    <h1>{{ page.title | escape }}</h1>
+  </header>
+  <div class="guide-hub__content rte">{{ page.content }}</div>
+  <p class="guide-hub__back"><a href="/pages/guides-resources">← All guides &amp; resources</a></p>
+</article>
+
+{% stylesheet %}
+  .guide-hub { max-width: 128rem; margin-inline: auto; padding-block: 2rem 8rem; color: #342d27; }
+  .guide-hub__breadcrumb { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: clamp(4rem, 6vw, 8rem); font-size: 1.3rem; }
+  .guide-hub__breadcrumb a, .guide-hub__back a { color: inherit; text-underline-offset: .3rem; }
+  .guide-hub__hero { max-width: 80rem; margin-bottom: clamp(4rem, 6vw, 7rem); }
+  .guide-hub__eyebrow { font-size: 1.2rem; font-weight: 700; letter-spacing: .1em; }
+  .guide-hub h1, .guide-hub h2, .guide-hub h3 { font-family: var(--font-heading--family); font-weight: 500; line-height: 1.15; text-wrap: balance; }
+  .guide-hub h1 { margin: 1rem 0 0; font-size: clamp(3.6rem, 5vw, 6.4rem); }
+  .guide-hub__content { max-width: 80rem; overflow-wrap: anywhere; }
+  .guide-hub__content h2 { margin: clamp(4rem, 6vw, 7rem) 0 1.5rem; padding-top: 1.8rem; border-top: 1px solid #cbc4b9; font-size: clamp(2.7rem, 3vw, 4rem); scroll-margin-top: 12rem; }
+  .guide-hub__content h3 { margin: 2.4rem 0 1rem; font-size: clamp(2.1rem, 2vw, 2.7rem); }
+  .guide-hub__content p, .guide-hub__content li { font-size: clamp(1.6rem, 1.3vw, 1.8rem); line-height: 1.7; }
+  .guide-hub__content a { color: #174994; text-underline-offset: .3rem; }
+  .guide-hub__content a:focus-visible, .guide-hub__breadcrumb a:focus-visible { outline: 2px solid #174994; outline-offset: 3px; }
+  .guide-hub__content ul, .guide-hub__content ol { padding-left: 2.4rem; }
+  .guide-hub__back { margin-top: 6rem; padding-top: 2rem; border-top: 1px solid #cbc4b9; }
+  @media (max-width: 749px) { .guide-hub { padding-inline: 2rem; padding-bottom: 5rem; } }
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "Guide hub", "settings": [] }
+{% endschema %}

@@ -1,0 +1,14 @@
+{% assign heading = collection.metafields.custom.section_content.value.shape_heading.value %}
+{% if heading != blank %}
+  <div class="section section--page-width" style="padding-block-start: 50px;">
+    <h2>{{ heading | escape }}</h2>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Collection shape heading",
+  "enabled_on": { "templates": ["collection"] },
+  "settings": []
+}
+{% endschema %}

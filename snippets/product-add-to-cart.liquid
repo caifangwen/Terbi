@@ -1,0 +1,59 @@
+
+
+{% doc %}
+  This block is used to display the add to cart button.
+  Intended for product-form.liquid block.
+
+  @param {string} can_add_to_cart - Whether the product can be added to the cart
+  @param {string} add_to_cart_text - The text of the add to cart button
+{% enddoc %}
+
+{% liquid
+  assign class = 'add-to-cart-button '
+  assign id = 'ProductSubmitButton-' | append: section.id
+  assign style_class = style_class | default: 'button-secondary'
+%}
+
+{% capture group_buttons %}
+  {%- if enable_wishlist -%}
+    {% liquid
+      assign class_button = 'button h-full center cursor-pointer flex items-center justify-center relative leading-none'
+      assign class_text = 'visually-hidden'
+      assign class_text_inner = 'text-inner text-sm inline-block'
+    %}
+    {% render 'product-wishlist-button',
+      card_product: closest.product,
+      class_button: class_button,
+      class_text: class_text,
+      class_text_inner: class_text_inner
+    %}
+  {%- endif -%}
+  {%- if show_social -%}
+    {% render 'social-share-button'
+      product: closest.product
+    %}
+  {%- endif -%}
+{% endcapture %}
+
+<span
+  class="add-to-cart-button-container"
+  style="--add-to-cart-font-case: {{ settings.button_text_case_primary }};"
+>
+  <div class="add-to-cart-button-inner flex items-stretch" style="--gap: {{ gap | default: 5 }}px;">
+    {% if group_buttons_position == 'left' %}
+      {{ group_buttons }}
+    {% endif %}
+    {% render 'add-to-cart-button',
+      id: id,
+      class: class,
+      style_class: style_class,
+      can_add_to_cart: can_add_to_cart,
+      product: closest.product,
+      add_to_cart_text: add_to_cart_text,
+      button_style: button_style
+    %}
+    {% if group_buttons_position == 'right' %}
+      {{ group_buttons }}
+    {% endif %}
+  </div>
+</span>

@@ -1,0 +1,25 @@
+{%- comment -%} Product-comparison control for the multitasking bar. {%- endcomment -%}
+<div class="target-block product-compare-task relative button__product-compare hide">
+  <button
+    class="multi-t__button p-0 flex items-center justify-center relative cursor-pointer bor-none rounded-full"
+    data-target="product-compare"
+    data-compare-link
+    type="button"
+    aria-label="{{ 'content.compare.title' | t }}"
+  >
+    {%- render 'loading-spinner' -%}
+    <span class="svg-wrapper">
+      <svg
+        class="icon icon-compare"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 512 512"
+      >
+        {%- render 'icon', icon: 'compare' -%}
+      </svg>
+    </span>
+    <span class="countPill" data-compare-count></span>
+  </button>
+  <span class="target-block--tooltip">{{ 'content.compare.title' | t }}</span>
+</div>

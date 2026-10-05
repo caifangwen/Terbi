@@ -1,0 +1,33 @@
+{% comment %}
+  Shared language list for combined localization menus.
+{% endcomment %}
+
+<ul
+  id="{{ localPosition }}List"
+  role="list"
+  class="disclosure__list language-selector__list list-unstyled cus-scrollbar"
+  style="{{ localization_font }} {{ localization_font_size }}"
+>
+  {%- for language in localization.available_languages -%}
+    <li class="disclosure__item" tabindex="-1">
+      <a
+        class="disclosure__link caption-large focus-inset"
+        href="#"
+        hreflang="{{ language.iso_code }}"
+        lang="{{ language.iso_code }}"
+        {% if language.iso_code == localization.language.iso_code %}
+          aria-current="true"
+        {% endif %}
+        data-value="{{ language.iso_code }}"
+        aria-label="{{ language.endonym_name | capitalize }}"
+      >
+        {% if country_style == true %}
+          <span class="icon-flag icon-flag--{{ language.iso_code }}"></span>
+        {% endif %}
+        <span>
+          {{ language.endonym_name | capitalize }}
+        </span>
+      </a>
+    </li>
+  {%- endfor -%}
+</ul>

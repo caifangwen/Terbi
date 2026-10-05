@@ -1,0 +1,14 @@
+{% doc %}
+  Returns the approved newsroom category key for an article, or nothing.
+  @param {article} article - News article to classify by its tags
+{% enddoc %}
+{%- for tag in article.tags -%}
+  {%- assign key = tag | handleize -%}
+  {%- case key -%}
+    {%- when 'product-innovation' -%}product{%- break -%}
+    {%- when 'company' -%}company{%- break -%}
+    {%- when 'partnerships-channels' -%}partnerships{%- break -%}
+    {%- when 'sustainability-community' -%}sustainability{%- break -%}
+    {%- when 'events-recognition' -%}events{%- break -%}
+  {%- endcase -%}
+{%- endfor -%}

@@ -1,0 +1,61 @@
+.terbi-tech__content {
+  padding-block: var(--padding-4xl, 4rem);
+  min-width: 0;
+}
+.terbi-tech__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--gap-2xl, 4rem);
+}
+.terbi-tech__hero-copy { padding-block: var(--padding-2xl, 3rem); }
+.terbi-tech__eyebrow { letter-spacing: 0.12em; font-size: var(--font-size--sm); }
+.terbi-tech__hero h1 { margin-block: var(--margin-lg, 2rem); }
+.terbi-tech__intro { max-width: 44rem; margin-block-end: var(--margin-2xl, 3rem); }
+.terbi-tech__note { font-size: var(--font-size--sm); margin-block-start: var(--margin-lg, 2rem); }
+.terbi-tech__hero-image img { display: block; width: 100%; height: auto; }
+.terbi-tech__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-lg, 2rem);
+  padding-block: var(--padding-2xl, 3rem);
+  border-block-end: 1px solid var(--color-border);
+}
+.terbi-tech__categories a { color: var(--color-foreground); text-underline-offset: 0.3em; }
+.terbi-tech__categories a[aria-current] { font-weight: var(--font-h1--weight); }
+.terbi-tech__catalog-heading { margin-block: var(--margin-3xl, 4rem); }
+.terbi-tech__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gap-xl, 2.4rem);
+  margin-block: var(--margin-2xl, 3rem);
+}
+.terbi-tech__grid li { min-width: 0; }
+.terbi-tech__grid .resource-card { opacity: 1; }
+.terbi-tech__grid .resource-card__content { padding-block: var(--padding-md, 1.6rem); }
+.terbi-tech__grid .resource-card__title { font-family: var(--font-h3--family); overflow-wrap: anywhere; }
+.terbi-tech__guide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--gap-xl, 2.4rem);
+  padding-block: var(--padding-4xl, 4rem);
+  border-block-start: 1px solid var(--color-border);
+}
+.terbi-tech__guide p { max-width: 50rem; }
+.terbi-tech__faq { margin-block: var(--margin-3xl, 4rem); }
+.terbi-tech__faq h2 { margin-block-end: var(--margin-xl, 2.4rem); }
+.terbi-tech__faq .accordion__item { border-block-end: 1px solid var(--color-border); }
+.terbi-tech__faq summary { cursor: pointer; padding-block: var(--padding-lg, 2rem); }
+.terbi-tech__faq .rte { padding-block-end: var(--padding-lg, 2rem); }
+.terbi-tech a:focus-visible { outline: 2px solid var(--color-foreground); outline-offset: 4px; }
+@media screen and (max-width: 1099px) {
+  .terbi-tech__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media screen and (max-width: 749px) {
+  .terbi-tech__hero { grid-template-columns: minmax(0, 1fr); gap: var(--gap-md, 1.6rem); }
+  .terbi-tech__grid { grid-template-columns: minmax(0, 1fr); }
+  .terbi-tech__guide { align-items: flex-start; flex-direction: column; }
+  .terbi-tech__hero-copy { padding-block-start: 0; }
+  .terbi-tech__hero h1 { font-size: var(--font-h2--size); }
+}

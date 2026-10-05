@@ -1,0 +1,48 @@
+{%- liquid
+  echo 'vendor.css' | asset_url | stylesheet_tag: preload: true
+  echo 'base.css' | asset_url | stylesheet_tag: preload: true
+  echo 'base-utilities.css' | asset_url | stylesheet_tag: preload: true
+  echo 'base-layout.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-modal-drawer.css' | asset_url | stylesheet_tag: preload: true
+  echo 'section-header.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-floating-actions.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-button.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-form.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-media.css' | asset_url | stylesheet_tag: preload: true
+  echo 'component-cart-count-bubble.css' | asset_url | stylesheet_tag: preload: true
+  if template.name == 'index'
+    echo 'section-slideshow-base.css' | asset_url | stylesheet_tag: preload: true
+  endif
+
+  if direction == 'rtl'
+    echo 'rtl.css' | asset_url | stylesheet_tag: preload: true
+  endif
+
+  assign async_styles = 'section.css,component-slider.css,component-swiper-base.css'
+  if settings.show_calculator_free_shipping_message
+    assign async_styles = async_styles | append: ',component-calculator-shipping.css'
+  endif
+  if settings.swatch != blank
+    assign async_styles = async_styles | append: ',component-swatch.css'
+  endif
+  if settings.predictive_search_enabled
+    assign async_styles = async_styles | append: ',component-predictive-search.css'
+  endif
+  assign async_styles = async_styles | append: ',component-card.css,component-resource-card.css,component-product-badge.css,component-price.css,component-share-button.css,component-quantity.css,component-collage.css,component-localization.css,component-blog-list.css,animations.css,section-ecom-blocks.css,section-editorial-blocks.css,component-tabs.css,component-video.css,component-disclosure.css,component-accordion.css,component-media-gallery-zoom.css,section-fetcher.css,component-text-block.css,component-hover-effect.css,component-menu.css,component-atoms.css,component-layout-utils.css,component-typography-core.css,component-drawers-async.css,theme-overrides.css'
+  unless template.name == 'index'
+    assign async_styles = async_styles | append: ',section-slideshow-base.css'
+  endunless
+  assign async_styles = async_styles | split: ','
+  assign critical_styles = 'section.css,component-slider.css,component-swiper-base.css,component-atoms.css,component-layout-utils.css,component-typography-core.css,component-text-block.css,theme-overrides.css' | split: ','
+-%}
+
+{%- for stylesheet in async_styles -%}
+  <link rel="stylesheet" href="{{ stylesheet | asset_url }}"{% unless critical_styles contains stylesheet %} media="print" onload="this.media='all'"{% endunless %}>
+{%- endfor -%}
+
+<noscript>
+  {%- for stylesheet in async_styles -%}
+    <link rel="stylesheet" href="{{ stylesheet | asset_url }}">
+  {%- endfor -%}
+  <link rel="stylesheet" href="{{ 'component-button.css' | asset_url }}">
+</noscript>

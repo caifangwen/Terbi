@@ -1,0 +1,233 @@
+{%- assign news_blog = section.settings.news_blog -%}
+{%- if news_blog == blank -%}{%- assign news_blog = blogs['news'] -%}{%- endif -%}
+{%- assign featured = blank -%}
+{%- assign latest_count = 0 -%}
+
+<div class="newsroom section section--page-width">
+  <header class="newsroom__intro">
+    <div>
+      <p class="newsroom__eyebrow">TERKKIN NEWSROOM</p>
+      <h1>News &amp; Press</h1>
+      <p class="newsroom__lead">Follow the latest from TERKKIN—from new products and design developments to partnerships, company updates and independent media coverage.</p>
+    </div>
+    <div class="newsroom__intro-links">
+      <a href="{% if section.settings.resources_page != blank %}{{ section.settings.resources_page.url }}{% else %}#media-resources{% endif %}">Media Resources <span aria-hidden="true">→</span></a>
+      <a href="#media-inquiries">Media Inquiries <span aria-hidden="true">→</span></a>
+    </div>
+  </header>
+
+  <nav class="newsroom__nav" aria-label="Newsroom sections">
+    <a href="#latest-news">Latest News</a><a href="{% if section.settings.news_page != blank %}{{ section.settings.news_page.url }}{% else %}#from-terkkin{% endif %}">From TERKKIN</a><a href="{% if section.settings.press_page != blank %}{{ section.settings.press_page.url }}{% else %}#in-the-press{% endif %}">In the Press</a><a href="{% if section.settings.resources_page != blank %}{{ section.settings.resources_page.url }}{% else %}#media-resources{% endif %}">Media Resources</a>
+  </nav>
+
+  {%- if news_blog != blank -%}
+    {%- for article in news_blog.articles -%}
+      {%- capture category -%}{%- render 'newsroom-category', article: article -%}{%- endcapture -%}
+      {%- if category != blank -%}{%- assign featured = article -%}{%- break -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+
+  <section id="latest-news" class="newsroom__section" aria-labelledby="newsroom-featured-title">
+    <div class="newsroom__section-heading"><p class="newsroom__eyebrow">FEATURED / LATEST</p><h2 id="newsroom-featured-title">The Latest Stories</h2></div>
+    {%- if featured != blank -%}
+      <div class="newsroom__feature-layout">
+        <article class="newsroom__feature">
+          <a class="newsroom__image newsroom__image--feature" href="{{ featured.url }}" aria-label="Read {{ featured.title | escape }}">
+            {%- if featured.image -%}{{ featured.image | image_url: width: 1400 | image_tag: widths: '480, 720, 960, 1200, 1400', sizes: '(min-width: 990px) 66vw, 100vw', loading: 'eager' }}{%- endif -%}
+          </a>
+          {%- capture featured_category -%}{%- render 'newsroom-category', article: featured -%}{%- endcapture -%}
+          <p class="newsroom__meta">{{ featured_category | replace: 'product', 'Product & Innovation' | replace: 'partnerships', 'Partnerships & Channels' | replace: 'sustainability', 'Sustainability & Community' | replace: 'events', 'Events & Recognition' | upcase }} <span>{{ featured.published_at | date: '%b %d, %Y' | upcase }}</span></p>
+          <h3><a href="{{ featured.url }}">{{ featured.title | escape }}</a></h3>
+          {%- if featured.excerpt != blank -%}<p class="newsroom__excerpt">{{ featured.excerpt | strip_html | truncatewords: 28 }}</p>{%- endif -%}
+          <a class="newsroom__text-link" href="{{ featured.url }}">Read Story <span aria-hidden="true">→</span></a>
+        </article>
+        <div class="newsroom__latest">
+          {%- for article in news_blog.articles -%}
+            {%- if article.id != featured.id -%}
+              {%- capture category -%}{%- render 'newsroom-category', article: article -%}{%- endcapture -%}
+              {%- if category != blank -%}
+                <article>
+                  <p class="newsroom__meta">{{ category | replace: 'product', 'Product & Innovation' | replace: 'partnerships', 'Partnerships & Channels' | replace: 'sustainability', 'Sustainability & Community' | replace: 'events', 'Events & Recognition' | upcase }} <span>{{ article.published_at | date: '%b %d, %Y' | upcase }}</span></p>
+                  <h3><a href="{{ article.url }}">{{ article.title | escape }}</a></h3>
+                  {%- if article.excerpt != blank -%}<p class="newsroom__excerpt">{{ article.excerpt | strip_html | truncatewords: 18 }}</p>{%- endif -%}
+                  <a class="newsroom__text-link" href="{{ article.url }}">Read <span aria-hidden="true">→</span></a>
+                </article>
+                {%- assign latest_count = latest_count | plus: 1 -%}
+                {%- if latest_count == 2 -%}{%- break -%}{%- endif -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- else -%}<p class="newsroom__empty">Official stories will appear here when published.</p>{%- endif -%}
+  </section>
+
+  <section id="from-terkkin" class="newsroom__section" aria-labelledby="newsroom-news-title">
+    <div class="newsroom__section-heading"><p class="newsroom__eyebrow">OUR LATEST</p><h2 id="newsroom-news-title">From TERKKIN</h2><p>Official news, product introductions and company updates from TERKKIN.</p></div>
+    {%- if featured != blank -%}
+      <div class="newsroom__filters" role="group" aria-label="Filter news by category">
+        <button type="button" class="is-active" data-filter="all" aria-pressed="true">All</button><button type="button" data-filter="product" aria-pressed="false">Product &amp; Innovation</button><button type="button" data-filter="company" aria-pressed="false">Company</button><button type="button" data-filter="partnerships" aria-pressed="false">Partnerships</button><button type="button" data-filter="sustainability" aria-pressed="false">Sustainability</button><button type="button" data-filter="events" aria-pressed="false">Events</button>
+      </div>
+      <div class="newsroom__grid">
+        {%- for article in news_blog.articles -%}
+          {%- capture category -%}{%- render 'newsroom-category', article: article -%}{%- endcapture -%}
+          {%- if category != blank -%}
+            <article class="newsroom__card" data-category="{{ category }}">
+              {%- if article.image -%}<a class="newsroom__image newsroom__image--card" href="{{ article.url }}" aria-label="Read {{ article.title | escape }}">{{ article.image | image_url: width: 850 | image_tag: widths: '320, 480, 650, 850', sizes: '(min-width: 990px) 31vw, (min-width: 600px) 48vw, 100vw', loading: 'lazy' }}</a>{%- endif -%}
+              <p class="newsroom__meta">{{ category | replace: 'product', 'Product & Innovation' | replace: 'partnerships', 'Partnerships & Channels' | replace: 'sustainability', 'Sustainability & Community' | replace: 'events', 'Events & Recognition' | upcase }} <span>{{ article.published_at | date: '%b %d, %Y' | upcase }}</span></p>
+              <h3><a href="{{ article.url }}">{{ article.title | escape }}</a></h3>
+              {%- if article.excerpt != blank -%}<p class="newsroom__excerpt">{{ article.excerpt | strip_html | truncatewords: 22 }}</p>{%- endif -%}
+              <a class="newsroom__text-link" href="{{ article.url }}">Read Story <span aria-hidden="true">→</span></a>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <p class="newsroom__empty newsroom__filter-empty" hidden>No stories in this category yet.</p>
+    {%- endif -%}
+  </section>
+
+  <section id="in-the-press" class="newsroom__section" aria-labelledby="newsroom-press-title">
+    <div class="newsroom__section-heading"><p class="newsroom__eyebrow">IN THE PRESS</p><h2 id="newsroom-press-title">TERKKIN in the Media</h2><p>Independent coverage, reviews and editorial mentions of TERKKIN products and ideas.</p></div>
+    <div class="newsroom__press-list">
+      {%- assign press_count = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'coverage' and block.settings.verified and block.settings.url != blank and block.settings.headline != blank and block.settings.publication != blank -%}
+          <article class="newsroom__press-row" {{ block.shopify_attributes }}>
+            <div class="newsroom__publication">{%- if block.settings.logo_permission and block.settings.logo != blank -%}{{ block.settings.logo | image_url: width: 240 | image_tag: loading: 'lazy', alt: block.settings.publication }}{%- else -%}{{ block.settings.publication | escape }}{%- endif -%}</div>
+            <div><h3><a href="{{ block.settings.url }}" target="_blank" rel="noopener noreferrer">{{ block.settings.headline | escape }}</a></h3>{%- if block.settings.summary != blank -%}<p>{{ block.settings.summary | escape }}</p>{%- endif -%}{%- if block.settings.kind == 'sponsored' -%}<span class="newsroom__disclosure">Sponsored Content</span>{%- endif -%}</div>
+            <div class="newsroom__press-end">{%- if block.settings.date != blank -%}<time>{{ block.settings.date | date: '%b %Y' }}</time>{%- endif -%}<a href="{{ block.settings.url }}" target="_blank" rel="noopener noreferrer">Read Coverage <span aria-hidden="true">↗</span></a></div>
+          </article>
+          {%- assign press_count = press_count | plus: 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+      {%- if press_count == 0 -%}<p class="newsroom__empty">Verified independent coverage will appear here.</p>{%- endif -%}
+      {%- if section.settings.press_page != blank -%}<a class="newsroom__text-link" href="{{ section.settings.press_page.url }}">View All Coverage <span aria-hidden="true">→</span></a>{%- endif -%}
+  </section>
+
+  <section id="media-resources" class="newsroom__section" aria-labelledby="newsroom-resources-title">
+    <div class="newsroom__section-heading"><p class="newsroom__eyebrow">FOR MEDIA</p><h2 id="newsroom-resources-title">Media Resources</h2><p>Approved TERKKIN brand materials for editorial, media and professional use.</p></div>
+    <div class="newsroom__resources">
+      <div class="newsroom__resource"><p>Brand Overview</p><h3>TERKKIN Fact Sheet</h3>{%- if section.settings.resources_page != blank -%}<a href="{{ section.settings.resources_page.url }}#fact-sheet">View Fact Sheet <span aria-hidden="true">→</span></a>{%- endif -%}</div>
+      <div class="newsroom__resource"><p>Brand Assets</p><h3>TERKKIN Logos</h3>{%- if section.settings.resources_page != blank -%}<a href="{{ section.settings.resources_page.url }}#brand-assets">View Brand Assets <span aria-hidden="true">→</span></a>{%- endif -%}</div>
+      <div class="newsroom__resource"><p>Approved Photography</p><h3>Media Image Library</h3>{%- if section.settings.resources_page != blank -%}<a href="{{ section.settings.resources_page.url }}#photography">View Approved Images <span aria-hidden="true">→</span></a>{%- endif -%}</div>
+      <div class="newsroom__resource"><p>Product Media</p><h3>Product Press Assets</h3>{%- if section.settings.resources_page != blank -%}<a href="{{ section.settings.resources_page.url }}#product-media">Browse Product Assets <span aria-hidden="true">→</span></a>{%- endif -%}</div>
+    </div>
+  </section>
+
+  <section id="media-inquiries" class="newsroom__contact" aria-labelledby="newsroom-contact-title">
+    <p class="newsroom__eyebrow">MEDIA INQUIRIES</p><h2 id="newsroom-contact-title">Working on a Story?</h2>
+    <p>For media interviews, product information, approved imagery or editorial inquiries, contact the TERKKIN media team.</p>
+    {%- if section.settings.media_contact_url != blank -%}<a class="newsroom__text-link" href="{{ section.settings.media_contact_url }}">Contact Media Team <span aria-hidden="true">→</span></a>{%- endif -%}
+    <small>Product support and order inquiries should be directed to <a href="/pages/contact-product-support">TERKKIN Customer Support</a>.</small>
+  </section>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector('.newsroom');
+    if (!root) return;
+    const cards = [...root.querySelectorAll('.newsroom__card')];
+    const empty = root.querySelector('.newsroom__filter-empty');
+    root.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      let count = 0;
+      root.querySelectorAll('[data-filter]').forEach(item => {
+        item.classList.toggle('is-active', item === button);
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      cards.forEach(card => {
+        const visible = button.dataset.filter === 'all' || card.dataset.category === button.dataset.filter;
+        card.hidden = !visible;
+        if (visible) count++;
+      });
+      empty.hidden = count > 0;
+    }));
+  })();
+</script>
+
+{% stylesheet %}
+  .newsroom { color: #292b28; }
+  .newsroom h1, .newsroom h2, .newsroom h3 { font-family: var(--font-heading--family); font-weight: 400; line-height: 1.14; margin: 0; }
+  .newsroom a { color: inherit; text-decoration: none; }
+  .newsroom a:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .newsroom__intro { display: grid; grid-template-columns: minmax(0, 2fr) minmax(180px, 1fr); gap: 3rem; align-items: end; padding-block: clamp(56px, 8vw, 112px) clamp(42px, 5vw, 72px); }
+  .newsroom__eyebrow, .newsroom__meta { font-family: var(--font-body--family); font-size: 11px; font-weight: 600; letter-spacing: .13em; line-height: 1.5; text-transform: uppercase; }
+  .newsroom__eyebrow { margin: 0 0 14px; }
+  .newsroom h1 { font-size: clamp(48px, 7vw, 92px); letter-spacing: -.045em; }
+  .newsroom__lead { max-width: 700px; font-size: clamp(16px, 1.6vw, 20px); line-height: 1.65; margin: 24px 0 0; }
+  .newsroom__intro-links { display: grid; justify-content: end; gap: 14px; font-size: 14px; }
+  .newsroom__intro-links a, .newsroom__text-link, .newsroom__resource a, .newsroom__press-end a { font-weight: 600; }
+  .newsroom__nav { display: flex; flex-wrap: wrap; gap: 24px 32px; padding: 20px 0; border-block: 1px solid #d8d7d0; font-size: 13px; }
+  .newsroom__section { padding-block: clamp(64px, 8vw, 112px); border-bottom: 1px solid #d8d7d0; scroll-margin-top: 80px; }
+  .newsroom__section-heading { margin-bottom: 38px; }
+  .newsroom__section-heading h2, .newsroom__contact h2 { font-size: clamp(34px, 4vw, 58px); letter-spacing: -.035em; }
+  .newsroom__section-heading > p:last-child:not(.newsroom__eyebrow) { max-width: 650px; margin: 16px 0 0; font-size: 16px; line-height: 1.6; }
+  .newsroom__feature-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 56px); }
+  .newsroom__image { display: block; overflow: hidden; background: #eeeee9; }
+  .newsroom__image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .newsroom__image--feature { aspect-ratio: 16 / 9; margin-bottom: 22px; }
+  .newsroom__image--card { aspect-ratio: 4 / 3; margin-bottom: 20px; }
+  .newsroom__meta { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 12px; }
+  .newsroom__meta span { color: #747872; }
+  .newsroom__feature h3 { font-size: clamp(28px, 3vw, 44px); }
+  .newsroom__latest { display: grid; align-content: start; }
+  .newsroom__latest article { padding: 0 0 26px; margin: 0 0 28px; border-bottom: 1px solid #d8d7d0; }
+  .newsroom__latest h3 { font-size: clamp(23px, 2vw, 30px); }
+  .newsroom__excerpt { line-height: 1.6; color: #555b55; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; margin: 14px 0 20px; }
+  .newsroom__text-link { font-size: 13px; }
+  .newsroom__filters { display: flex; gap: 12px 24px; overflow-x: auto; margin-bottom: 34px; border-bottom: 1px solid #d8d7d0; }
+  .newsroom__filters button { border: 0; border-bottom: 2px solid transparent; background: none; color: inherit; padding: 0 0 14px; font: inherit; font-size: 13px; white-space: nowrap; cursor: pointer; }
+  .newsroom__filters button.is-active { border-color: currentColor; font-weight: 600; }
+  .newsroom__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 48px 36px; }
+  .newsroom__card[hidden] { display: none; }
+  .newsroom__card h3 { font-size: clamp(23px, 2vw, 29px); }
+  .newsroom__empty { color: #646963; font-size: 15px; }
+  .newsroom__filter-empty[hidden] { display: none; }
+  .newsroom__press-row { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(0, 3fr) minmax(120px, .9fr); gap: 32px; padding: 30px 0; border-top: 1px solid #d8d7d0; }
+  .newsroom__press-row:last-child { border-bottom: 1px solid #d8d7d0; }
+  .newsroom__publication { font-weight: 600; }
+  .newsroom__publication img { max-width: 150px; max-height: 45px; width: auto; height: auto; }
+  .newsroom__press-row h3 { font-size: clamp(21px, 2vw, 27px); }
+  .newsroom__press-row p { margin: 10px 0 0; line-height: 1.55; color: #555b55; }
+  .newsroom__press-end { display: grid; align-content: start; justify-items: end; gap: 18px; font-size: 13px; }
+  .newsroom__disclosure { display: inline-block; margin-top: 12px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+  .newsroom__resources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #d8d7d0; border-left: 1px solid #d8d7d0; }
+  .newsroom__resource { min-height: 190px; display: flex; flex-direction: column; align-items: flex-start; padding: 30px; border-right: 1px solid #d8d7d0; border-bottom: 1px solid #d8d7d0; }
+  .newsroom__resource > p { margin: 0 0 18px; font-size: 12px; }
+  .newsroom__resource h3 { font-size: clamp(25px, 2.5vw, 35px); margin-bottom: auto; }
+  .newsroom__resource a { margin-top: 24px; font-size: 13px; }
+  .newsroom__contact { background: #e9e5de; margin-block: clamp(64px, 8vw, 112px); padding: clamp(42px, 6vw, 84px); scroll-margin-top: 80px; }
+  .newsroom__contact > p:not(.newsroom__eyebrow) { max-width: 660px; line-height: 1.65; margin: 20px 0; }
+  .newsroom__contact small { display: block; margin-top: 34px; line-height: 1.5; }
+  .newsroom__contact small a { text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 749px) { .newsroom__intro, .newsroom__feature-layout, .newsroom__press-row { grid-template-columns: 1fr; } .newsroom__intro { gap: 28px; } .newsroom__intro-links { justify-content: start; } .newsroom__grid { grid-template-columns: 1fr; gap: 38px; } .newsroom__resources { grid-template-columns: 1fr; } .newsroom__press-row { gap: 12px; } .newsroom__press-end { justify-items: start; display: flex; gap: 18px; } .newsroom__nav { gap: 12px 20px; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsroom",
+  "settings": [
+    { "type": "blog", "id": "news_blog", "label": "Official news blog" },
+    { "type": "page", "id": "news_page", "label": "News archive page" },
+    { "type": "page", "id": "press_page", "label": "Press archive page" },
+    { "type": "page", "id": "resources_page", "label": "Media Resources page" },
+    { "type": "url", "id": "media_contact_url", "label": "Active media contact URL" }
+  ],
+  "blocks": [
+    { "type": "coverage", "name": "Verified press coverage", "settings": [
+      { "type": "checkbox", "id": "verified", "label": "Verified and approved for publication", "default": false },
+      { "type": "select", "id": "kind", "label": "Coverage type", "options": [
+        { "value": "editorial", "label": "Editorial Coverage" }, { "value": "review", "label": "Product Review" }, { "value": "award", "label": "Award / Recognition" }, { "value": "industry", "label": "Industry Coverage" }, { "value": "sponsored", "label": "Sponsored / Paid Partnership" }
+      ], "default": "editorial" },
+      { "type": "text", "id": "publication", "label": "Publication name" },
+      { "type": "text", "id": "headline", "label": "Headline" },
+      { "type": "text", "id": "summary", "label": "Original one-sentence summary" },
+      { "type": "text", "id": "date", "label": "Publication date (YYYY-MM-DD)" },
+      { "type": "url", "id": "url", "label": "Original coverage URL" },
+      { "type": "image_picker", "id": "logo", "label": "Publication logo" },
+      { "type": "checkbox", "id": "logo_permission", "label": "Logo usage permitted", "default": false }
+    ] }
+  ],
+  "presets": [{ "name": "Newsroom" }]
+}
+{% endschema %}

@@ -1,0 +1,587 @@
+/* Split from base.css: floating multitasking bar and third-party launcher placement. */
+
+:root {
+  --floating-entry-right: 1.6rem;
+  --floating-entry-right-desktop: 2.4rem;
+  --floating-app-left: 1.6rem;
+  --floating-app-left-desktop: 2.4rem;
+  --floating-entry-bottom: max(1.6rem, env(safe-area-inset-bottom));
+  --floating-entry-bottom-desktop: max(2.4rem, env(safe-area-inset-bottom));
+  --floating-entry-gap: 0.8rem;
+  --floating-entry-size: var(--size-48);
+  --floating-task-stack-height: 17.2rem;
+}
+
+.multitasking-bar {
+  right: var(--floating-entry-right);
+  bottom: var(--floating-entry-bottom);
+  width: auto;
+  padding: 0.2rem;
+  border-radius: 3rem;
+  box-shadow: 0.2rem 0.4rem 1.2rem 0 rgba(var(--color-foreground-rgb) / var(--opacity-10));
+  background: rgba(var(--color-background));
+  opacity: var(--opacity-0);
+  visibility: hidden;
+  transform: translate3d(0, 1.2rem, 0);
+  transition: opacity var(--duration-long) ease, visibility var(--duration-long) ease,
+    transform var(--duration-long) ease, bottom var(--duration-long) ease;
+  will-change: transform;
+}
+
+.multi-t__button {
+  width: var(--size-40);
+  height: var(--size-40);
+  background: transparent;
+  transition: all var(--duration-default) ease;
+}
+
+.multi-t__button:after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--size-40);
+  height: var(--size-40);
+  pointer-events: none;
+}
+
+.multi-t__button .icon {
+  color: rgba(var(--color-foreground));
+  display: block;
+  width: var(--size-18);
+  height: var(--size-18);
+  z-index: 1;
+  transition-property: color, transform;
+  transition-duration: var(--duration-long);
+  transition-timing-function: ease;
+  will-change: transform;
+}
+
+.multi-t__button .icon-arrow {
+  transform: rotate(-90deg);
+}
+
+.multi-t__button:hover .icon {
+  transform: scale(1.09);
+}
+
+.multi-t__button:hover .icon-arrow {
+  transform: rotate(-90deg) scale(1.09);
+}
+
+.recently-viewed__warnings .icon {
+  display: block;
+  width: var(--size-46);
+  height: var(--size-46);
+  z-index: 1;
+  color: rgb(var(--color-foreground-rgb) / var(--opacity-10));
+  margin: 0 auto 1rem auto;
+}
+
+.recently-viewed-products .product-item {
+  padding-bottom: 1rem;
+}
+
+.multi-t__list .list-social__item {
+  padding: 0.2rem;
+  border-radius: var(--style-border-radius-50);
+}
+
+.multi-t__list .list-social__link {
+  padding: 0.9rem;
+}
+
+.target-block.active .multi-t__button .icon,
+.button__back-to-top[data-index='1'].active.hide + .target-block .multi-t__button .icon {
+  color: rgba(var(--secondary-icon));
+}
+
+.multi-t__wrap [data-index='1'].active ~ .glider {
+  transform: translateY(0);
+}
+
+.multi-t__wrap [data-index='2'].active ~ .glider {
+  transform: translateY(calc(100% + var(--gap-xs)));
+}
+
+.multi-t__wrap [data-index='3'].active ~ .glider {
+  transform: translateY(calc(200% + var(--gap-xs) * 2));
+}
+
+.multi-t__wrap [data-index='4'].active ~ .glider {
+  transform: translateY(calc(300% + var(--gap-xs) * 3));
+}
+
+.multi-t__wrap .button__back-to-top.hide ~ [data-index='2'].active ~ .glider {
+  transform: translateY(0);
+}
+
+.multi-t__wrap .button__back-to-top.hide ~ [data-index='3'].active ~ .glider {
+  transform: translateY(calc(100% + var(--gap-xs)));
+}
+
+.multi-t__wrap .button__back-to-top.hide ~ [data-index='4'].active ~ .glider {
+  transform: translateY(calc(200% + var(--gap-xs) * 2));
+}
+
+.multi-t__social {
+  background-color: rgba(var(--color-background));
+  right: calc(100% + 0.5rem);
+  padding-inline: 0.5rem;
+  border-radius: 3rem;
+  box-shadow: 0.2rem 0.4rem 0.9rem 0 rgb(var(--color-background-rgb) / var(--opacity-35));
+  opacity: var(--opacity-0);
+  visibility: hidden;
+  transform: translate(2rem);
+  transition: opacity var(--duration-long) ease, visibility var(--duration-long) ease,
+    transform var(--duration-long) ease;
+  will-change: transform;
+}
+
+.multi-t__social.active {
+  opacity: var(--opacity-100);
+  visibility: visible;
+  transform: translateX(0);
+  pointer-events: auto;
+
+  + .target-block--tooltip {
+    visibility: hidden !important;
+  }
+}
+
+.multi-t__social .list-social {
+  flex-wrap: nowrap;
+}
+
+.glider {
+  height: var(--size-40);
+  width: var(--size-40);
+  z-index: -1;
+  background-color: rgba(var(--secondary-icon-background));
+  transition: 0.25s ease-out;
+}
+
+.button__back-to-top {
+  height: var(--h-cus, 0);
+  border: 1px solid rgba(var(--color-foreground-rgb) / var(--opacity-20));
+  border-radius: 50%;
+  transition: opacity var(--duration-medium) ease, height var(--duration-medium) var(--cubic-smooth);
+}
+
+.button__back-to-top .progress-circle {
+  inset: 0;
+}
+
+.button__back-to-top .progress-circle path {
+  fill: none;
+  stroke: rgba(var(--color-foreground-rgb) / var(--opacity-20));
+  stroke-width: 4;
+  box-sizing: border-box;
+  transition: all 200ms linear;
+}
+
+.button__back-to-top .progress-circle-fill path {
+  stroke: currentColor;
+
+  .active & {
+    stroke: rgba(var(--secondary-icon));
+  }
+}
+
+.button__back-to-top.hide {
+  opacity: var(--opacity-0);
+}
+
+.button__product-compare.hide {
+  display: none;
+}
+
+.product-compare-task .multi-t__button.loading .svg-wrapper {
+  opacity: var(--opacity-0);
+}
+
+.product-compare-task .loading__spinner {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+}
+
+.product-compare-task .countPill {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  padding: 0 0.4rem;
+  border-radius: 99rem;
+  background: var(--color-black);
+  color: var(--color-white);
+  font-size: var(--font-size--3xs);
+  font-weight: 700;
+  line-height: 1;
+}
+
+body.overflow-hidden .multitasking-bar {
+  right: calc(var(--right) + var(--scrollbar-width, 0rem));
+}
+
+body:not(.has--preload-screen) .multitasking-bar {
+  opacity: var(--opacity-100);
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+body.overflow-hidden .multitasking-bar,
+body:has(.drawer.active) .multitasking-bar,
+body:has(.popup[open]) .multitasking-bar {
+  opacity: var(--opacity-0);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@media only screen and (min-width: 750px) {
+  .multitasking-bar {
+    padding: 0.8rem;
+    right: var(--floating-entry-right-desktop);
+    bottom: var(--floating-entry-bottom-desktop);
+  }
+
+  .multitasking-bar.only-back-to-top {
+    padding: 0.2rem;
+  }
+
+  .multi-t__button,
+  .multi-t__button:after,
+  .glider {
+    width: var(--size-48);
+    height: var(--size-48);
+  }
+}
+
+@media only screen and (min-width: 1025px) {
+  body.overflow-hidden .multitasking-bar {
+    right: calc(var(--right) + var(--scrollbar-width, 0rem) - 0.1rem);
+  }
+}
+
+@media only screen and (max-width: 989px) {
+  .multitasking-bar {
+    bottom: calc(var(--toolbar-mobile-height, 0px) + max(1.2rem, env(safe-area-inset-bottom)));
+    padding: 0.2rem;
+  }
+
+  .multitasking-bar:not(:has(.button__back-to-top, .button__product-compare)),
+  .multitasking-bar .target-block:not(.button__back-to-top, .button__product-compare),
+  .multitasking-bar .glider,
+  .multitasking-bar .target-block--tooltip {
+    display: none;
+  }
+
+  .sticky-cart-visible.sticky-cart-active .multitasking-bar {
+    opacity: var(--opacity-0) !important;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  body:not(.has--preload-screen) .multitasking-bar {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Normalize third-party app launchers into the same left-side stack. */
+body :is(
+  [class*="avada"][class*="accessibility"][class*="button"],
+  [id*="avada"][id*="accessibility"][id*="button"],
+  [class*="avada"][class*="a11y"][class*="button"],
+  [id*="avada"][id*="a11y"][id*="button"],
+  [class*="avada"][class*="accessibility"][class*="launcher"],
+  [id*="avada"][id*="accessibility"][id*="launcher"],
+  [class*="appstle"][class*="loyalty"][class*="button"],
+  [id*="appstle"][id*="loyalty"][id*="button"],
+  [class*="appstle"][class*="loyalty"][class*="launcher"],
+  [id*="appstle"][id*="loyalty"][id*="launcher"],
+  [class*="loyalty"][class*="launcher"],
+  [id*="loyalty"][id*="launcher"],
+  [class*="reward"][class*="launcher"],
+  [id*="reward"][id*="launcher"],
+  [class*="ShopifyInbox"][class*="button"],
+  [id*="ShopifyInbox"][id*="button"],
+  [class*="shopify-inbox"][class*="button"],
+  [id*="shopify-inbox"][id*="button"],
+  [class*="inbox"][class*="button"],
+  [id*="inbox"][id*="button"],
+  [class*="shopify-chat"][class*="button"],
+  [id*="shopify-chat"][id*="button"],
+  [class*="chat"][class*="button"],
+  [id*="chat"][id*="button"],
+  .floating-app-launcher,
+  [aria-label*="assistance" i],
+  [title*="assistance" i]
+) {
+  --third-party-floating-left: var(--floating-app-left);
+  width: var(--floating-entry-size) !important;
+  min-width: var(--floating-entry-size) !important;
+  max-width: var(--floating-entry-size) !important;
+  height: var(--floating-entry-size) !important;
+  min-height: var(--floating-entry-size) !important;
+  max-height: var(--floating-entry-size) !important;
+  border-radius: 50% !important;
+  box-shadow: 0.2rem 0.4rem 1.2rem 0 rgba(var(--color-foreground-rgb) / var(--opacity-12)) !important;
+  overflow: hidden !important;
+}
+
+body :is(
+  [class*="avada"][class*="accessibility"][class*="button"],
+  [id*="avada"][id*="accessibility"][id*="button"],
+  [class*="avada"][class*="a11y"][class*="button"],
+  [id*="avada"][id*="a11y"][id*="button"],
+  [class*="avada"][class*="accessibility"][class*="launcher"],
+  [id*="avada"][id*="accessibility"][id*="launcher"]
+) {
+  left: var(--third-party-floating-left) !important;
+  right: auto !important;
+  bottom: var(--floating-entry-bottom) !important;
+}
+
+body :is(
+  [class*="appstle"][class*="loyalty"][class*="button"],
+  [id*="appstle"][id*="loyalty"][id*="button"],
+  [class*="appstle"][class*="loyalty"][class*="launcher"],
+  [id*="appstle"][id*="loyalty"][id*="launcher"],
+  [class*="loyalty"][class*="launcher"],
+  [id*="loyalty"][id*="launcher"],
+  [class*="reward"][class*="launcher"],
+  [id*="reward"][id*="launcher"]
+) {
+  left: var(--third-party-floating-left) !important;
+  right: auto !important;
+  bottom: calc(var(--floating-entry-bottom) + 6.2rem) !important;
+}
+
+body :is(
+  [class*="ShopifyInbox"][class*="button"],
+  [id*="ShopifyInbox"][id*="button"],
+  [class*="shopify-inbox"][class*="button"],
+  [id*="shopify-inbox"][id*="button"],
+  [class*="inbox"][class*="button"],
+  [id*="inbox"][id*="button"],
+  [class*="shopify-chat"][class*="button"],
+  [id*="shopify-chat"][id*="button"],
+  [class*="chat"][class*="button"],
+  [id*="chat"][id*="button"],
+  .floating-app-launcher--chat,
+  [aria-label*="assistance" i],
+  [title*="assistance" i]
+) {
+  left: var(--third-party-floating-left) !important;
+  right: auto !important;
+  bottom: calc(var(--floating-entry-bottom) + 12.4rem) !important;
+}
+
+body iframe:is(
+  [src*="avada"],
+  [src*="accessibility"],
+  [title*="Accessibility"],
+  [title*="accessibility"]
+):is([style*="position: fixed"], [style*="position:fixed"]) {
+  left: var(--floating-app-left) !important;
+  right: auto !important;
+  bottom: var(--floating-entry-bottom) !important;
+}
+
+body iframe:is(
+  [src*="appstle"],
+  [src*="loyalty"],
+  [src*="reward"],
+  [title*="Loyalty"],
+  [title*="loyalty"],
+  [title*="Reward"],
+  [title*="reward"]
+):is([style*="position: fixed"], [style*="position:fixed"]) {
+  left: var(--floating-app-left) !important;
+  right: auto !important;
+  bottom: calc(var(--floating-entry-bottom) + 6.2rem) !important;
+}
+
+body iframe:is(
+  [src*="shopify-chat"],
+  [src*="shopify-inbox"],
+  [src*="inbox"],
+  [title*="Assistance"],
+  [title*="assistance"],
+  [title*="Chat"],
+  [title*="chat"]
+):is([style*="position: fixed"], [style*="position:fixed"]) {
+  left: var(--floating-app-left) !important;
+  right: auto !important;
+  bottom: calc(var(--floating-entry-bottom) + 12.4rem) !important;
+  width: var(--floating-entry-size) !important;
+  height: var(--floating-entry-size) !important;
+  border-radius: 50% !important;
+  box-shadow: 0.2rem 0.4rem 1.2rem 0 rgba(var(--color-foreground-rgb) / var(--opacity-12)) !important;
+  overflow: hidden !important;
+}
+
+@media only screen and (min-width: 750px) {
+  body :is(
+    [class*="avada"][class*="accessibility"][class*="button"],
+    [id*="avada"][id*="accessibility"][id*="button"],
+    [class*="avada"][class*="a11y"][class*="button"],
+    [id*="avada"][id*="a11y"][id*="button"],
+    [class*="avada"][class*="accessibility"][class*="launcher"],
+    [id*="avada"][id*="accessibility"][id*="launcher"],
+    [class*="appstle"][class*="loyalty"][class*="button"],
+    [id*="appstle"][id*="loyalty"][id*="button"],
+    [class*="appstle"][class*="loyalty"][class*="launcher"],
+    [id*="appstle"][id*="loyalty"][id*="launcher"],
+    [class*="loyalty"][class*="launcher"],
+    [id*="loyalty"][id*="launcher"],
+    [class*="reward"][class*="launcher"],
+    [id*="reward"][id*="launcher"],
+    [class*="ShopifyInbox"][class*="button"],
+    [id*="ShopifyInbox"][id*="button"],
+    [class*="shopify-inbox"][class*="button"],
+    [id*="shopify-inbox"][id*="button"],
+    [class*="inbox"][class*="button"],
+    [id*="inbox"][id*="button"],
+    [class*="shopify-chat"][class*="button"],
+    [id*="shopify-chat"][id*="button"],
+    [class*="chat"][class*="button"],
+    [id*="chat"][id*="button"],
+    .floating-app-launcher,
+    [aria-label*="assistance" i],
+    [title*="assistance" i]
+  ) {
+    --third-party-floating-left: var(--floating-app-left-desktop);
+  }
+
+  body iframe:is(
+    [src*="avada"],
+    [src*="accessibility"],
+    [src*="appstle"],
+    [src*="loyalty"],
+    [src*="reward"],
+    [src*="shopify-chat"],
+    [src*="shopify-inbox"],
+    [src*="inbox"],
+    [title*="Accessibility"],
+    [title*="accessibility"],
+    [title*="Loyalty"],
+    [title*="loyalty"],
+    [title*="Reward"],
+    [title*="reward"],
+    [title*="Assistance"],
+    [title*="assistance"],
+    [title*="Chat"],
+    [title*="chat"]
+  ):is([style*="position: fixed"], [style*="position:fixed"]) {
+    left: var(--floating-app-left-desktop) !important;
+    right: auto !important;
+  }
+}
+
+@media only screen and (max-width: 989px) {
+  body :is(
+    [class*="avada"][class*="accessibility"][class*="button"],
+    [id*="avada"][id*="accessibility"][id*="button"],
+    [class*="avada"][class*="a11y"][class*="button"],
+    [id*="avada"][id*="a11y"][id*="button"],
+    [class*="avada"][class*="accessibility"][class*="launcher"],
+    [id*="avada"][id*="accessibility"][id*="launcher"]
+  ) {
+    bottom: calc(var(--toolbar-mobile-height, 0px) + max(1.2rem, env(safe-area-inset-bottom)) + 5.8rem) !important;
+  }
+
+  body :is(
+    [class*="appstle"][class*="loyalty"][class*="button"],
+    [id*="appstle"][id*="loyalty"][id*="button"],
+    [class*="appstle"][class*="loyalty"][class*="launcher"],
+    [id*="appstle"][id*="loyalty"][id*="launcher"],
+    [class*="loyalty"][class*="launcher"],
+    [id*="loyalty"][id*="launcher"],
+    [class*="reward"][class*="launcher"],
+    [id*="reward"][id*="launcher"],
+    [class*="ShopifyInbox"][class*="button"],
+    [id*="ShopifyInbox"][id*="button"],
+    [class*="shopify-inbox"][class*="button"],
+    [id*="shopify-inbox"][id*="button"],
+    [class*="inbox"][class*="button"],
+    [id*="inbox"][id*="button"],
+    [class*="shopify-chat"][class*="button"],
+    [id*="shopify-chat"][id*="button"],
+    [class*="chat"][class*="button"],
+    [id*="chat"][id*="button"],
+    .floating-app-launcher--chat,
+    [aria-label*="assistance" i],
+    [title*="assistance" i]
+  ) {
+    display: none !important;
+  }
+
+  body iframe:is(
+    [src*="appstle"],
+    [src*="loyalty"],
+    [src*="reward"],
+    [src*="shopify-chat"],
+    [src*="shopify-inbox"],
+    [src*="inbox"],
+    [title*="Loyalty"],
+    [title*="loyalty"],
+    [title*="Reward"],
+    [title*="reward"],
+    [title*="Assistance"],
+    [title*="assistance"],
+    [title*="Chat"],
+    [title*="chat"]
+  ):is([style*="position: fixed"], [style*="position:fixed"]) {
+    display: none !important;
+  }
+
+  body iframe:is(
+    [src*="avada"],
+    [src*="accessibility"],
+    [title*="Accessibility"],
+    [title*="accessibility"]
+  ):is([style*="position: fixed"], [style*="position:fixed"]) {
+    bottom: calc(var(--toolbar-mobile-height, 0px) + max(1.2rem, env(safe-area-inset-bottom)) + 5.8rem) !important;
+  }
+}
+
+.target-block {
+  position: relative;
+
+  @media (hover: hover) {
+    &:hover {
+      .target-block--tooltip {
+        opacity: var(--opacity-100);
+        visibility: visible;
+        transform: translate(calc(-100% - 1.4rem), -50%);
+      }
+    }
+  }
+}
+
+.target-block--tooltip {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: max-content;
+  height: auto;
+  background-color: rgba(var(--color-background));
+  color: rgba(var(--color-foreground));
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--style-border-radius-xl);
+  transform: translate(calc(-100% - 2rem), -50%);
+  transition: opacity var(--animation-speed-slow) var(--animation-timing-hover),
+    transform var(--animation-speed-slow) var(--animation-timing-hover);
+  opacity: var(--opacity-0);
+  visibility: hidden;
+  pointer-events: none;
+}
+

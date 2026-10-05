@@ -1,0 +1,419 @@
+{% liquid
+  assign field_type = block.settings.field_type | default: 'text'
+  if block.id == 'email-input'
+    assign field_type = 'email'
+  endif
+%}
+
+{% case field_type %}
+  {% when 'country' %}
+    <div class="contact-form-row form-group" style="--formRowWidth: 100%;" {{ block.shopify_attributes }}>
+      <label for="{{ block.id }}" class="form-label block">{{ block.settings.label | escape }}</label>
+      <select id="{{ block.id }}" name="contact[country]" class="form-control w-full">
+        {{ all_country_option_tags }}
+      </select>
+    </div>
+  {% when 'textarea' %}
+    {% assign label = block.settings.label %}
+    {% assign label_name = label | default: block.settings.placeholder | handleize %}
+    <div class="contact-form-row form-group" style="--formRowWidth: {{ block.settings.input_width }}%;">
+      {% if block.settings.show_label and label != blank %}
+        <label for="{{ block.id }}" style="--mb:{{ block.settings.label_mb }}px;" class="form-label block {{ block.settings.label_type_preset }}">{{ label }}</label>
+      {% endif %}
+      <textarea
+        id="{{ block.id }}"
+        name="contact[{{ label_name }}]"
+        placeholder="{{ block.settings.placeholder }}"
+        {% if block.settings.is_required %}required{% endif %}
+        class="border-style--{{ block.settings.border_style }} w-full block contact-form-textarea form-control form-control--textarea {{ block.settings.input_type_preset }} {{ block.settings.input_alignment }}"
+        style="--pl:{{ block.settings.padding_left }}px; --pr:{{ block.settings.padding_right }}px; --pt:{{ block.settings.padding_top }}px; --pb:{{ block.settings.padding_bottom }}px; --border-width:{{ block.settings.input_border_width }}px; --border-radius:{{ block.settings.input_border_radius }}px; --textarea-height:{{ block.settings.text_area_height }}px;"
+        {{ block.shopify_attributes }}
+      ></textarea>
+    </div>
+  {% when 'radio' %}
+    {% assign label = block.settings.label %}
+    {% assign label_name = label | handleize %}
+    {% assign options = block.settings.options | split: '|' %}
+    <div class="contact-form-row" style="--formRowWidth: {{ block.settings.input_width }}%;" {{ block.shopify_attributes }}>
+      {% if block.settings.show_label and label != blank %}
+        <div style="--mb:{{ block.settings.label_mb }}px;" class="form-label block {{ block.settings.label_type_preset }}">{{ label }}</div>
+      {% endif %}
+      <div class="form-ratio form-ratio--{{ block.settings.options_layout }}">
+        {% for option in options %}
+          {% assign option_id = block.id | append: '-' | append: forloop.index %}
+          <div class="form-ratio-item">
+            <input type="radio" name="contact[{{ label_name }}]" value="{{ option | escape }}" id="{{ option_id }}"{% if forloop.first %} checked{% endif %}>
+            <label class="{{ block.settings.option_type_preset }}" for="{{ option_id }}">{{ option }}</label>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    {% liquid
+      assign pl = block.settings.padding_left
+      assign pr = block.settings.padding_right
+      assign pt = block.settings.padding_top
+      assign pb = block.settings.padding_bottom
+      assign label = block.settings.label
+      assign show_label = block.settings.show_label
+      assign label_type_preset = block.settings.label_type_preset
+      assign border_style = block.settings.border_style
+      assign is_required = block.settings.is_required
+      assign placeholder = block.settings.placeholder
+      assign label_mb = block.settings.label_mb
+      assign input_border_width = block.settings.input_border_width
+      assign input_border_radius = block.settings.input_border_radius
+      assign input_type_preset = block.settings.input_type_preset
+      assign input_alignment = block.settings.input_alignment
+      assign input_width = block.settings.input_width
+      assign order_index = block.settings.order_index | default: 3
+
+      if field_type == 'email'
+        assign label_name = 'email'
+      elsif label == blank or show_label == false
+        assign label_name = placeholder | handleize | append: '-input'
+      else
+        assign label_name = label | handleize
+      endif
+    %}
+    {%- capture attr -%}
+      class="border-style--{{ border_style }} w-full block contact-form-input form-control {{ input_type_preset }} {{ input_alignment }}" {{ block.shopify_attributes }}
+      style="{% if pl != 0 %}--pl:{{ pl }}px;{% endif %}{% if pt != 0 %}--pt:{{ pt }}px;{% endif %}{% if pb != 0 %}--pb:{{ pb }}px;{% endif %}{% if pr != 0 %}--pr:{{ pr }}px;{% endif %}{% if input_border_width != 0 %}--border-width: {{ input_border_width }}px;{% endif %}{% if input_border_radius != 0 %}--border-radius: {{ input_border_radius }}px;{% endif %}"
+    {%- endcapture -%}
+    {%- if show_label -%}
+      <div class="contact-form-row form-group" style="--formRowWidth: {{ input_width }}%;"{% if field_type == 'email' %} data-order-index="{{ order_index }}" data-field-name="email"{% endif %}>
+        {% if label != blank %}
+          <label for="{{ block.id }}" style="--mb:{{ label_mb }}px;" class="form-label block {{ label_type_preset }}">{{ label }}{% if is_required %}<small><span class="form-label__required" aria-hidden="true">*</span></small>{% endif %}</label>
+        {% endif %}
+        <input id="{{ block.id }}" type="{{ field_type | default: 'text' }}" name="contact[{{ label_name }}]" placeholder="{{ placeholder }}"{% if is_required %} required{% endif %} {{ attr }}>
+      </div>
+    {%- endif -%}
+{% endcase %}
+
+{% schema %}
+{
+  "name": "t:names.input",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "field_type",
+      "label": "Field type",
+      "options": [
+        { "value": "country", "label": "Country" },
+        {
+          "value": "text",
+          "label": "Text"
+        },
+        {
+          "value": "email",
+          "label": "Email"
+        },
+        {
+          "value": "textarea",
+          "label": "Textarea"
+        },
+        {
+          "value": "radio",
+          "label": "Radio"
+        }
+      ],
+      "default": "text"
+    },
+    {
+      "type": "range",
+      "id": "order_index",
+      "label": "Field order",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 3,
+      "visible_if": "{{ block.settings.field_type == 'email' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "t:settings.show_label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.label",
+      "visible_if": "{{ block.settings.show_label == true }}"
+    },
+    {
+      "type": "select",
+      "id": "label_type_preset",
+      "label": "Label font size",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "range",
+      "id": "label_mb",
+      "label": "t:settings.spacing_bottom",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "input_width",
+      "label": "Width desktop",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "input_type_preset",
+      "label": "t:settings.type_preset",
+      "options": [
+        {
+          "value": "",
+          "label": "t:options.default"
+        },
+        {
+          "value": "paragraph",
+          "label": "t:options.paragraph"
+        },
+        {
+          "value": "h1",
+          "label": "t:options.h1"
+        },
+        {
+          "value": "h2",
+          "label": "t:options.h2"
+        },
+        {
+          "value": "h3",
+          "label": "t:options.h3"
+        },
+        {
+          "value": "h4",
+          "label": "t:options.h4"
+        },
+        {
+          "value": "h5",
+          "label": "t:options.h5"
+        },
+        {
+          "value": "h6",
+          "label": "t:options.h6"
+        }
+      ],
+      "default": "paragraph",
+      "info": "t:info.edit_presets_in_theme_settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "is_required",
+      "label": "t:settings.is_required",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "text_area_height",
+      "label": "t:settings.textarea_height",
+      "min": 100,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 220,
+      "visible_if": "{{ block.settings.field_type == 'textarea' }}"
+    },
+    {
+      "type": "text",
+      "id": "options",
+      "label": "Options",
+      "info": "Separate options with a pipe (|)",
+      "default": "Option 1|Option 2|Option 3",
+      "visible_if": "{{ block.settings.field_type == 'radio' }}"
+    },
+    {
+      "type": "select",
+      "id": "options_layout",
+      "label": "Options Layout",
+      "options": [
+        { "value": "horizontal", "label": "Horizontal" },
+        { "value": "vertical", "label": "Vertical" }
+      ],
+      "default": "horizontal",
+      "visible_if": "{{ block.settings.field_type == 'radio' }}"
+    },
+    {
+      "type": "select",
+      "id": "option_type_preset",
+      "label": "Option font size",
+      "options": [
+        { "value": "", "label": "t:options.default" },
+        { "value": "paragraph", "label": "t:options.paragraph" },
+        { "value": "h1", "label": "t:options.h1" },
+        { "value": "h2", "label": "t:options.h2" },
+        { "value": "h3", "label": "t:options.h3" },
+        { "value": "h4", "label": "t:options.h4" },
+        { "value": "h5", "label": "t:options.h5" },
+        { "value": "h6", "label": "t:options.h6" }
+      ],
+      "default": "paragraph",
+      "visible_if": "{{ block.settings.field_type == 'radio' }}"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "t:settings.placeholder",
+      "default": "Please fill in this field"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "t:settings.border",
+      "options": [
+        {
+          "value": "all",
+          "label": "t:options.all"
+        },
+        {
+          "value": "underline",
+          "label": "t:options.underline"
+        },
+        {
+          "value": "none",
+          "label": "t:options.none"
+        }
+      ],
+      "default": "all"
+    },
+    {
+      "type": "range",
+      "id": "input_border_width",
+      "label": "t:settings.border_width",
+      "min": 0,
+      "max": 4,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border_style != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "input_border_radius",
+      "label": "t:settings.border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.border_style != 'underline' }}"
+    },
+    {
+      "type": "select",
+      "id": "input_alignment",
+      "label": "t:settings.alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "t:options.left"
+        },
+        {
+          "value": "center",
+          "label": "t:options.center"
+        },
+        {
+          "value": "right",
+          "label": "t:options.right"
+        }
+      ],
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Form field"
+    }
+  ]
+}
+{% endschema %}

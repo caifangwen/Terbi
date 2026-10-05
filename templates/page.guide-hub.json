@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "guide-hub",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

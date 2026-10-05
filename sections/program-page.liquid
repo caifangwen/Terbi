@@ -1,0 +1,116 @@
+{% liquid
+  assign hero = page.metafields.custom.hero.value
+  assign eyebrow = hero.eyebrow.value | default: hero.eyebrow | default: section.settings.eyebrow
+  assign heading = hero.heading.value | default: hero.heading | default: section.settings.heading | default: page.title
+  assign image = hero.image.value | default: hero.image
+  assign cta_label = hero.button_label.value | default: hero.button_label | default: section.settings.cta_label
+  assign cta_link = hero.button_link.value | default: hero.button_link | default: section.settings.cta_link
+  assign intro = page.metafields.custom.program_intro.value | default: page.content
+%}
+
+<section
+  class="section section--{{ section.settings.section_width }} program-page spacing-style"
+  style="{% render 'spacing-style', settings: section.settings %}"
+  {{ section.shopify_attributes }}
+>
+  <div class="program-page__layout">
+    <div class="program-page__content rte">
+      {% if eyebrow != blank %}<p class="program-page__eyebrow">{{ eyebrow | escape }}</p>{% endif %}
+      <h1>{{ heading | escape }}</h1>
+      {% if hero.description != blank %}
+        <div>{{ hero.description | metafield_tag }}</div>
+      {% elsif intro != blank %}
+        <div>{{ intro }}</div>
+      {% endif %}
+      {% if cta_label != blank and cta_link != blank %}
+        <a class="button" href="{{ cta_link | escape }}">{{ cta_label | escape }}</a>
+      {% endif %}
+      {% content_for 'blocks' %}
+    </div>
+    {% if image != blank %}
+      {{ image | image_url: width: 1400 | image_tag: loading: 'eager', widths: '500, 750, 1000, 1400', class: 'program-page__image', alt: heading }}
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .program-page {
+    overflow: hidden;
+    background: var(--color-background);
+  }
+  .program-page__layout { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(3.2rem, 6vw, 8rem); align-items: center; max-width: 128rem; margin-inline: auto; }
+  .program-page__content { max-width: 62rem; }
+  .program-page__content > :first-child { margin-top: 0; }
+  .program-page__content > :last-child { margin-bottom: 0; }
+  .program-page__eyebrow { margin-bottom: 1.2rem; color: var(--color-primary); font-size: 1.3rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .program-page__content h1 { margin-block: 0 1.8rem; font-family: var(--font-heading--family); font-size: clamp(3.6rem, 5vw, 6.4rem); line-height: 1.08; letter-spacing: -0.025em; text-wrap: balance; }
+  .program-page__content h1 + div { color: rgb(var(--color-foreground-rgb) / 0.7); font-size: clamp(1.6rem, 1.5vw, 1.8rem); line-height: 1.65; }
+  .program-page__content .button { margin-top: 2rem; }
+  .program-page__image { display: block; width: 100%; aspect-ratio: auto; object-fit: contain; border-radius: 0.4rem; }
+  @media screen and (max-width: 749px) {
+    .program-page__layout { grid-template-columns: 1fr; gap: 2.8rem; }
+    .program-page__content h1 { font-size: clamp(3.2rem, 11vw, 4.6rem); }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Program page",
+  "blocks": [
+    { "type": "@theme" },
+    { "type": "@app" }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "t:settings.width",
+      "options": [
+        { "value": "page-width", "label": "t:options.page" },
+        { "value": "full-width", "label": "t:options.full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "CTA label"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    }
+  ]
+}
+{% endschema %}

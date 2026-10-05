@@ -1,0 +1,64 @@
+{% doc %}
+  @prompt
+    帮我生成这样的无序列表，字体不变 颜色不变，实心蓝色圆圈
+{% enddoc %}
+{% assign ai_gen_id = instance_id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-bullet-list-{{ ai_gen_id }} {
+    display: block;
+    width: {{ settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-bullet-list__container-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-bullet-list__item-{{ ai_gen_id }} {
+    display: flex;
+    align-items: flex-start;
+    gap: {{ settings.bullet_spacing }}px;
+    margin-bottom: {{ settings.item_spacing }}px;
+  }
+
+  .ai-bullet-list__item-{{ ai_gen_id }}:last-child {
+    margin-bottom: 0;
+  }
+
+  .ai-bullet-list__bullet-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    width: {{ settings.bullet_size }}px;
+    height: {{ settings.bullet_size }}px;
+    background-color: {{ settings.bullet_color }};
+    border-radius: 50%;
+    margin-top: {{ settings.bullet_vertical_offset }}px;
+  }
+
+  .ai-bullet-list__text-{{ ai_gen_id }} {
+    flex: 1;
+    color: {{ settings.text_color }};
+    font-size: {{ settings.text_size }}px;
+    line-height: {{ settings.line_height }};
+  }
+{% endstyle %}
+
+<bullet-list-{{ ai_gen_id }}
+  class="ai-bullet-list-{{ ai_gen_id }}"
+>
+  <ul class="ai-bullet-list__container-{{ ai_gen_id }}">
+    {% for i in (1..10) %}
+      {% assign item_key = 'list_item_' | append: i %}
+      {% assign item_text = settings[item_key] %}
+      
+      {% if item_text != blank %}
+        <li class="ai-bullet-list__item-{{ ai_gen_id }}">
+          <span class="ai-bullet-list__bullet-{{ ai_gen_id }}"></span>
+          <div class="ai-bullet-list__text-{{ ai_gen_id }}">{{ item_text }}</div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</bullet-list-{{ ai_gen_id }}>

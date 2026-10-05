@@ -1,0 +1,75 @@
+{% doc %}
+  @prompt
+    左侧带竖线标题
+{% enddoc %}
+{% assign ai_gen_id = instance_id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-vertical-line-heading-{{ ai_gen_id }} {
+    display: flex;
+    align-items: center;
+    gap: {{ settings.gap }}px;
+    width: {{ settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-vertical-line-heading__line-{{ ai_gen_id }} {
+    width: {{ settings.line_width }}px;
+    height: {{ settings.line_height }}px;
+    background: {{ settings.line_color }};
+    {% if settings.line_gradient != blank %}
+      background: {{ settings.line_gradient }};
+    {% endif %}
+    border-radius: {{ settings.line_border_radius }}px;
+    flex-shrink: 0;
+  }
+
+  .ai-vertical-line-heading__content-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-vertical-line-heading__title-{{ ai_gen_id }} {
+    margin: 0;
+    color: {{ settings.title_color }};
+    font-size: {{ settings.title_size }}px;
+    font-weight: {{ settings.title_weight }};
+    line-height: 1.2;
+  }
+
+  .ai-vertical-line-heading__subtitle-{{ ai_gen_id }} {
+    margin: {{ settings.subtitle_spacing }}px 0 0;
+    color: {{ settings.subtitle_color }};
+    font-size: {{ settings.subtitle_size }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-vertical-line-heading-{{ ai_gen_id }} {
+      width: 100%;
+    }
+
+    .ai-vertical-line-heading__line-{{ ai_gen_id }} {
+      width: {{ settings.line_width_mobile }}px;
+      height: {{ settings.line_height_mobile }}px;
+    }
+
+    .ai-vertical-line-heading__title-{{ ai_gen_id }} {
+      font-size: {{ settings.title_size_mobile }}px;
+    }
+
+    .ai-vertical-line-heading__subtitle-{{ ai_gen_id }} {
+      font-size: {{ settings.subtitle_size_mobile }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-vertical-line-heading-{{ ai_gen_id }}">
+  <div class="ai-vertical-line-heading__line-{{ ai_gen_id }}"></div>
+  <div class="ai-vertical-line-heading__content-{{ ai_gen_id }}">
+    {% if settings.title != blank %}
+      <h2 class="ai-vertical-line-heading__title-{{ ai_gen_id }}">{{ settings.title }}</h2>
+    {% endif %}
+    {% if settings.subtitle != blank %}
+      <div class="ai-vertical-line-heading__subtitle-{{ ai_gen_id }}">{{ settings.subtitle }}</div>
+    {% endif %}
+  </div>
+</div>

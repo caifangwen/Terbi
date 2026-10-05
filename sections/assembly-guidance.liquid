@@ -1,0 +1,130 @@
+<div class="section section--page-width assembly-guidance">
+  <div class="assembly-guidance__inner">
+    <section class="assembly-guidance__section" aria-labelledby="AssemblyTime-{{ section.id }}">
+      <div class="assembly-guidance__heading">
+        <h2 id="AssemblyTime-{{ section.id }}">{{ section.settings.time_heading | escape }}</h2>
+        {%- if section.settings.time_intro != blank -%}<p>{{ section.settings.time_intro | escape }}</p>{%- endif -%}
+      </div>
+      <div class="assembly-guidance__grid assembly-guidance__grid--time">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'time' -%}
+            <article class="assembly-guidance__card assembly-guidance__card--time" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                <div class="assembly-guidance__image">
+                  {{ block.settings.image | image_url: width: 520 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 280px, (min-width: 750px) 45vw, 90vw', alt: block.settings.title }}
+                </div>
+              {%- endif -%}
+              <h3>{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.duration != blank -%}<strong>{{ block.settings.duration | escape }}</strong>{%- endif -%}
+              {%- if block.settings.note != blank -%}<p>{{ block.settings.note | escape }}</p>{%- endif -%}
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <section class="assembly-guidance__section" aria-labelledby="AssemblyTools-{{ section.id }}">
+      <div class="assembly-guidance__heading">
+        <h2 id="AssemblyTools-{{ section.id }}">{{ section.settings.tools_heading | escape }}</h2>
+        {%- if section.settings.tools_intro != blank -%}<p>{{ section.settings.tools_intro | escape }}</p>{%- endif -%}
+      </div>
+      <div class="assembly-guidance__grid assembly-guidance__grid--tools">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'tool' -%}
+            <article class="assembly-guidance__card" {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.note != blank -%}<p>{{ block.settings.note | escape }}</p>{%- endif -%}
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+
+    <section class="assembly-guidance__section" aria-labelledby="AssemblyAnchor-{{ section.id }}">
+      <div class="assembly-guidance__heading">
+        <h2 id="AssemblyAnchor-{{ section.id }}">{{ section.settings.anchor_heading | escape }}</h2>
+        {%- if section.settings.anchor_intro != blank -%}<p>{{ section.settings.anchor_intro | escape }}</p>{%- endif -%}
+      </div>
+      <div class="assembly-guidance__grid assembly-guidance__grid--anchor">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'anchor' -%}
+            <article class="assembly-guidance__card" {{ block.shopify_attributes }}>
+              <h3>{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.note != blank -%}<p>{{ block.settings.note | escape }}</p>{%- endif -%}
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      <div class="assembly-guidance__help">
+        <div>
+          <h3>{{ section.settings.help_heading | escape }}</h3>
+          <p>{{ section.settings.help_text | escape }}</p>
+        </div>
+        {%- if section.settings.help_link != blank -%}
+          <a href="{{ section.settings.help_link | escape }}">{{ section.settings.help_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </section>
+  </div>
+</div>
+
+{% stylesheet %}
+  .assembly-guidance__inner { width: 100%; }
+  .assembly-guidance__section { padding: 36px 0; border-top: 1px solid #e3e5e8; }
+  .assembly-guidance__heading { margin-bottom: 20px; }
+  .assembly-guidance__heading h2 { margin: 0; color: #161719; font-family: var(--font-heading--family); font-size: clamp(26px, 2.5vw, 34px); font-weight: 500; line-height: 1.2; }
+  .assembly-guidance__heading p { max-width: 68ch; margin: 8px 0 0; color: #6b6f76; font-size: 14px; line-height: 1.55; }
+  .assembly-guidance__grid { display: grid; gap: 12px; }
+  .assembly-guidance__grid--time, .assembly-guidance__grid--tools { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .assembly-guidance__grid--anchor { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .assembly-guidance__card { min-width: 0; padding: 20px; border: 1px solid #e3e5e8; border-radius: var(--content-card-radius); background: #fff; }
+  .assembly-guidance__card h3 { margin: 0 0 8px; color: #161719; font-family: var(--font-body--family); font-size: 15px; font-weight: 600; line-height: 1.4; }
+  .assembly-guidance__card strong { display: block; margin-top: 12px; color: #161719; font-size: 20px; font-weight: 600; }
+  .assembly-guidance__card p { margin: 6px 0 0; color: #6b6f76; font-size: 13.5px; line-height: 1.5; }
+  .assembly-guidance__image { display: grid; place-items: center; aspect-ratio: 4 / 3; margin-bottom: 16px; overflow: hidden; border-radius: calc(var(--content-card-radius) / 2); background: #f6f7f8; }
+  .assembly-guidance__image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .assembly-guidance__help { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 20px; padding: 20px; border-radius: var(--content-card-radius); background: #f6f7f8; }
+  .assembly-guidance__help h3 { margin: 0 0 4px; color: #161719; font-size: 16px; font-weight: 600; }
+  .assembly-guidance__help p { max-width: 68ch; margin: 0; color: #6b6f76; font-size: 13.5px; line-height: 1.5; }
+  .assembly-guidance__help a { flex: none; padding: 10px 14px; border-radius: 9px; background: #161719; color: #fff; font-size: 13.5px; font-weight: 550; text-decoration: none; }
+  .assembly-guidance__help a:hover { background: #000; }
+  .assembly-guidance__help a:focus-visible { outline: 2px solid #161719; outline-offset: 2px; }
+  @media (max-width: 989px) { .assembly-guidance__grid--time, .assembly-guidance__grid--tools { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 749px) { .assembly-guidance__grid { grid-template-columns: 1fr; } .assembly-guidance__help { align-items: flex-start; flex-direction: column; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Assembly guidance",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "time_heading", "label": "Assembly time heading", "default": "Estimated Assembly Time" },
+    { "type": "text", "id": "time_intro", "label": "Assembly time introduction" },
+    { "type": "text", "id": "tools_heading", "label": "Tools heading", "default": "Tools Needed" },
+    { "type": "text", "id": "tools_intro", "label": "Tools introduction" },
+    { "type": "text", "id": "anchor_heading", "label": "Anchor heading", "default": "Anchor Guide" },
+    { "type": "text", "id": "anchor_intro", "label": "Anchor introduction", "default": "Before anchoring, check these three things:" },
+    { "type": "text", "id": "help_heading", "label": "Help heading", "default": "Need help with the base?" },
+    { "type": "text", "id": "help_text", "label": "Help text", "default": "Explore foundation, base preparation, leveling, and outdoor setup guides." },
+    { "type": "text", "id": "help_label", "label": "Help link label", "default": "Explore shed assembly" },
+    { "type": "url", "id": "help_link", "label": "Help link" }
+  ],
+  "blocks": [
+    { "type": "time", "name": "Assembly time", "settings": [
+      { "type": "text", "id": "title", "label": "Product type" },
+      { "type": "image_picker", "id": "image", "label": "Product image" },
+      { "type": "text", "id": "duration", "label": "Estimated time" },
+      { "type": "text", "id": "note", "label": "Note" }
+    ] },
+    { "type": "tool", "name": "Tool", "settings": [
+      { "type": "text", "id": "title", "label": "Tool name" },
+      { "type": "text", "id": "note", "label": "When needed" }
+    ] },
+    { "type": "anchor", "name": "Anchor check", "settings": [
+      { "type": "text", "id": "title", "label": "Check" },
+      { "type": "text", "id": "note", "label": "Guidance" }
+    ] }
+  ],
+  "presets": [ { "name": "Assembly guidance" } ]
+}
+{% endschema %}

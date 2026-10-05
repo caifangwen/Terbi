@@ -1,0 +1,80 @@
+/* Tabs and collapsible tabs */
+collapsible-tab:not([data-tabList-mobile]) .collapsible-tab__header {
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  padding-block: 1rem 0.8rem;
+  border-bottom: 0.1rem solid var(--color-foreground);
+}
+
+collapsible-tab .collapsible-tab__header .icon-caret {
+  height: 0.6rem;
+  right: 1.5rem;
+  transition: transform var(--tst-smooth);
+}
+
+collapsible-tab:not([data-tabList-mobile]) .collapsible-tab__content {
+  max-height: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  transition: max-height var(--tst-smooth);
+}
+
+collapsible-tab.is-open .collapsible-tab__header .icon-caret {
+  transform: rotate(180deg);
+}
+
+@media screen and (max-width: 749px) {
+  collapsible-tab[data-tabList-mobile] .collapsible-tab__header {
+    cursor: pointer;
+    pointer-events: auto;
+    position: relative;
+    padding-block: 1rem 0.8rem;
+    border-bottom: 0.1rem solid var(--color-foreground);
+  }
+
+  collapsible-tab[data-tabList-mobile] .collapsible-tab__content {
+    max-height: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    transition: max-height var(--tst-smooth);
+  }
+}
+
+/* tabs-component */
+tabs-component:not(.predictive-search-tabs) .tabs-component-content {
+  display: none;
+
+  &.--active {
+    display: block;
+  }
+}
+
+.tabs-header {
+  flex: 1;
+  max-width: var(--tabs_header_max_width);
+}
+
+.tabs-product-header-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+.tabs-product-header-wrapper .tabs-product-header {
+  overflow: auto;
+  max-width: 100%;
+}
+
+.tabs-product-header-wrapper .tabs-product-header .tabs-product-header__item {
+  white-space: nowrap;
+  min-width: fit-content;
+
+  &.link.--active {
+    .text {
+      font-weight: var(--button-font-weight-link);
+      color: var(--color-primary-hover);
+      background-position-x: left;
+      background-size: 100% var(--link-underline-width, 1px);
+    }
+  }
+}

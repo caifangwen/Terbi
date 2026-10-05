@@ -1,0 +1,47 @@
+{%- liquid
+  assign menu_title = link.title | escape | downcase | handle
+  assign matched_style = ''
+  assign matched_block = blank
+
+  assign mega_menu_1 = blocks | where: 'type', 'mega_menu_1'
+  for mega_block in mega_menu_1
+    assign block_title = mega_block.settings.menu_item | escape | downcase | handle
+    if block_title == menu_title
+      assign matched_style = '1'
+      assign matched_block = mega_block
+      break
+    endif
+  endfor
+
+  if matched_style == ''
+    assign mega_menu_2 = blocks | where: 'type', 'mega_menu_2'
+    for mega_block in mega_menu_2
+      assign block_title = mega_block.settings.menu_item | escape | downcase | handle
+      if block_title == menu_title
+        assign matched_style = '2'
+        assign matched_block = mega_block
+        break
+      endif
+    endfor
+  endif
+
+  if matched_style == ''
+    assign mega_menu_3 = blocks | where: 'type', 'mega_menu_3'
+    for mega_block in mega_menu_3
+      assign block_title = mega_block.settings.menu_item | escape | downcase | handle
+      if block_title == menu_title
+        assign matched_style = '3'
+        assign matched_block = mega_block
+        break
+      endif
+    endfor
+  endif
+-%}
+
+{%- if matched_style != '' -%}
+  {%- render 'header-mega-menu-simple', forloopIndex: forloopIndex, link: link, block: matched_block, keys: keys, sec_settings: sec_settings, block_id: block_id, section_fetch: section_fetch -%}
+{%- elsif section_fetch -%}
+  {%- render 'header-dropdown-menu', forloopIndex: forloopIndex, link: link, icon_type: icon_type, keys: keys, sec_settings: sec_settings, class_item_hover_reveal: class_item_hover_reveal, block_id: block_id, section_fetch: section_fetch -%}
+{%- else -%}
+  {%- render 'header-mega-menu-simple', forloopIndex: forloopIndex, link: link, block: blank, keys: keys, sec_settings: sec_settings, block_id: block_id -%}
+{%- endif -%}

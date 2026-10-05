@@ -1,0 +1,85 @@
+{{ 'section-article-hero.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign words = article.content | strip_html | split: ' ' | size
+  assign read_min = words | divided_by: 200 | ceil
+-%}
+
+<header class="article-hero color-{{ section.settings.color_scheme }}">
+  <div class="article-hero__inner">
+    <div class="article-hero__content">
+      <p class="article-hero__badge">{{ blog.title }}</p>
+
+      {% render 'article-share', article: article %}
+
+      <h1 class="article-hero__title">{{ article.title | escape }}</h1>
+
+      {% if article.excerpt != blank %}
+        <p class="article-hero__excerpt">{{ article.excerpt | strip_html }}</p>
+      {% endif %}
+
+      <div class="article-hero__meta" aria-label="Article information">
+        {% if article.author != blank %}
+          <span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            {{ article.author }}
+          </span>
+        {% endif %}
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+            <path d="M16 2v4M8 2v4M3 10h18"></path>
+          </svg>
+          {{ article.published_at | date: '%B %d, %Y' }}
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M12 6v6l4 2"></path>
+          </svg>
+          {% if read_min == 0 %}1 min read{% else %}{{ read_min }} min read{% endif %}
+        </span>
+      </div>
+    </div>
+
+    <div class="article-hero__media">
+      {% if article.image %}
+        {{
+          article.image
+          | image_url: width: 1800
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            widths: '375, 550, 750, 1100, 1500, 1800',
+            sizes: '(max-width: 749px) calc(100vw - 24px), min(560px, calc(50vw - 48px))',
+            alt: article.title
+        }}
+      {% else %}
+        <div class="article-hero__placeholder" aria-hidden="true"></div>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "Article hero",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "t:settings.color_scheme",
+      "default": "scheme-2"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Article hero"
+    }
+  ]
+}
+{% endschema %}

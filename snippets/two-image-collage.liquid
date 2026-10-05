@@ -1,0 +1,145 @@
+{% doc %}
+  @prompt
+    Modify only the left image area of this section. Keep the entire right-side content exactly unchanged, including the heading, paragraphs, typography, font sizes, colors, alignment, spacing, and section width.  Use the attached second screenshot as the visual reference for the new left-side layout.  Desktop layout requirements: - Replace the current single image with a two-image editorial collage. - Place one large landscape image as the main background image on the left. - The main image should occupy the full width of the left column and have rounded corners. - Add a smaller landscape image overlapping the bottom-right corner of the main image. - The smaller image should be approximately 50–55% of the left column width. - Position the smaller image partly inside and partly outside the main image, similar to the reference screenshot. - Add a thick white border around the smaller image, approximately 8–12px, with rounded corners. - Use `object-fit: cover` for both images. - Make sure the overlap does not extend into or cover the right-side text column. - Keep the section vertically balanced with the right-side content.  Shopify requirements: - Add two separate image picker settings in the section editor: “Main image” and “Overlay image”. - Preserve image alt text, responsive image loading, and lazy loading. - Do not hard-code the image URLs. - Do not modify any content or settings on the right side.  Responsive requirements: - On desktop and tablet, keep the overlapping collage layout. - On mobile, stack the image area above the text. - Keep the smaller image overlapping near the bottom-right of the main image, but reduce it to around 55–65% width. - Prevent horizontal overflow and maintain consistent page padding.  Do not redesign the full section. Only change the left media layout. dont change the right half content display
+{% enddoc %}
+{% assign ai_gen_id = instance_id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-image-collage-{{ ai_gen_id }} {
+    display: block;
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-image-collage-container-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-image-collage-main-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    border-radius: {{ settings.main_image_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-image-collage-main-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .ai-image-collage-main-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: {{ settings.main_image_border_radius }}px;
+    position: relative;
+  }
+
+  .ai-image-collage-main-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 500px;
+    max-height: 500px;
+  }
+
+  .ai-image-collage-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: {{ settings.overlay_position_bottom }}%;
+    right: {{ settings.overlay_position_right }}%;
+    width: {{ settings.overlay_width }}%;
+    border: {{ settings.overlay_border_width }}px solid {{ settings.overlay_border_color }};
+    border-radius: {{ settings.overlay_border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-image-collage-overlay-{{ ai_gen_id }} img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+
+  .ai-image-collage-overlay-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-image-collage-overlay-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-image-collage-empty-state-{{ ai_gen_id }} {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-image-collage-overlay-{{ ai_gen_id }} {
+      width: {{ settings.overlay_width_mobile }}%;
+    }
+  }
+{% endstyle %}
+
+<ai-image-collage-{{ ai_gen_id }}
+  class="ai-image-collage-{{ ai_gen_id }}"
+>
+  <div class="ai-image-collage-container-{{ ai_gen_id }}">
+    <div class="ai-image-collage-main-{{ ai_gen_id }}">
+      {% if settings.main_image %}
+        <img
+          src="{{ settings.main_image | image_url: width: 2000 }}"
+          alt="{{ settings.main_image.alt | escape }}"
+          loading="lazy"
+          width="{{ settings.main_image.width }}"
+          height="{{ settings.main_image.height }}"
+        >
+      {% else %}
+        <div class="ai-image-collage-main-placeholder-{{ ai_gen_id }}">
+          {{ 'image' | placeholder_svg_tag }}
+          <div class="ai-image-collage-empty-state-{{ ai_gen_id }}">
+            Add main image
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if settings.overlay_image or settings.main_image == blank %}
+      <div class="ai-image-collage-overlay-{{ ai_gen_id }}">
+        {% if settings.overlay_image %}
+          <img
+            src="{{ settings.overlay_image | image_url: width: 1000 }}"
+            alt="{{ settings.overlay_image.alt | escape }}"
+            loading="lazy"
+            width="{{ settings.overlay_image.width }}"
+            height="{{ settings.overlay_image.height }}"
+          >
+        {% else %}
+          <div class="ai-image-collage-overlay-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</ai-image-collage-{{ ai_gen_id }}>

@@ -1,0 +1,126 @@
+{% comment %}
+  Computes product badge state and renders the existing product-badge snippet.
+
+  Accepts:
+  - badge_product: {Object} Product Liquid object.
+  - card_product: {Object} Product Liquid object. Backwards-compatible alias for badge_product.
+  - serial: {String} Optional serial value passed through to product-badge.
+{% endcomment %}
+
+{%- liquid
+  assign badge_product = badge_product | default: card_product
+  assign sold_out_badge = false
+  assign new_badge = false
+  assign sale_badge = false
+  assign custom_badge = false
+  assign custom_badge_text = blank
+  assign product_badge_override = false
+  assign show_sold_out_badge = settings.show_sold_out_badge
+  assign show_new_badge = settings.show_new_badge
+  assign show_sale_badge = settings.show_sale_badge
+  assign show_custom_badge = settings.show_custom_badge
+
+  if badge_product != blank
+    assign custom_badge_text = badge_product.metafields.custom.custom_badge
+    assign product_badge_types = badge_product.metafields.custom.badge_types.value | join: ',' | downcase | replace: '_', '-' | replace: ' ', '-'
+    if product_badge_types == blank
+      assign product_badge_types = badge_product.metafields.custom.badge_types | downcase | replace: '_', '-' | replace: ' ', '-'
+    endif
+
+    if product_badge_types != blank
+      assign product_badge_tokens = ',' | append: product_badge_types | append: ','
+      assign product_badge_override = true
+      assign show_sold_out_badge = false
+      assign show_new_badge = false
+      assign show_sale_badge = false
+      assign show_custom_badge = false
+
+      if product_badge_tokens contains ',sold-out,' or product_badge_tokens contains ',soldout,'
+        assign show_sold_out_badge = true
+        assign sold_out_badge = true
+      endif
+
+      if product_badge_tokens contains ',new,'
+        assign show_new_badge = true
+        assign new_badge = true
+      endif
+
+      if product_badge_tokens contains ',sale,'
+        assign show_sale_badge = true
+        assign sale_badge = true
+      endif
+
+      if product_badge_tokens contains ',custom,'
+        assign show_custom_badge = true
+        assign custom_badge = true
+      endif
+    elsif custom_badge_text != blank
+      assign product_badge_override = true
+      assign show_sold_out_badge = false
+      assign show_new_badge = false
+      assign show_sale_badge = false
+      assign show_custom_badge = true
+      assign custom_badge = true
+    endif
+  endif
+
+  if product_badge_override == false and show_sold_out_badge and badge_product != blank
+    for tag in badge_product.tags
+      assign tag_handle = tag | handle
+      if tag_handle == 'sold-out' or tag_handle == 'soldout'
+        assign sold_out_badge = true
+        break
+      endif
+    endfor
+  endif
+
+  if product_badge_override == false and show_sold_out_badge and sold_out_badge == false and badge_product != blank
+    assign explicit_inventory_state = badge_product.metafields.custom.inventory_status | default: badge_product.metafields.custom.stock_status | handle
+    if explicit_inventory_state == 'sold-out' or explicit_inventory_state == 'out-of-stock'
+      assign sold_out_badge = true
+    endif
+  endif
+
+  if product_badge_override == false and show_new_badge and badge_product != blank
+    assign new_badge_type = settings.new_badge_type
+    if new_badge_type == 'auto'
+      assign date_start = badge_product.created_at | date: '%s'
+      assign date_now = 'now' | date: '%s'
+      assign date_minus = date_now | minus: date_start
+      assign date_difference = date_minus | divided_by: 86400
+      assign new_badge_time = settings.new_badge_time
+      if date_difference < new_badge_time
+        assign new_badge = true
+      endif
+    else
+      for tag in badge_product.tags
+        assign tag_handle = tag | handle
+        if tag_handle == 'new'
+          assign new_badge = true
+          break
+        endif
+      endfor
+    endif
+  endif
+
+  if product_badge_override == false and show_sale_badge and badge_product.compare_at_price > badge_product.price
+    assign sale_badge = true
+  endif
+
+  if show_custom_badge and badge_product != blank
+    if custom_badge_text or product_badge_override
+      assign custom_badge = true
+    endif
+  endif
+-%}
+
+{%- render 'product-badge',
+  card_product: badge_product,
+  sold_out_badge: sold_out_badge,
+  new_badge: new_badge,
+  sale_badge: sale_badge,
+  show_custom_badge: show_custom_badge,
+  custom_badge: custom_badge,
+  custom_badge_text: custom_badge_text,
+  serial: serial
+-%}

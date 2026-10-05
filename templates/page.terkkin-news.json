@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "main": {
+      "type": "newsroom-subpage",
+      "settings": {
+        "kind": "news"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

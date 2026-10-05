@@ -1,0 +1,22 @@
+<script src="{{ 'product-shipping-card.js' | asset_url }}" defer="defer"></script>
+
+<product-shipping-card>
+  {% render 'product-shipping-card', id: block.id, settings: block.settings %}
+</product-shipping-card>
+
+{% schema %}
+{
+  "name": "Delivery time",
+  "settings": [
+    { "type": "url", "id": "arrival_link", "label": "Arrival dates link" },
+    { "type": "text", "id": "disclaimer", "label": "Disclaimer text", "default": "*We currently do not ship to AK or HI." },
+    { "type": "text", "id": "region_1", "label": "Region 1", "default": "West Coast" },
+    { "type": "text", "id": "time_1", "label": "Transit time 1", "default": "10 to 17 days" },
+    { "type": "text", "id": "region_2", "label": "Region 2", "default": "Midwest" },
+    { "type": "text", "id": "time_2", "label": "Transit time 2", "default": "7 to 10 days" },
+    { "type": "text", "id": "region_3", "label": "Region 3", "default": "East Coast" },
+    { "type": "text", "id": "time_3", "label": "Transit time 3", "default": "10 to 17 days" }
+  ],
+  "presets": [{ "name": "Delivery time" }]
+}
+{% endschema %}

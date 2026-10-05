@@ -1,0 +1,47 @@
+/* Split from base.css: localization selector component styles. */
+
+/* component-localization */
+.localization-form__select:before {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--localization-radius);
+  box-shadow: var(--localization-shadow);
+  z-index: -1;
+}
+
+.localization-form__select:after {
+  pointer-events: none;
+  content: "";
+  position: absolute;
+  top: var(--localization-border-width);
+  right: var(--localization-border-width);
+  bottom: var(--localization-border-width);
+  left: var(--localization-border-width);
+  border: 0.1rem solid transparent;
+  border-radius: var(--localization-radius);
+  box-shadow: 0 0 0 var(--localization-border-width) var(--color-foreground);
+  transition: box-shadow var(--duration-short) ease;
+  z-index: 1;
+}
+
+@media (hover: hover) {
+  .localization-form__select:hover.localization-form__select:after,
+  .localization-form__select:focus.localization-form__select:after {
+    box-shadow: 0 0 0 calc(0.1rem + var(--localization-border-width)) var(--color-foreground);
+    outline: 0;
+    border-radius: var(--localization-radius);
+  }
+}
+
+.localization-form__select:focus-visible.localization-form__select:after {
+  box-shadow: 0 0 0 calc(0.1rem + var(--localization-border-width)) var(--color-foreground);
+  outline: 0;
+  border-radius: var(--localization-radius);
+}
+
+.localization-form__select:focus {
+  outline: 0;
+  box-shadow: none;
+}

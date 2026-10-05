@@ -1,0 +1,37 @@
+{%- liquid
+  assign menu_image = menu_link.object.image
+  if menu_image == blank
+    assign menu_image = menu_link.object.featured_image
+  endif
+
+  if menu_image == blank and menu_link.links != blank
+    for nested_link in menu_link.links
+      assign menu_image = nested_link.object.image
+      if menu_image == blank
+        assign menu_image = nested_link.object.featured_image
+      endif
+      if menu_image != blank
+        break
+      endif
+    endfor
+  endif
+
+  assign image_alt = menu_image.alt | default: menu_link.title | escape
+-%}
+
+<span class="mega-menu__item-media" aria-hidden="true">
+  {%- if menu_image != blank -%}
+    {{
+      menu_image
+      | image_url: width: 520
+      | image_tag:
+        loading: 'lazy',
+        widths: '160, 240, 320, 420, 520',
+        sizes: '(min-width: 990px) 64px, 40vw',
+        alt: image_alt,
+        class: 'mega-menu__item-image motion-reduce'
+    }}
+  {%- else -%}
+    {{ 'collection-1' | placeholder_svg_tag: 'mega-menu__item-placeholder' }}
+  {%- endif -%}
+</span>

@@ -1,0 +1,230 @@
+{%- comment -%}
+  Career selector
+  Content: metaobject "career_area", selected per page via page.metafields.custom.career_areas
+  Presentation: settings below. No careers are stored in this section.
+{%- endcomment -%}
+
+{%- liquid
+  assign career_areas = page.metafields.custom.career_areas.value
+
+  # Build sortable keys "100005:2" (display order + list index), skipping inactive entries.
+  # Entries with no display order fall to the end; ties keep the order set on the page.
+  assign keys = ''
+  for career in career_areas
+    if career.active.value == false
+      continue
+    endif
+    assign order = career.display_order.value | default: 9999 | plus: 100000
+    assign keys = keys | append: order | append: ':' | append: forloop.index0 | append: ','
+  endfor
+  assign sorted_keys = keys | split: ',' | sort
+  assign uid = 'career-' | append: section.id
+-%}
+
+{%- if sorted_keys.size > 0 -%}
+  <style>
+    #{{ uid }} {
+      --cs-text: {{ section.settings.text_color }};
+      --cs-bg: {{ section.settings.background_color }};
+      --cs-panel-bg: {{ section.settings.panel_background }};
+      --cs-border: {{ section.settings.border_color }};
+      --cs-accent: {{ section.settings.accent_color }};
+      --cs-radius: {{ section.settings.radius }}px;
+      color: var(--cs-text);
+      background: var(--cs-bg);
+      padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px;
+    }
+    #{{ uid }} .cs__inner { max-width: {{ section.settings.max_width }}px; margin-inline: auto; padding-inline: 16px; }
+    #{{ uid }} .cs__eyebrow { margin: 0 0 8px; font-size: 1.3rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    #{{ uid }} .cs__heading { margin: 0 0 24px; }
+    #{{ uid }} .cs__label { display: block; margin-bottom: 8px; font-weight: 600; }
+    #{{ uid }} .cs__dropdown { position: relative; max-width: 480px; }
+    #{{ uid }} .cs__trigger {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      width: 100%; padding: 14px 18px; font: inherit; color: inherit; text-align: left;
+      background: var(--cs-panel-bg); border: 1px solid var(--cs-border); border-radius: var(--cs-radius); cursor: pointer;
+    }
+    #{{ uid }} .cs__trigger:focus-visible, #{{ uid }} .cs__option:focus-visible { outline: 2px solid var(--cs-accent); outline-offset: 2px; }
+    #{{ uid }} .cs__chevron { flex: none; width: 12px; height: 12px; transition: transform .2s ease; }
+    #{{ uid }} [data-direction="up"] .cs__chevron { transform: rotate(180deg); }
+    #{{ uid }} .cs__trigger[aria-expanded="true"] .cs__chevron { transform: rotate(180deg); }
+    #{{ uid }} [data-direction="up"] .cs__trigger[aria-expanded="true"] .cs__chevron { transform: rotate(0deg); }
+    #{{ uid }} .cs__list {
+      position: absolute; left: 0; right: 0; z-index: 10; margin: 0; padding: 6px; list-style: none;
+      max-height: 320px; overflow-y: auto;
+      background: var(--cs-panel-bg); border: 1px solid var(--cs-border); border-radius: var(--cs-radius);
+      box-shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    #{{ uid }} [data-direction="down"] .cs__list { top: calc(100% + 6px); }
+    #{{ uid }} [data-direction="up"] .cs__list { bottom: calc(100% + 6px); }
+    #{{ uid }} .cs__list[hidden] { display: none; }
+    #{{ uid }} .cs__option {
+      display: block; width: 100%; padding: 10px 12px; font: inherit; color: inherit; text-align: left;
+      background: none; border: 0; border-radius: calc(var(--cs-radius) / 2); cursor: pointer;
+    }
+    #{{ uid }} .cs__option:hover, #{{ uid }} .cs__option[aria-selected="true"] { background: color-mix(in srgb, var(--cs-accent) 10%, transparent); }
+    #{{ uid }} .cs__option[aria-selected="true"] { font-weight: 600; }
+    #{{ uid }} .cs__panels { margin-top: 32px; }
+    #{{ uid }} .cs__panel { display: grid; gap: 24px; align-items: center; }
+    #{{ uid }} .cs__panel[hidden] { display: none; }
+    #{{ uid }} .cs__panel--media { grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 750px) { #{{ uid }} .cs__panel--media { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+    #{{ uid }} .cs__media img { display: block; width: 100%; height: auto; border-radius: var(--cs-radius); }
+    #{{ uid }} .cs__panel-title { margin: 0 0 12px; }
+    #{{ uid }} .cs__link { display: inline-block; margin-top: 16px; color: var(--cs-accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  </style>
+
+  {%- if section.settings.anchor_id != blank -%}<span id="{{ section.settings.anchor_id | handle }}" style="display:block;position:relative;top:-80px;visibility:hidden;"></span>{%- endif -%}
+  <section id="{{ uid }}" class="career-selector" data-career-selector>
+    <div class="cs__inner">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="cs__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="cs__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      {%- if section.settings.label != blank -%}
+        <span class="cs__label" id="{{ uid }}-label">{{ section.settings.label | escape }}</span>
+      {%- endif -%}
+
+      <div class="cs__dropdown" data-direction="{{ section.settings.direction }}">
+        <button
+          type="button"
+          class="cs__trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="{{ uid }}-list"
+          {% if section.settings.label != blank %}aria-labelledby="{{ uid }}-label {{ uid }}-current"{% endif %}
+          data-cs-trigger
+        >
+          <span id="{{ uid }}-current" data-cs-current>{{ section.settings.placeholder | escape }}</span>
+          <svg class="cs__chevron" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 4l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+
+        <ul class="cs__list" id="{{ uid }}-list" role="listbox" hidden data-cs-list>
+          {%- for key in sorted_keys -%}
+            {%- assign idx = key | split: ':' | last | plus: 0 -%}
+            {%- for c in career_areas -%}{%- if forloop.index0 == idx -%}{%- assign career = c -%}{%- break -%}{%- endif -%}{%- endfor -%}
+            <li role="presentation">
+              <button type="button" class="cs__option" role="option" aria-selected="false" data-cs-option="{{ uid }}-{{ career.system.id }}">
+                {{- career.name.value | escape -}}
+              </button>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <div class="cs__panels" aria-live="polite">
+        {%- for key in sorted_keys -%}
+          {%- assign idx = key | split: ':' | last | plus: 0 -%}
+          {%- for c in career_areas -%}{%- if forloop.index0 == idx -%}{%- assign career = c -%}{%- break -%}{%- endif -%}{%- endfor -%}
+          {%- assign has_image = false -%}
+          {%- if section.settings.show_image and career.image.value != blank -%}{%- assign has_image = true -%}{%- endif -%}
+          <article id="{{ uid }}-{{ career.system.id }}" class="cs__panel{% if has_image %} cs__panel--media{% endif %}" data-cs-panel hidden>
+            {%- if has_image -%}
+              <div class="cs__media">
+                {{ career.image.value | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '400, 800, 1200', sizes: '(min-width: 750px) 50vw, 100vw', alt: career.name.value }}
+              </div>
+            {%- endif -%}
+            <div class="cs__body">
+              <h3 class="cs__panel-title">{{ career.name.value | escape }}</h3>
+              {%- if career.short_description != blank -%}
+                <div class="cs__desc rte">{{ career.short_description | metafield_tag }}</div>
+              {%- endif -%}
+              {%- if career.link.value != blank -%}
+                <a class="cs__link" href="{{ career.link.value }}">{{ section.settings.link_label | escape }}</a>
+              {%- endif -%}
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      var root = document.getElementById('{{ uid }}');
+      if (!root || root.dataset.csReady) return;
+      root.dataset.csReady = '1';
+
+      var trigger = root.querySelector('[data-cs-trigger]');
+      var list = root.querySelector('[data-cs-list]');
+      var current = root.querySelector('[data-cs-current]');
+      var options = Array.prototype.slice.call(root.querySelectorAll('[data-cs-option]'));
+      var panels = root.querySelectorAll('[data-cs-panel]');
+
+      function open() { list.hidden = false; trigger.setAttribute('aria-expanded', 'true'); var s = list.querySelector('[aria-selected="true"]') || options[0]; if (s) s.focus(); }
+      function close(focusTrigger) { list.hidden = true; trigger.setAttribute('aria-expanded', 'false'); if (focusTrigger) trigger.focus(); }
+
+      function select(btn) {
+        var target = btn.getAttribute('data-cs-option');
+        options.forEach(function (o) { o.setAttribute('aria-selected', o === btn ? 'true' : 'false'); });
+        panels.forEach(function (p) { p.hidden = p.id !== target; });
+        current.textContent = btn.textContent;
+      }
+
+      trigger.addEventListener('click', function () { list.hidden ? open() : close(false); });
+      options.forEach(function (btn) {
+        btn.addEventListener('click', function () { select(btn); close(true); });
+      });
+
+      list.addEventListener('keydown', function (e) {
+        var i = options.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown') { e.preventDefault(); options[Math.min(i + 1, options.length - 1)].focus(); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); options[Math.max(i - 1, 0)].focus(); }
+        else if (e.key === 'Home') { e.preventDefault(); options[0].focus(); }
+        else if (e.key === 'End') { e.preventDefault(); options[options.length - 1].focus(); }
+        else if (e.key === 'Escape' || e.key === 'Tab') { close(e.key === 'Escape'); }
+      });
+
+      document.addEventListener('click', function (e) { if (!root.contains(e.target)) close(false); });
+
+      {%- if section.settings.select_first -%}
+      if (options[0]) select(options[0]);
+      {%- endif -%}
+    })();
+  </script>
+{%- elsif request.design_mode -%}
+  <div style="padding:24px;text-align:center;border:1px dashed #ccc;">
+    Career selector: no career areas selected. Add them under Pages → {{ page.title | default: 'this page' }} → Metafields → Career areas.
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Career selector",
+  "tag": "div",
+  "class": "section-career-selector",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "OPEN ROLES" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find Your Area" },
+    { "type": "text", "id": "label", "label": "Dropdown label", "default": "Career area" },
+    { "type": "text", "id": "placeholder", "label": "Placeholder", "default": "Choose a career area" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Learn more" },
+    { "type": "text", "id": "anchor_id", "label": "Anchor ID", "info": "Lets buttons link here, e.g. #roles", "default": "roles" },
+    { "type": "header", "content": "Behavior" },
+    {
+      "type": "select", "id": "direction", "label": "Menu opens",
+      "options": [ { "value": "down", "label": "Downward" }, { "value": "up", "label": "Upward" } ],
+      "default": "down"
+    },
+    { "type": "checkbox", "id": "select_first", "label": "Show first career on load", "default": true },
+    { "type": "checkbox", "id": "show_image", "label": "Show image", "default": true },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#000000" },
+    { "type": "color", "id": "background_color", "label": "Section background", "default": "#ffffff" },
+    { "type": "color", "id": "panel_background", "label": "Dropdown background", "default": "#ffffff" },
+    { "type": "color", "id": "border_color", "label": "Border", "default": "#e6e6e6" },
+    { "type": "color", "id": "accent_color", "label": "Accent", "default": "#000f9f" },
+    { "type": "header", "content": "Layout" },
+    { "type": "range", "id": "max_width", "label": "Max width", "min": 600, "max": 1600, "step": 10, "unit": "px", "default": 1200 },
+    { "type": "range", "id": "radius", "label": "Corner radius", "min": 0, "max": 24, "step": 1, "unit": "px", "default": 8 },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 }
+  ],
+  "presets": [ { "name": "Career selector" } ]
+}
+{% endschema %}

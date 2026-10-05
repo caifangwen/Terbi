@@ -1,0 +1,111 @@
+{% doc %}
+  Renders media from block or section settings.
+
+  @param {boolean} [unset_image_tag] - if true, ignores the image focal point in the image
+  @param {string} [video_style] - additional styles for the video
+  @param {string} [section] - the section
+  @param {string} [block] - the block
+  @param {object} [media_settings] - settings to use instead of block.settings
+{% enddoc %}
+
+{% liquid
+  if media_settings == blank
+    assign media_settings = block.settings
+  endif
+  assign media_id = block.id | default: section.id
+
+  assign show_image = false
+  assign show_video = false
+
+  if media_settings.image != blank
+    assign aspect_ratio = media_settings.image.aspect_ratio
+  else
+    assign aspect_ratio = '16 / 9'
+  endif
+
+  if media_settings.media_type == 'image'
+    assign show_image = true
+  endif
+
+  if media_settings.media_type == 'video'
+    assign show_video = true
+  endif
+%}
+
+{% if animation_type == 'parallax' %}
+  {% assign animation_element = 'parallax-background' %}
+{% else %}
+  {% assign animation_element = 'div' %}
+{% endif %}
+
+<{{ animation_element }}
+  class="
+    media-block
+    spacing-style
+    {% if media_settings.inherit_color_scheme == false %}color-scheme-custom{% endif %}
+    {% if show_image and media_settings.image_position == 'contain' or show_video and media_settings.video_position == 'contain' %}
+      media-block--contain
+    {% endif %}
+  "
+  style="
+    {% render 'border-override', settings: media_settings %}
+    {% render 'spacing-style', settings: media_settings %}
+    {% if media_settings.inherit_color_scheme == false %}
+      {% render 'color-scheme-style', settings: media_settings %}
+    {% endif %}
+    --image-position: {{ media_settings.image_position }};
+    --video-position: {{ media_settings.video_position }};
+    --aspect-ratio: {{ aspect_ratio }};
+  "
+  {% if block %}{{ block.shopify_attributes }}{% endif %}
+>
+  {%- if show_image -%}
+    {% capture image_tag %}
+      {% if media_settings.image != blank %}
+        {% render 'image',
+          image: media_settings.image,
+          class: 'media-block__media border-style parallax-image',
+          unset_image_tag: unset_image_tag,
+          animation_type: animation_type
+        %}
+      {% else %}
+        <div class="media-block__media border-style placeholder-svg" style="height: 100%;">
+          {{ 'hero-apparel-1' | placeholder_svg_tag }}
+        </div>
+      {% endif %}
+    {% endcapture %}
+
+    {% if media_settings.link != blank %}
+      <a
+        href="{{ media_settings.link }}"
+        class="media-block__media-link"
+      >
+        {{ image_tag }}
+      </a>
+    {% else %}
+      {{ image_tag }}
+    {% endif %}
+  {%- elsif show_video -%}
+    {% render 'video',
+      video: media_settings.video,
+      video_class: 'media-block__media media-block__media--video spacing-style size-style border-style',
+      video_type: media_settings.video_url.type,
+      video_autoplay: media_settings.video_autoplay,
+      video_loop: media_settings.video_loop,
+      video_style: video_style,
+      video_ratio: ratio,
+      video_alt: media_settings.alt,
+      video_preview_image: media_settings.banner_image,
+      additional_attributes: block.shopify_attributes,
+      section_id: media_id,
+      section: section
+    %}
+  {%- else -%}
+    <div class="placeholder-image media-block__media border-style">
+      <placeholder-image
+        data-block-id="{{ section.id }}-{{ media_id }}"
+        data-type="general"
+      ></placeholder-image>
+    </div>
+  {%- endif -%}
+</{{ animation_element }}>

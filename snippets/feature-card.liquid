@@ -1,0 +1,157 @@
+{% doc %}
+  @prompt
+    "Create a new reusable group called 'feature-card' using this HTML/CSS/Liquid structure. Make the badge text, heading, description, list items, and link text/URL all editable through theme customizer settings (schema blocks), so I can reuse this card multiple times with different content."
+{% enddoc %}
+{% assign ai_gen_id = instance_id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-feature-card-{{ ai_gen_id }} {
+    display: block;
+    width: {{ settings.desktop_width_percent }}%;
+    max-width: 100%;
+  }
+
+  .ai-feature-card__container-{{ ai_gen_id }} {
+    background-color: {{ settings.background_color }};
+    border-radius: {{ settings.border_radius }}px;
+    padding: {{ settings.padding }}px;
+    border: {{ settings.border_width }}px solid {{ settings.border_color }};
+  }
+
+  .ai-feature-card__badge-{{ ai_gen_id }} {
+    display: inline-block;
+    background-color: {{ settings.badge_bg_color }};
+    color: {{ settings.badge_text_color }};
+    padding: {{ settings.badge_padding_vertical }}px {{ settings.badge_padding_horizontal }}px;
+    border-radius: {{ settings.badge_border_radius }}px;
+    font-size: {{ settings.badge_font_size }}px;
+    font-weight: 600;
+    margin-bottom: {{ settings.badge_margin_bottom }}px;
+  }
+
+  .ai-feature-card__heading-{{ ai_gen_id }} {
+    color: {{ settings.heading_color }};
+    font-size: {{ settings.heading_font_size }}px;
+    font-weight: 700;
+    margin: 0 0 {{ settings.heading_margin_bottom }}px 0;
+    line-height: 1.2;
+  }
+
+  .ai-feature-card__description-{{ ai_gen_id }} {
+    color: {{ settings.description_color }};
+    font-size: {{ settings.description_font_size }}px;
+    line-height: {{ settings.description_line_height }};
+    margin: 0 0 {{ settings.description_margin_bottom }}px 0;
+  }
+
+  .ai-feature-card__list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 {{ settings.list_margin_bottom }}px 0;
+  }
+
+  .ai-feature-card__list-item-{{ ai_gen_id }} {
+    color: {{ settings.list_text_color }};
+    font-size: {{ settings.list_font_size }}px;
+    line-height: {{ settings.list_line_height }};
+    padding-left: {{ settings.list_item_padding_left }}px;
+    margin-bottom: {{ settings.list_item_spacing }}px;
+    position: relative;
+  }
+
+  .ai-feature-card__list-item-{{ ai_gen_id }}:before {
+    content: "{{ settings.list_bullet_icon }}";
+    position: absolute;
+    left: 0;
+    color: {{ settings.list_bullet_color }};
+  }
+
+  .ai-feature-card__link-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: {{ settings.link_color }};
+    font-size: {{ settings.link_font_size }}px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .ai-feature-card__link-{{ ai_gen_id }}:hover {
+    color: {{ settings.link_hover_color }};
+  }
+
+  .ai-feature-card__link-arrow-{{ ai_gen_id }} {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-feature-card__link-{{ ai_gen_id }}:hover .ai-feature-card__link-arrow-{{ ai_gen_id }} {
+    transform: translateX(4px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-feature-card__container-{{ ai_gen_id }} {
+      padding: {{ settings.padding | times: 0.7 }}px;
+    }
+
+    .ai-feature-card__heading-{{ ai_gen_id }} {
+      font-size: {{ settings.heading_font_size | times: 0.85 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-feature-card-{{ ai_gen_id }}">
+  <div class="ai-feature-card__container-{{ ai_gen_id }}">
+    {% if settings.badge_text != blank %}
+      <div class="ai-feature-card__badge-{{ ai_gen_id }}">
+        {{ settings.badge_text }}
+      </div>
+    {% endif %}
+
+    {% if settings.heading != blank %}
+      <h3 class="ai-feature-card__heading-{{ ai_gen_id }}">
+        {{ settings.heading }}
+      </h3>
+    {% endif %}
+
+    {% if settings.description != blank %}
+      <div class="ai-feature-card__description-{{ ai_gen_id }}">
+        {{ settings.description }}
+      </div>
+    {% endif %}
+
+    {% if settings.list_item_1 != blank or settings.list_item_2 != blank or settings.list_item_3 != blank or settings.list_item_4 != blank or settings.list_item_5 != blank %}
+      <ul class="ai-feature-card__list-{{ ai_gen_id }}">
+        {% if settings.list_item_1 != blank %}
+          <li class="ai-feature-card__list-item-{{ ai_gen_id }}">{{ settings.list_item_1 }}</li>
+        {% endif %}
+        {% if settings.list_item_2 != blank %}
+          <li class="ai-feature-card__list-item-{{ ai_gen_id }}">{{ settings.list_item_2 }}</li>
+        {% endif %}
+        {% if settings.list_item_3 != blank %}
+          <li class="ai-feature-card__list-item-{{ ai_gen_id }}">{{ settings.list_item_3 }}</li>
+        {% endif %}
+        {% if settings.list_item_4 != blank %}
+          <li class="ai-feature-card__list-item-{{ ai_gen_id }}">{{ settings.list_item_4 }}</li>
+        {% endif %}
+        {% if settings.list_item_5 != blank %}
+          <li class="ai-feature-card__list-item-{{ ai_gen_id }}">{{ settings.list_item_5 }}</li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
+    {% if settings.link_text != blank %}
+      <a href="{{ settings.link_url }}" class="ai-feature-card__link-{{ ai_gen_id }}">
+        {{ settings.link_text }}
+        {% if settings.show_arrow %}
+          <svg class="ai-feature-card__link-arrow-{{ ai_gen_id }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        {% endif %}
+      </a>
+    {% endif %}
+  </div>
+</div>

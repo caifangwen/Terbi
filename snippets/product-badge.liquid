@@ -1,0 +1,53 @@
+{%- if card_product != blank -%}
+{%- capture class_badge -%}badge product-badge badge--bottom-left{%- endcapture -%}
+{%- capture id_badge -%}NoMediaStandardBadge-{{ section_id }}-{{ card_product.id }}{%- endcapture -%}
+
+{%- if sold_out_badge -%}
+  <span
+    id="{{ id_badge }}"
+    class="sold-out-badge product-badge--state product-badge--sold-out {{ class_badge }}"
+    data-state="sold-out"
+    aria-hidden="true"
+    style="{%- render 'block-padding', settings: settings -%}"
+  >
+    {{- 'products.product.sold_out' | t -}}
+  </span>
+{%- endif -%}
+{%- if new_badge -%}
+  <span
+    id="{{ id_badge }}-new"
+    class="new-badge product-badge--state product-badge--new {{ class_badge }}"
+    data-state="new"
+    aria-hidden="true"
+    style="{%- render 'block-padding', settings: settings -%}"
+  >
+    {{ 'products.product.new' | t }}
+  </span>
+{%- endif -%}
+{%- if sale_badge -%}
+  <span
+    id="{{ id_badge }}"
+    class="sale-badge product-badge--state product-badge--sale {{ class_badge }}"
+    data-state="sale"
+    aria-hidden="true"
+    style="{%- render 'block-padding', settings: settings -%}"
+  >
+    {{- 'products.product.on_sale' | t -}}
+  </span>
+{%- endif -%}
+{%- if custom_badge -%}
+  <span
+    id="{{ id_badge }}-custom"
+    class="custom-badge product-badge--state product-badge--custom {{ class_badge }}"
+    data-state="custom"
+    aria-hidden="true"
+    style="{%- render 'block-padding', settings: settings -%}"
+  >
+    {%- if custom_badge_text -%}
+      {{ custom_badge_text }}
+    {%- else -%}
+      {{ 'products.product.custom' | t }}
+    {%- endif -%}
+  </span>
+{%- endif -%}
+{%- endif -%}

@@ -1,0 +1,75 @@
+{
+  "sections": {
+    "main": {
+      "type": "program-page",
+      "settings": {
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "cards": {
+      "type": "page-card-groups",
+      "settings": {
+        "groups_source": "manual",
+        "groups": "{{ closest.page.metafields.custom.card_groups.value }}",
+        "padding-block-start": 32,
+        "padding-block-end": 48
+      }
+    },
+    "guide": {
+      "type": "image-with-text-rows",
+      "settings": {
+        "items": "{{ closest.page.metafields.custom.content_section.value }}",
+        "image_ratio": "1 / 1",
+        "display_layout": "alternate",
+        "first_image_position": "left",
+        "padding-block-start": 32,
+        "padding-block-end": 48
+      },
+      "blocks": {
+        "description-rows": {
+          "type": "image-with-text",
+          "static": true,
+          "settings": {},
+          "blocks": {}
+        }
+      }
+    },
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "show_sidebar": false,
+        "collection_content": false,
+        "heading": "Questions about this demo",
+        "layout": "vertical",
+        "padding-block-start": 32,
+        "padding-block-end": 48
+      },
+      "blocks": {
+        "faq": {
+          "type": "accordion",
+          "static": true,
+          "settings": {
+            "content_source": "resource",
+            "type_preset_heading": "h6",
+            "dividers": true,
+            "icon": "caret"
+          },
+          "blocks": {}
+        }
+      }
+    },
+    "cta": {
+      "type": "page-cta",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "cards",
+    "guide",
+    "faq",
+    "cta"
+  ]
+}

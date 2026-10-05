@@ -1,0 +1,90 @@
+{% assign items = section.settings.items %}
+
+{% if items != blank or request.design_mode %}
+  <div class="section section--page-width spacing-style" style="{% render 'spacing-style', settings: section.settings %}">
+    {% content_for 'block', type: 'image-with-text', id: 'description-tabs', content_items: items, display_layout: 'tabs' %}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Image with text tabs",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image aspect ratio",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Original"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Square (1:1)"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Landscape (4:3)"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "16 / 9",
+          "label": "Wide (16:9)"
+        }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "metaobject_list",
+      "id": "items",
+      "label": "Content items",
+      "metaobject_type": "image_with_text",
+      "limit": 12
+    },
+    {
+      "type": "select",
+      "id": "first_image_position",
+      "label": "First image position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "tab_content_display",
+      "label": "Tab content display",
+      "options": [
+        { "value": "selected", "label": "Show selected tab only" },
+        { "value": "all", "label": "Show all tab content" }
+      ],
+      "default": "selected"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.bottom",
+      "default": 52
+    }
+  ]
+}
+{% endschema %}

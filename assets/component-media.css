@@ -1,0 +1,154 @@
+/* Split from base.css: media component, image masks, fixed background, and zoom animations. */
+
+/* component-media */
+.media {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+
+  > img {
+    backface-visibility: hidden;
+    object-fit: var(--media-image-fit, cover);
+    object-position: center center;
+  }
+
+  &.media--hover-effect>img+img {
+    opacity: var(--resource-card-secondary-image-opacity);
+  }
+}
+
+.media--transparent {
+  background-color: transparent;
+}
+
+.media .product-media *,
+.media model-viewer {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.media model-viewer {
+  background-color: var(--color-background) !important;
+}
+
+.media--adapt {
+  aspect-ratio: var(--media-adapt-ratio, 1/1);
+}
+
+.media--circle,
+.media--square {
+  aspect-ratio: 1/1;
+}
+
+.media--portrait {
+  aspect-ratio: 4/5;
+}
+
+.media--landscape {
+  aspect-ratio: 16/9;
+}
+
+.media--cropped {
+  padding-bottom: 56%;
+}
+
+.media--circle {
+  border-radius: var(--style-border-radius-50);
+}
+
+.link-wrap {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+@media screen and (min-width: 990px) {
+  .media--cropped {
+    padding-bottom: 63%;
+  }
+}
+
+deferred-media {
+  display: block;
+}
+
+/* Image mask global styles */
+.shape--mask {
+  display: block;
+  height: 0;
+  width: 0;
+}
+
+.shape--arch {
+  clip-path: url("#Shape-Arch");
+}
+
+.shape--blob {
+  clip-path: polygon(var(--shape--blob-1));
+}
+
+.shape--chevronleft {
+  clip-path: polygon(100% 0%, 85% 50%, 100% 100%, 15% 100%, 0% 50%, 15% 0%);
+}
+
+.shape--chevronright {
+  clip-path: polygon(85% 0%, 100% 50%, 85% 100%, 0% 100%, 15% 50%, 0% 0%);
+}
+
+.shape--circle {
+  clip-path: circle(closest-side);
+}
+
+.shape--diamond {
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.shape--parallelogram {
+  clip-path: polygon(15% 0, 100% 0%, 85% 100%, 0% 100%);
+}
+
+.shape--round {
+  clip-path: ellipse(45% 45% at 50% 50%);
+}
+
+/* Fixed background */
+.animate--fixed {
+  clip-path: inset(0);
+}
+
+.animate--fixed>img:not(.zoom):not(.deferred-media__poster-button),
+.animate--fixed>svg:not(.zoom):not(.deferred-media__poster-button) {
+  position: fixed;
+  height: 100vh;
+}
+
+/* Zoom in image on scroll */
+.animate--zoom-in {
+  --zoom-in-ratio: 1;
+}
+
+.animate--zoom-in>img,
+.animate--zoom-in>.svg-wrapper {
+  transition: scale var(--duration-short) linear;
+  scale: var(--zoom-in-ratio);
+}
+
+
+/* Media direct children absolute fill (split from base.css base-3.css section). */
+.media > *:not(.zoom, .deferred-media__poster-icon, template, .card-placeholder) {
+  display: block;
+  max-width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}

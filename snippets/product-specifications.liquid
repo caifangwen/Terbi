@@ -1,0 +1,29 @@
+{%- assign tech_specifications = product.metafields.custom.tech_specification_details.value -%}
+{%- if tech_specifications != blank -%}
+  {%- assign tech_keys = 'model,connectivity,power,material,dimensions' | split: ',' -%}
+  <table class="product-specifications"><tbody>
+    {%- for key in tech_keys -%}
+      {%- assign field_value = tech_specifications[key].value -%}
+      {%- if field_value != blank -%}
+        <tr><th scope="row">{{ key | capitalize | escape }}</th><td>{{ field_value | escape }}</td></tr>
+      {%- endif -%}
+    {%- endfor -%}
+  </tbody></table>
+{%- else -%}
+{%- comment -%}Product specifications from the custom.specification_details product_specifications reference.{%- endcomment -%}
+{%- assign specifications = product.metafields.custom.specification_details.value -%}
+{%- capture specification_rows -%}
+  {%- assign field_keys = 'nominal_size_ft,overall_length_cm,interior_length_cm,interior_volume_m3,wall_panel_length_cm,base_length_cm,window_quantity,net_weight_kg,carton_count' | split: ',' -%}
+  {%- assign field_labels = 'Nominal Size (ft)|Exterior Dimensions (W × D × H)|Interior Dimensions (W × D × H)|Footprint|Door Opening Width|Door Height|Front Door Window Dimensions|Side Window Dimensions|Door Swing Clearance' | split: '|' -%}
+  {%- for key in field_keys -%}
+    {%- assign field_value = specifications[key].value -%}
+    {%- if field_value != blank -%}
+      <tr><th scope="row">{{ field_labels[forloop.index0] | escape }}</th><td>{{ field_value | escape | newline_to_br }}</td></tr>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if specification_rows != blank -%}
+  <table class="product-specifications"><tbody>{{ specification_rows }}</tbody></table>
+{%- endif -%}
+
+{%- endif -%}

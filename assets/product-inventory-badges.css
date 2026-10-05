@@ -1,0 +1,146 @@
+    .inventory-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .inventory-badges .inventory-badge {
+      box-sizing: border-box;
+      min-height: 32px;
+      padding: 0 13px;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+
+      border: 1px solid transparent;
+      border-radius: 999px;
+
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+
+      transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease;
+    }
+
+    /*
+      有库存：绿色
+    */
+    .inventory-badges
+    .inventory-badge--stock[data-state="in-stock"] {
+      color: #137a4b;
+      background: #eef9f3;
+      border-color: #e2f3e9;
+    }
+
+    .inventory-badges
+    .inventory-badge--stock[data-state="in-stock"]
+    .inventory-badge__dot {
+      background: #20a464;
+      box-shadow: 0 0 0 3px rgba(32, 164, 100, 0.1);
+    }
+
+    /*
+      低库存：橙色
+    */
+    .inventory-badges
+    .inventory-badge--stock[data-state="low-stock"] {
+      color: #925f00;
+      background: #fff8e8;
+      border-color: #f8ebc8;
+    }
+
+    .inventory-badges
+    .inventory-badge--stock[data-state="low-stock"]
+    .inventory-badge__dot {
+      background: #e6a000;
+      box-shadow: 0 0 0 3px rgba(230, 160, 0, 0.1);
+    }
+
+    /*
+      无库存：红色
+    */
+    .inventory-badges
+    .inventory-badge--stock[data-state="out-of-stock"] {
+      color: #b42318;
+      background: #fef3f2;
+      border-color: #fee4e2;
+    }
+
+    .inventory-badges
+    .inventory-badge--stock[data-state="out-of-stock"]
+    .inventory-badge__dot {
+      background: #d92d20;
+      box-shadow: 0 0 0 3px rgba(217, 45, 32, 0.1);
+    }
+
+    /*
+      缺货但允许继续销售：蓝色
+    */
+    .inventory-badges
+    .inventory-badge--stock[data-state="available-to-order"] {
+      color: #3157a4;
+      background: #eef4ff;
+      border-color: #dce7ff;
+    }
+
+    .inventory-badges
+    .inventory-badge--stock[data-state="available-to-order"]
+    .inventory-badge__dot {
+      background: #4775d1;
+      box-shadow: 0 0 0 3px rgba(71, 117, 209, 0.1);
+    }
+
+    /*
+      配送标签
+    */
+    .inventory-badges
+    .inventory-badge--shipping {
+      color: #344054;
+      background: #f5f7fa;
+      border-color: #edf0f4;
+    }
+
+    .inventory-badges
+    .inventory-badge__dot {
+      width: 7px;
+      height: 7px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+    }
+
+    .inventory-badges
+    .inventory-badge__icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      color: #667085;
+    }
+
+    @media screen and (max-width: 749px) {
+      .inventory-badges {
+        gap: 8px;
+      }
+
+      .inventory-badges
+      .inventory-badge {
+        min-height: 30px;
+        padding: 0 11px;
+        font-size: 12px;
+      }
+
+      .inventory-badges
+      .inventory-badge__icon {
+        width: 15px;
+        height: 15px;
+      }
+    }

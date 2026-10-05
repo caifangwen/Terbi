@@ -1,0 +1,110 @@
+{% liquid
+  assign faq_heading = section.settings.heading
+  assign faq_description = section.settings.description
+  assign faq_button_label = section.settings.button_label
+  assign faq_button_link = section.settings.button_link
+  if section.settings.collection_content
+    assign content = collection.metafields.custom.section_content.value
+    assign faq_heading = content.faq_heading.value
+    assign faq_description = content.faq_description.value
+    assign faq_button_label = content.faq_button_label.value
+    assign faq_button_link = content.faq_button_link.value
+  endif
+%}
+<div class="section section--page-width spacing-style faq-section faq-section--{{ section.settings.layout }}" style="{% render 'spacing-style', settings: section.settings %}">
+  {% if section.settings.show_sidebar %}
+    <div class="faq-section__columns">
+      <aside class="faq-section__sidebar">
+        <nav aria-label="FAQ navigation">
+          {% content_for 'block', type: 'menu', id: 'sidebar-menu' %}
+        </nav>
+      </aside>
+      <div class="faq-section__main">
+  {% endif %}
+  {% if faq_heading != blank %}
+    <h2 class="faq-section__heading">{{ faq_heading | escape }}</h2>
+  {% endif %}
+  {% content_for 'block', type: 'accordion', id: 'faq' %}
+  {% if faq_description != blank %}
+    <p class="faq-section__description">{{ faq_description | escape | newline_to_br }}</p>
+  {% endif %}
+  {% if faq_button_label != blank and faq_button_link != blank %}
+    <a class="link" href="{{ faq_button_link | escape }}">{{ faq_button_label | escape }}</a>
+  {% endif %}
+  {% if section.settings.show_sidebar %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .faq-section__columns { display: grid; grid-template-columns: minmax(180px, 260px) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); width: 100%; align-items: start; }
+  .faq-section__sidebar { min-width: 0; border-right: 1px solid rgb(var(--color-foreground-rgb) / .12); padding-right: 24px; }
+  .faq-section__main { min-width: 0; }
+  .faq-section__sidebar .menu-block { width: 100%; }
+  .faq-section__sidebar .menu__item a { display: block; padding-block: 10px; overflow-wrap: anywhere; }
+  .faq-section__sidebar [aria-current="page"] { font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+  .faq-section__description { max-width: 70ch; margin: 24px 0 0; color: rgb(var(--color-foreground-rgb) / .72); font-size: 1.5rem; line-height: 1.7; }
+  .faq-section > .link, .faq-section__main > .link { display: inline-block; margin-top: 20px; font-size: 1.4rem; text-underline-offset: 4px; }
+  @media (max-width: 749px) {
+    .faq-section__columns { grid-template-columns: 1fr; gap: 28px; }
+    .faq-section__sidebar { border-right: 0; border-bottom: 1px solid rgb(var(--color-foreground-rgb) / .12); padding: 0 0 20px; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ",
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.popup", "aside"]
+  },
+  "settings": [
+    { "type": "checkbox", "id": "show_sidebar", "label": "Show menu sidebar", "default": false },
+    { "type": "checkbox", "id": "collection_content", "label": "Use collection FAQ content", "default": false },
+    { "type": "textarea", "id": "description", "label": "Description" },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "vertical", "label": "Vertical" },
+        { "value": "side-by-side", "label": "Side by side" }
+      ],
+      "default": "vertical"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label": "t:settings.bottom",
+      "default": 52
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ"
+    }
+  ]
+}
+{% endschema %}

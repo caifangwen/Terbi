@@ -1,0 +1,162 @@
+.cp-program-cta {
+  --cp-cta-bg: linear-gradient(135deg, #07184a 0%, #0b2d85 58%, #143a9f 100%);
+  --cp-cta-text: #ffffff;
+  --cp-cta-muted: rgb(255 255 255 / 0.72);
+  --cp-cta-line: rgb(255 255 255 / 0.14);
+  --cp-cta-card: rgb(255 255 255 / 0.07);
+  --cp-cta-card-hover: rgb(255 255 255 / 0.11);
+
+  overflow: hidden;
+  background: var(--cp-cta-bg);
+  color: var(--cp-cta-text);
+}
+
+.cp-program-cta > .custom-section-content {
+  position: relative;
+  z-index: 1;
+}
+
+.cp-program-cta .overlay {
+  --overlay-color: rgb(0 0 0 / 0.18) !important;
+}
+
+.cp-program-cta .section-content-wrapper {
+  align-items: center;
+  gap: clamp(1.8rem, 3vw, 3.2rem);
+  padding-block: clamp(4.8rem, 6vw, 7.2rem) !important;
+  text-align: center;
+}
+
+.cp-program-cta .group-block,
+.cp-program-cta .group-block-content {
+  max-width: 100%;
+}
+
+.cp-program-cta .section-content-wrapper > .group-block,
+.cp-program-cta .section-content-wrapper > .group-block > .group-block-content {
+  align-items: center;
+  justify-content: center;
+}
+
+.cp-program-cta .text-block {
+  color: inherit !important;
+  text-align: center !important;
+}
+
+.cp-program-cta .text-block:has(h1, h2, h3, h4, p):first-child,
+.cp-program-cta .group-block-content > .text-block:first-child {
+  font-size: clamp(2.6rem, 3vw, 4rem) !important;
+  font-weight: 760 !important;
+  line-height: 1.08 !important;
+}
+
+.cp-program-cta .text-block p,
+.cp-program-cta .text-block h1,
+.cp-program-cta .text-block h2,
+.cp-program-cta .text-block h3,
+.cp-program-cta .text-block h4 {
+  color: inherit;
+  margin-block: 0;
+}
+
+.cp-program-cta .text-block + .text-block {
+  max-width: 62rem;
+  color: var(--cp-cta-muted) !important;
+  font-size: clamp(1.45rem, 1.4vw, 1.7rem) !important;
+  line-height: 1.55 !important;
+}
+
+.cp-program-cta .button,
+.cp-program-cta .button-secondary {
+  min-width: min(100%, 20rem);
+  min-height: 4.8rem;
+  border-radius: 999px !important;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+
+.cp-program-cta .button {
+  --button-color: #07184a;
+  --button-background-color: #ffffff;
+  --button-border-color: #ffffff;
+  --button-border-width: 1px;
+}
+
+.cp-program-cta .button-secondary,
+.cp-program-cta .button.button--outline {
+  --button-color: #ffffff;
+  --button-background-color: transparent;
+  --button-border-color: rgb(255 255 255 / 0.68);
+  --button-border-width: 1px;
+}
+
+@media (hover: hover) {
+  .cp-program-cta .button:hover,
+  .cp-program-cta .button-secondary:hover {
+    transform: translateY(-0.1rem);
+  }
+
+  .cp-program-cta .button:hover {
+    --button-color: #ffffff;
+    --button-background-color: #0044cc;
+    --button-border-color: #0044cc;
+  }
+
+  .cp-program-cta .button-secondary:hover,
+  .cp-program-cta .button.button--outline:hover {
+    --button-color: #07184a;
+    --button-background-color: #ffffff;
+    --button-border-color: #ffffff;
+  }
+}
+
+.cp-program-cta .grid-layout {
+  gap: clamp(1rem, 2vw, 1.6rem) !important;
+}
+
+.cp-program-cta .grid__item > .group-block {
+  height: 100%;
+  padding: 1.8rem !important;
+  background: var(--cp-cta-card);
+  border: 1px solid var(--cp-cta-line);
+  border-radius: 0.8rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.cp-program-cta .grid__item > .group-block:hover {
+  background: var(--cp-cta-card-hover);
+  border-color: rgb(255 255 255 / 0.22);
+}
+
+.cp-program-cta .grid__item svg {
+  width: 2rem;
+  height: 2rem;
+  margin-bottom: 0.5rem;
+  color: var(--cp-cta-muted);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.cp-program-cta .grid__item .text-block + .text-block {
+  max-width: 24rem;
+  color: var(--cp-cta-muted) !important;
+  font-size: 1.3rem !important;
+}
+
+@media screen and (max-width: 749px) {
+  .cp-program-cta .section-content-wrapper {
+    gap: 1.8rem;
+    padding-block: 4rem !important;
+  }
+
+  .cp-program-cta .section-content-wrapper > .group-block > .group-block-content {
+    gap: 1.6rem !important;
+  }
+
+  .cp-program-cta .button,
+  .cp-program-cta .button-secondary {
+    width: 100% !important;
+    max-width: 28rem;
+  }
+}

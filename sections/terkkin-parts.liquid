@@ -1,0 +1,499 @@
+{%- comment -%}
+  ============================================================
+  TERKKIN — Parts Finder & Missing Parts Claim
+  ============================================================
+  Body of the Missing Parts page. The page header/hero is NOT
+  included — keep the hero section you already have above this one.
+
+  Product cards read Shopify products; parts read replacement_part metaobjects.
+  ============================================================
+{%- endcomment -%}
+
+{{ 'terkkin-parts.css' | asset_url | stylesheet_tag }}
+
+<div class="tkp page-width" id="tkp" data-section-id="{{ section.id }}">
+
+  {%- comment -%} ================= 1 · PRODUCT ================= {%- endcomment -%}
+  <section class="tkp-sec" id="tkpS1">
+    <div class="tkp-head"><span class="tkp-num">1</span><h2>{{ section.settings.s1_title | escape }}</h2></div>
+    <p class="tkp-sub">{{ section.settings.s1_sub | escape }}</p>
+
+    <div class="tkp-fams" role="tablist">
+      {%- assign fidx = 0 -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'family' -%}
+          {%- assign fidx = fidx | plus: 1 -%}
+          <button type="button" class="tkp-fam{% if fidx == 1 %} is-on{% endif %}"
+                  role="tab" data-fam="{{ block.id }}" data-tkp="fam">
+            <b>{{ block.settings.title | escape }}</b>
+            <span>{{ block.settings.subtitle | escape }}</span>
+          </button>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- assign fidx = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'family' -%}
+        {%- assign fidx = fidx | plus: 1 -%}
+        <div class="tkp-models" data-fam-panel="{{ block.id }}" {% if fidx != 1 %}hidden{% endif %} {{ block.shopify_attributes }}>
+          {%- for model_product in block.settings.products -%}
+            {%- assign model_code = model_product.selected_or_first_available_variant.sku -%}
+            <div class="tkp-model-card">
+              <button type="button" class="tkp-model" data-tkp="model"
+                      data-label="{{ model_product.title | escape }}"
+                      data-code="{{ model_code | escape }}"
+                      data-handle="{{ model_product.handle | escape }}"
+                      data-url="{{ model_product.url | escape }}">
+                <span class="tkp-mpic">
+                  {%- if model_product.featured_image != blank -%}
+                    {{ model_product.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: model_product.title }}
+                  {%- else -%}
+                    <span class="tkp-noimg" aria-hidden="true"></span>
+                  {%- endif -%}
+                </span>
+                <span class="tkp-mtxt">
+                  <b>{{ model_product.title | escape }}</b>
+                  {%- if model_code != blank -%}<span>SKU {{ model_code | escape }}</span>{%- endif -%}
+                </span>
+              </button>
+              <a class="tkp-model-link" href="{{ model_product.url }}">View product</a>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    <div class="tkp-chosen" id="tkpChosen" hidden>
+      <span class="tkp-tick" aria-hidden="true">✓</span>
+      <span class="tkp-ct"><b id="tkpChosenName"></b><span id="tkpChosenMeta"></span></span>
+      <button type="button" class="tkp-btn tkp-sm" data-tkp="reset">Change</button>
+    </div>
+
+    {%- if section.settings.no_model_note != blank -%}
+      <p class="tkp-note">{{ section.settings.no_model_note }}</p>
+    {%- endif -%}
+  </section>
+
+  {%- comment -%} ================= 2 · WHERE ================= {%- endcomment -%}
+  <section class="tkp-sec" id="tkpS2">
+    <div class="tkp-head"><span class="tkp-num">2</span><h2>{{ section.settings.s2_title | escape }}</h2></div>
+    <p class="tkp-sub">{{ section.settings.s2_sub | escape }}</p>
+
+    <p class="tkp-locked" id="tkpLocked">{{ section.settings.locked_msg | escape }}</p>
+
+    <div class="tkp-locator" id="tkpLocator" hidden>
+
+      {%- comment -%} --- left: diagram with hotspots --- {%- endcomment -%}
+      <div class="tkp-stage">
+        {%- assign vidx = 0 -%}
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'family' -%}
+            {%- assign views = 'front,left,back,right,interior' | split: ',' -%}
+            {%- for v in views -%}
+              {%- assign vidx = vidx | plus: 1 -%}
+              {%- case v -%}
+                {%- when 'front' -%}{%- assign vimg = block.settings.view_front -%}{%- assign vlab = 'Front' -%}
+                {%- when 'left' -%}{%- assign vimg = block.settings.view_left -%}{%- assign vlab = 'Left Side' -%}
+                {%- when 'back' -%}{%- assign vimg = block.settings.view_back -%}{%- assign vlab = 'Back' -%}
+                {%- when 'right' -%}{%- assign vimg = block.settings.view_right -%}{%- assign vlab = 'Right Side' -%}
+                {%- else -%}{%- assign vimg = block.settings.view_interior -%}{%- assign vlab = 'Interior' -%}
+              {%- endcase -%}
+              <div class="tkp-view" data-fam="{{ block.id }}" data-view="{{ v }}" hidden>
+                {%- if vimg != blank -%}
+                  <img src="{{ vimg | image_url: width: 900 }}" alt="{{ block.settings.title | escape }} — {{ vlab }}" loading="lazy" width="900" height="700">
+                {%- else -%}
+                  <div class="tkp-ph"><span>{{ vlab }} view</span><small>Upload this image in the theme editor</small></div>
+                {%- endif -%}
+
+                {%- for ab in section.blocks -%}
+                  {%- if ab.type == 'area' and ab.settings.pin_view == v and ab.settings.pin_x > 0 -%}
+                    <button type="button" class="tkp-pin" data-tkp="area" data-area="{{ ab.id }}"
+                            style="left:{{ ab.settings.pin_x }}%;top:{{ ab.settings.pin_y }}%">
+                      <span class="tkp-pindot" aria-hidden="true">+</span>
+                      <span class="tkp-pinlab">{{ ab.settings.title | escape }}</span>
+                    </button>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        <div class="tkp-thumbs">
+          {%- assign vkeys = 'front,left,back,right,interior' | split: ',' -%}
+          {%- assign vlabs = 'Front,Left Side,Back,Right Side,Interior' | split: ',' -%}
+          {%- for k in vkeys -%}
+            <button type="button" class="tkp-thumb{% if forloop.first %} is-on{% endif %}" data-tkp="view" data-view="{{ k }}">
+              <span class="tkp-tp" data-thumb-for="{{ k }}"></span>
+              <span>{{ vlabs[forloop.index0] }}</span>
+            </button>
+          {%- endfor -%}
+        </div>
+      </div>
+
+      {%- comment -%} --- right: area cards --- {%- endcomment -%}
+      <div class="tkp-areas">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'area' -%}
+            <button type="button" class="tkp-area" data-tkp="area" data-area="{{ block.id }}" {{ block.shopify_attributes }}>
+              <span class="tkp-aico">{{ block.settings.icon }}</span>
+              <span class="tkp-atx">
+                <b>{{ block.settings.title | escape }}</b>
+                <span>{{ block.settings.blurb | escape }}</span>
+              </span>
+              <span class="tkp-acount" data-count-for="{{ block.id }}"></span>
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} --- parts drawer --- {%- endcomment -%}
+    <div class="tkp-drawer" id="tkpDrawer" hidden>
+      <div class="tkp-drawer-head">
+        <h3 id="tkpDrawerTitle"></h3>
+        <button type="button" class="tkp-x" data-tkp="closeDrawer" aria-label="Close">×</button>
+      </div>
+      <p class="tkp-drawer-sub" id="tkpDrawerSub"></p>
+
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'area' -%}
+          <div class="tkp-partlist" data-list-for="{{ block.id }}" hidden>
+            {%- if block.settings.fallback_text != blank -%}
+              <div class="tkp-fallback">{{ block.settings.fallback_text }}</div>
+            {%- endif -%}
+            {%- paginate shop.metaobjects.replacement_part.values by 250 -%}
+              {%- for part in shop.metaobjects.replacement_part.values -%}
+                {%- if part.area.value == block.settings.title -%}
+                  {%- capture compatible_handles -%}
+                    {%- for compatible_product in part.compatible_products.value -%}|{{ compatible_product.handle }}|{%- endfor -%}
+                  {%- endcapture -%}
+                <div class="tkp-part" data-products="{{ compatible_handles | escape }}" hidden>
+                  {%- if part.image.value != blank -%}
+                    <div class="tkp-part-image">{{ part.image.value | image_url: width: 120 | image_tag: loading: 'lazy', alt: part.name.value }}</div>
+                  {%- endif -%}
+                  <div class="tkp-pinfo">
+                    <b>{{ part.name.value | escape }}</b>
+                    {%- if part.part_number.value != blank -%}<span>Part #{{ part.part_number.value | escape }}</span>{%- endif -%}
+                    {%- if part.description.value != blank -%}<span>{{ part.description.value | escape }}</span>{%- endif -%}
+                  </div>
+                  <button type="button" class="tkp-btn tkp-sm" data-tkp="pick"
+                          data-area="{{ block.settings.title | escape }}"
+                          data-part="{{ part.name.value | escape }}"
+                          data-part-number="{{ part.part_number.value | escape }}">
+                    {{ section.settings.pick_label | escape }}
+                  </button>
+                </div>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endpaginate -%}
+            <div class="tkp-part tkp-part-other">
+              <div class="tkp-pinfo">
+                <b>{{ section.settings.other_label | escape }}</b>
+                <span>{{ section.settings.other_desc | escape }}</span>
+              </div>
+              <button type="button" class="tkp-btn tkp-sm" data-tkp="pick"
+                      data-area="{{ block.settings.title | escape }}"
+                      data-part="{{ section.settings.other_label | escape }}">
+                {{ section.settings.pick_label | escape }}
+              </button>
+            </div>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.area_note != blank -%}
+      <p class="tkp-note">{{ section.settings.area_note }}</p>
+    {%- endif -%}
+  </section>
+
+  {%- comment -%} ================= 3 · CLAIM FORM ================= {%- endcomment -%}
+  {%- form 'contact', id: 'tkpForm', class: 'tkp-form' -%}
+    <input type="hidden" name="contact[product]" id="tkpFProduct" value="">
+    <input type="hidden" name="contact[product_url]" id="tkpFProductUrl" value="">
+    <input type="hidden" name="contact[model_code]" id="tkpFCode" value="">
+    <input type="hidden" name="contact[area]" id="tkpFArea" value="">
+    <input type="hidden" name="contact[part]" id="tkpFPart" value="">
+    <input type="hidden" name="contact[part_number]" id="tkpFPartNumber" value="">
+    <input type="hidden" name="contact[issue]" id="tkpFIssue" value="">
+
+    <section class="tkp-sec" id="tkpS3">
+      <div class="tkp-head"><span class="tkp-num">3</span><h2>{{ section.settings.s3_title | escape }}</h2></div>
+      <p class="tkp-sub">{{ section.settings.s3_sub | escape }}</p>
+
+      <div class="tkp-picked" id="tkpPicked" hidden></div>
+
+      <div class="tkp-opts">
+        {%- assign issues = section.settings.issue_list | newline_to_br | split: '<br />' -%}
+        {%- for raw in issues -%}
+          {%- assign bits = raw | strip | split: '|' -%}
+          {%- if bits[0] != blank -%}
+            <label class="tkp-opt">
+              <input type="radio" name="tkp_issue" value="{{ bits[0] | strip | escape }}" data-tkp="issue">
+              <span class="tkp-dot" aria-hidden="true"></span>
+              <span class="tkp-optx">
+                <span class="tkp-lbl">{{ bits[0] | strip }}</span>
+                {%- if bits[1] -%}<span class="tkp-desc">{{ bits[1] | strip }}</span>{%- endif -%}
+              </span>
+            </label>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+
+      <div class="tkp-fieldwrap">
+        <div class="tkp-field">
+          <label for="tkpDesc">Describe what is missing or damaged</label>
+          <textarea id="tkpDesc" name="contact[body]" rows="4" required
+            placeholder="Tell us what happened and what you need. If you don't know the part name, just describe where it goes."></textarea>
+        </div>
+        <div class="tkp-row3">
+          <div class="tkp-field">
+            <label for="tkpQty">How many do you need?</label>
+            <input type="number" id="tkpQty" name="contact[quantity]" min="1" value="1">
+          </div>
+          <div class="tkp-field">
+            <label for="tkpWhen">When did you notice it?</label>
+            <select id="tkpWhen" name="contact[noticed]">
+              <option>When unpacking</option>
+              <option>During assembly</option>
+              <option>After assembly was finished</option>
+              <option>Some time after use</option>
+            </select>
+          </div>
+          <div class="tkp-field">
+            <label for="tkpPrinted">Code printed on the part <span class="tkp-optional">(optional)</span></label>
+            <input type="text" id="tkpPrinted" name="contact[printed_code]" placeholder="Only if you can see one">
+          </div>
+        </div>
+      </div>
+
+      <div class="tkp-photo">{{ section.settings.photo_note }}</div>
+    </section>
+
+    <section class="tkp-sec" id="tkpS4">
+      <div class="tkp-head"><span class="tkp-num">4</span><h2>{{ section.settings.s4_title | escape }}</h2></div>
+      <p class="tkp-sub">{{ section.settings.s4_sub | escape }}</p>
+
+      <div class="tkp-row2">
+        <div class="tkp-field"><label for="tkpOrder">Order number</label>
+          <input type="text" id="tkpOrder" name="contact[order_number]" placeholder="e.g. TK-100482"></div>
+        <div class="tkp-field"><label for="tkpDate">Purchase date</label>
+          <input type="text" id="tkpDate" name="contact[purchase_date]" placeholder="MM / YYYY"></div>
+        <div class="tkp-field"><label for="tkpName">Name</label>
+          <input type="text" id="tkpName" name="contact[name]" required></div>
+        <div class="tkp-field"><label for="tkpEmail">Email</label>
+          <input type="email" id="tkpEmail" name="contact[email]" required placeholder="you@example.com"></div>
+      </div>
+      <div class="tkp-field"><label for="tkpAddr">Shipping address</label>
+        <textarea id="tkpAddr" name="contact[address]" rows="2"></textarea></div>
+
+      <div class="tkp-submit">
+        {%- if form.posted_successfully? -%}
+          <p class="tkp-ok">{{ section.settings.success_msg | escape }}</p>
+        {%- endif -%}
+        {%- if form.errors -%}
+          <p class="tkp-err">{{ form.errors | default_errors }}</p>
+        {%- endif -%}
+        <button type="submit" class="tkp-btn tkp-primary tkp-big">{{ section.settings.submit_label | escape }}</button>
+        <p class="tkp-note">{{ section.settings.submit_note | escape }}</p>
+      </div>
+    </section>
+  {%- endform -%}
+
+  {%- comment -%} ================= 5 · GUIDES ================= {%- endcomment -%}
+  {%- assign has_guide = false -%}
+  {%- for block in section.blocks -%}{%- if block.type == 'guide' -%}{%- assign has_guide = true -%}{%- endif -%}{%- endfor -%}
+  {%- if has_guide -%}
+    <section class="tkp-sec tkp-guides">
+      <div class="tkp-head"><h2>{{ section.settings.g_title | escape }}</h2></div>
+      <p class="tkp-sub">{{ section.settings.g_sub | escape }}</p>
+      <div class="tkp-gwrap">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'guide' -%}
+            <div class="tkp-guide" {{ block.shopify_attributes }}>
+              {%- if block.settings.image != blank -%}
+                <span class="tkp-gpic"><img src="{{ block.settings.image | image_url: width: 480 }}" alt="{{ block.settings.title | escape }}" loading="lazy" width="480" height="320"></span>
+              {%- endif -%}
+              <h3>{{ block.settings.title | escape }}</h3>
+              <div class="tkp-gbody">{{ block.settings.body }}</div>
+              {%- if block.settings.link != blank and block.settings.link_label != blank -%}
+                <a class="tkp-glink" href="{{ block.settings.link }}">{{ block.settings.link_label | escape }} →</a>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </section>
+  {%- endif -%}
+
+</div>
+
+<script src="{{ 'terkkin-parts.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Parts Finder & Claim",
+  "tag": "div",
+  "class": "tkp-section",
+  "settings": [
+    { "type": "header", "content": "Step 1 — Product" },
+    { "type": "text", "id": "s1_title", "label": "Title", "default": "Which product do you have?" },
+    { "type": "text", "id": "s1_sub", "label": "Subtitle", "default": "Pick your range first, then the size and finish. Compare the roof shape, doors and windows with your shed." },
+    { "type": "richtext", "id": "no_model_note", "label": "Note under the models", "default": "<p>Not sure which one you have? Choose the closest match — we confirm it from your photos anyway.</p>" },
+
+    { "type": "header", "content": "Step 2 — Where is the issue" },
+    { "type": "text", "id": "s2_title", "label": "Title", "default": "Where is the issue located?" },
+    { "type": "text", "id": "s2_sub", "label": "Subtitle", "default": "Select the area of your product where the issue or missing part is." },
+    { "type": "text", "id": "locked_msg", "label": "Message before a product is chosen", "default": "Choose your product above to open the parts diagram." },
+    { "type": "text", "id": "pick_label", "label": "Button on each part", "default": "I need this part" },
+    { "type": "text", "id": "other_label", "label": "Catch-all part name", "default": "Something else in this area" },
+    { "type": "text", "id": "other_desc", "label": "Catch-all description", "default": "Can't see it in this list — describe it below and send photos" },
+    { "type": "richtext", "id": "area_note", "label": "Note under the diagram", "default": "<p>The diagram is a location reference, not a scale drawing. Part names are the names our support team uses — you don't need a part number to claim.</p>" },
+
+    { "type": "header", "content": "Step 3 — What happened" },
+    { "type": "text", "id": "s3_title", "label": "Title", "default": "What happened?" },
+    { "type": "text", "id": "s3_sub", "label": "Subtitle", "default": "This decides whether your request is handled as a warranty replacement or a paid part." },
+    { "type": "textarea", "id": "issue_list", "label": "Options — one per line, use | for a description",
+      "default": "A part was missing from the package | It was on the parts list but not in the box\nA part arrived damaged | Bent, cracked or scratched on arrival\nA part broke after installation | Failed during or after assembly\nI lost a part | Misplaced during or after assembly\nI need extra hardware | More screws, bolts or connectors\nI'm not sure | We'll work it out from your photos" },
+    { "type": "richtext", "id": "photo_note", "label": "Photo instructions",
+      "default": "<p><strong>Photos settle almost every claim in one reply.</strong> After you submit we'll email you — attach one photo of the whole product and one close-up of the problem to that reply.</p>" },
+
+    { "type": "header", "content": "Step 4 — Contact" },
+    { "type": "text", "id": "s4_title", "label": "Title", "default": "Your order & contact details" },
+    { "type": "text", "id": "s4_sub", "label": "Subtitle", "default": "Your order number lets us check what actually shipped, which speeds up a warranty replacement." },
+    { "type": "text", "id": "submit_label", "label": "Button label", "default": "Submit request" },
+    { "type": "text", "id": "submit_note", "label": "Note under button", "default": "No payment is taken now. Our support team reviews your request, confirms the exact part, then ships it under warranty or sends you a quote." },
+    { "type": "text", "id": "success_msg", "label": "Success message", "default": "Thanks — we've received your request and will reply within 1–2 business days." },
+
+    { "type": "header", "content": "Guides & accessories" },
+    { "type": "text", "id": "g_title", "label": "Title", "default": "Accessories, fittings & assembly help" },
+    { "type": "text", "id": "g_sub", "label": "Subtitle", "default": "What comes in the box, what's optional, and how to fit it." }
+  ],
+  "blocks": [
+    {
+      "type": "family",
+      "name": "Product family",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Family name", "default": "Full-size Resin Sheds" },
+        { "type": "text", "id": "subtitle", "label": "Family subtitle", "default": "Gable & pent roof, 6×4 to 12×7 ft" },
+        { "type": "product_list", "id": "products", "label": "Products", "limit": 50 },
+        { "type": "header", "content": "Diagram views" },
+        { "type": "image_picker", "id": "view_front", "label": "Front view" },
+        { "type": "image_picker", "id": "view_left", "label": "Left side view" },
+        { "type": "image_picker", "id": "view_back", "label": "Back view" },
+        { "type": "image_picker", "id": "view_right", "label": "Right side view" },
+        { "type": "image_picker", "id": "view_interior", "label": "Interior view" }
+      ]
+    },
+    {
+      "type": "area",
+      "name": "Part area",
+      "limit": 12,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Area name", "default": "Roof" },
+        { "type": "text", "id": "blurb", "label": "One-line description", "default": "Roof panels, ridge, vents, edges" },
+        { "type": "html", "id": "icon", "label": "Icon (inline SVG)",
+          "default": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M3 13L12 5l9 8'/><path d='M3 13h18'/></svg>" },
+        { "type": "richtext", "id": "fallback_text", "label": "Text above the parts list" },
+        { "type": "header", "content": "Hotspot on the diagram" },
+        { "type": "select", "id": "pin_view", "label": "Show pin on which view", "options": [
+          { "value": "none", "label": "No pin" },
+          { "value": "front", "label": "Front" },
+          { "value": "left", "label": "Left side" },
+          { "value": "back", "label": "Back" },
+          { "value": "right", "label": "Right side" },
+          { "value": "interior", "label": "Interior" }
+        ], "default": "front" },
+        { "type": "range", "id": "pin_x", "label": "Pin position — across (%)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "pin_y", "label": "Pin position — down (%)", "min": 0, "max": 100, "step": 1, "default": 50 }
+      ]
+    },
+    {
+      "type": "guide",
+      "name": "Guide card",
+      "limit": 8,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "What's in the box" },
+        { "type": "richtext", "id": "body", "label": "Body" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Read more" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Parts Finder & Claim",
+      "blocks": [
+        { "type": "family", "settings": {
+          "title": "Full-size Resin Sheds",
+          "subtitle": "Gable & pent roof, 6×4 to 12×7 ft"
+        }},
+        { "type": "family", "settings": {
+          "title": "Outdoor Storage Units",
+          "subtitle": "Vertical & horizontal cabinets, 700L to 2300L"
+        }},
+        { "type": "area", "settings": {
+          "title": "Roof", "blurb": "Roof panels, ridge, vents, edges",
+          "pin_view": "front", "pin_x": 26, "pin_y": 18
+        }},
+        { "type": "area", "settings": {
+          "title": "Door", "blurb": "Door panels, handles, locks, hinges",
+          "pin_view": "front", "pin_x": 62, "pin_y": 46,
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><rect x='4' y='3' width='16' height='18' rx='1'/><path d='M12 3v18'/><circle cx='10' cy='12' r='1'/><circle cx='14' cy='12' r='1'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Wall", "blurb": "Wall panels, corners, trims",
+          "pin_view": "front", "pin_x": 12, "pin_y": 55,
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><rect x='3' y='4' width='18' height='16' rx='1'/><path d='M3 10h18M3 15h18M9 4v16'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Window / Vent", "blurb": "Windows, vents, frames, covers, lights",
+          "pin_view": "front", "pin_x": 14, "pin_y": 30,
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><rect x='4' y='4' width='16' height='16' rx='1'/><path d='M12 4v16M4 12h16'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Floor / Base", "blurb": "Floor panels, base rails, foundation",
+          "pin_view": "front", "pin_x": 40, "pin_y": 88,
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M2 8l10-4 10 4-10 4z'/><path d='M2 12l10 4 10-4M2 16l10 4 10-4'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Interior", "blurb": "Hooks, shelves, racks, lights",
+          "pin_view": "interior", "pin_x": 50, "pin_y": 45,
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M12 3v7a4 4 0 0 1-8 0'/><path d='M20 3v7a4 4 0 0 1-8 0'/><path d='M4 20h16'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Hardware / Fasteners", "blurb": "Screws, bolts, brackets, clips",
+          "pin_view": "none",
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><path d='M12 2l3 3-3 3-3-3z'/><path d='M12 8v14'/></svg>"
+        }},
+        { "type": "area", "settings": {
+          "title": "Not sure", "blurb": "I'm not sure where the issue is",
+          "pin_view": "none",
+          "icon": "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.6'><circle cx='12' cy='12' r='9'/><path d='M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.7.2-1.2.9-1.2 1.6v.3'/><circle cx='12' cy='17' r='.6' fill='currentColor'/></svg>",
+          "fallback_text": "<p>That's completely fine — most people don't know the part names. Choose the option below, describe where it goes in your own words, and attach photos to our reply. Our team identifies it for you.</p>"
+        }},
+        { "type": "guide", "settings": {
+          "title": "What comes with your model",
+          "body": "<p><strong>Standard</strong> — square window, comfort handle with slide bolt, racetrack vent (no light), Y-hooks plus a rail hook.</p><p><strong>Pro</strong> — grid window, printed woodgrain walls, vent with smart light module, mesh hanging panel and 2–3 baskets.</p><p><strong>Ultra</strong> — sliding window with trims, keyed premium lock, smart light plus ambient light strip, and a multi-tier shelf kit.</p>"
+        }},
+        { "type": "guide", "settings": {
+          "title": "Hooks & racks by size",
+          "body": "<p>Sheds 4–6 ft: 3 Y-hooks + 1 rail hook. Sheds 8–10 ft: 5 Y-hooks + 2 rail hooks. Pent sheds follow the width: 6–8 ft gets 3 + 1, 10–12 ft gets 5 + 2.</p><p>Storage cabinets: 2 Y-hooks + 1 rail hook. Pro and Ultra add a mesh panel; Ultra adds baskets.</p>"
+        }},
+        { "type": "guide", "settings": {
+          "title": "Optional accessories",
+          "body": "<p>Extra mesh hanging panels, baskets, shelf kits and hook sets fit every model in the same range and can be added at any time. Tell us your model and we'll confirm what fits before you buy.</p>"
+        }},
+        { "type": "guide", "settings": {
+          "title": "Lost your assembly instructions?",
+          "body": "<p>Ask us and we'll email the assembly guide for your exact model. Include your order number if you have it.</p>"
+        }}
+      ]
+    }
+  ]
+}
+{% endschema %}

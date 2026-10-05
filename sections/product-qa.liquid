@@ -1,0 +1,227 @@
+{% liquid
+  assign form_id = 'ProductQuestionForm-' | append: section.id
+  assign qa_questions = product.metafields.custom.product_questions.value
+%}
+
+  <section id="product-qa" class="product-qa section section--{{ section.settings.section_width }} color-{{ section.settings.color_scheme }}">
+    <div class="product-qa__inner">
+      <header class="product-qa__header">
+        <h2>{{ section.settings.heading | escape }} <span class="product-qa__count">{{ qa_questions.size | default: 0 }}</span></h2>
+        {% if section.settings.intro != blank %}
+          <p>{{ section.settings.intro | escape }}</p>
+        {% endif %}
+        <button class="button product-qa__ask" type="button" data-qa-open aria-haspopup="dialog" aria-controls="ProductQuestionDialog-{{ section.id }}">{{ section.settings.form_heading | escape }}</button>
+      </header>
+
+      <div class="product-qa__grid">
+        <div class="product-qa__list">
+          {% if qa_questions != blank %}
+            {% for qa in qa_questions %}
+              {% liquid
+                assign qa_question = qa.question.value | default: qa.question
+                assign qa_answer = qa.answer.value | default: qa.answer
+                assign qa_replies = qa.replies.value
+                assign qa_asker = qa.asker.value | default: qa.asker | default: qa.asked_by.value | default: qa.asked_by
+              %}
+              <article class="product-qa__item">
+                <h3 class="product-qa__question"><span aria-hidden="true">Q.</span> {{ qa_question | escape }}</h3>
+                <div class="product-qa__meta">
+                {% if qa_asker != blank %}<p class="product-qa__asker"><span class="product-qa__avatar" aria-hidden="true">{{ qa_asker | slice: 0 | upcase | escape }}</span>Asked by {{ qa_asker | escape }}</p>{% endif %}
+                {% if qa.asked_at.value != blank %}<time class="product-qa__date" datetime="{{ qa.asked_at.value | escape }}">{{ qa.asked_at.value | date: '%Y.%m.%d' }}</time>{% endif %}
+                </div>
+                {% if qa_replies != blank or qa_answer != blank %}
+                  <ul class="product-qa__replies" aria-label="Replies" role="list">
+                    {% if qa_answer != blank %}
+                      <li class="product-qa__answer rte"><span class="product-qa__answer-label">{{ shop.name | escape }} <span class="product-qa__merchant">Seller reply</span>{% if qa.replied_at.value != blank %}<time class="product-qa__date" datetime="{{ qa.replied_at.value | escape }}">{{ qa.replied_at.value | date: '%Y.%m.%d' }}</time>{% endif %}</span>{{ qa_answer | escape | newline_to_br }}</li>
+                    {% endif %}
+                    {% for reply in qa_replies %}
+                      <li class="product-qa__answer rte"{% unless reply.is_seller.value == true %} data-other-reply{% endunless %}>
+                        <span class="product-qa__answer-label">{{ reply.author.value | default: 'Customer' | escape }}{% if reply.is_seller.value == true %} <span class="product-qa__merchant">Seller reply</span>{% endif %}
+                        {% if reply.replied_at.value != blank %}<time class="product-qa__date" datetime="{{ reply.replied_at.value | escape }}">{{ reply.replied_at.value | date: '%Y.%m.%d' }}</time>{% endif %}
+                        </span>
+                        {{ reply.body.value | escape | newline_to_br }}
+                      </li>
+                    {% endfor %}
+                  </ul>
+                  <button type="button" class="product-qa__toggle" data-toggle-replies aria-expanded="false" hidden>View other replies</button>
+                {% else %}
+                  <p class="product-qa__pending">Awaiting a reply</p>
+                {% endif %}
+                <button class="product-qa__reply" type="button" data-qa-open data-question="{{ qa_question | escape }}" data-question-id="{{ qa.system.id | escape }}" aria-haspopup="dialog" aria-controls="ProductQuestionDialog-{{ section.id }}" title="Reply" aria-label="Reply to {{ qa_question | escape }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 10H5l5-5M5 10l5 5M5 10h9a5 5 0 0 1 5 5v4"/></svg></button>
+              </article>
+            {% endfor %}
+          {% else %}
+            <div class="product-qa__empty"><h3>Be the first to ask a question</h3><p>Need help with sizing, assembly or delivery? Ask TERKKIN and we'll help you find the right fit.</p><button class="button" type="button" data-qa-open aria-haspopup="dialog" aria-controls="ProductQuestionDialog-{{ section.id }}">{{ section.settings.form_heading | escape }}</button></div>
+          {% endif %}
+        </div>
+        <button class="button product-qa__load-more" type="button" data-load-questions hidden>Load more questions</button>
+        <p class="visually-hidden" data-qa-progress role="status" aria-live="polite"></p>
+
+        <dialog id="ProductQuestionDialog-{{ section.id }}" class="product-qa__form" aria-labelledby="ProductQuestionTitle-{{ section.id }}">
+          <button class="product-qa__close" type="button" aria-label="{{ 'accessibility.close_dialog' | t }}" onclick="this.closest('dialog').close()">&times;</button>
+          <h3 id="ProductQuestionTitle-{{ section.id }}">{{ section.settings.form_heading | escape }}</h3>
+          <p class="product-qa__product">{{ product.title | escape }}</p>
+          <blockquote class="product-qa__reply-context" hidden></blockquote>
+          {% if section.settings.form_text != blank %}
+            <p>{{ section.settings.form_text | escape }}</p>
+          {% endif %}
+
+          {% form 'contact', id: form_id %}
+            {% if form.posted_successfully? or form.errors %}
+              <script>document.getElementById('ProductQuestionDialog-{{ section.id }}').showModal();</script>
+            {% endif %}
+            {% if form.posted_successfully? %}
+              <p class="product-qa__success" role="status">Thanks — your message has been sent for review.</p>
+            {% else %}
+              {% if form.errors %}
+                <p class="product-qa__error" role="alert">Please check your details and try again.</p>
+              {% endif %}
+              <input type="hidden" name="contact[product]" value="{{ product.title | escape }}">
+              <input type="hidden" name="contact[product URL]" value="{{ shop.url }}{{ product.url }}">
+              <input type="hidden" name="contact[subject]" value="Product question: {{ product.title | escape }}">
+              <input type="hidden" name="contact[original question]" value="">
+              <input type="hidden" name="contact[question ID]" value="">
+              <label for="ProductQuestionName-{{ section.id }}">Name</label>
+              <input id="ProductQuestionName-{{ section.id }}" name="contact[name]" type="text" autocomplete="name" value="{% if customer %}{{ customer.name | escape }}{% endif %}" required>
+              <label for="ProductQuestionEmail-{{ section.id }}">Email</label>
+              <input id="ProductQuestionEmail-{{ section.id }}" name="contact[email]" type="email" autocomplete="email" value="{% if customer %}{{ customer.email | escape }}{% endif %}" required>
+              <label for="ProductQuestionBody-{{ section.id }}">Question</label>
+              <textarea id="ProductQuestionBody-{{ section.id }}" name="contact[body]" rows="5" required></textarea>
+              <button class="button" type="submit">{{ section.settings.submit_label | escape }}</button>
+            {% endif %}
+          {% endform %}
+        </dialog>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (() => {
+      const section = document.currentScript.previousElementSibling;
+      const questions = Array.from(section.querySelectorAll('.product-qa__item'));
+      const more = section.querySelector('[data-load-questions]');
+      let visible = 5;
+      const updateQuestions = () => {
+        questions.forEach((item, index) => { item.hidden = index >= visible; });
+        more.hidden = visible >= questions.length;
+      };
+      updateQuestions();
+      more.addEventListener('click', () => {
+        const firstNew = questions[visible];
+        visible += 5;
+        updateQuestions();
+        section.querySelector('[data-qa-progress]').textContent = `${Math.min(visible, questions.length)} of ${questions.length} questions shown`;
+        if (firstNew) { firstNew.tabIndex = -1; firstNew.focus({ preventScroll: true }); }
+      });
+      questions.forEach(item => {
+        const replies = Array.from(item.querySelectorAll('[data-other-reply]'));
+        const toggle = item.querySelector('[data-toggle-replies]');
+        if (!toggle || !replies.length) return;
+        replies.forEach(reply => { reply.hidden = true; });
+        toggle.hidden = false;
+        toggle.textContent = `View other replies (${replies.length})`;
+        toggle.addEventListener('click', () => {
+          const expanded = toggle.getAttribute('aria-expanded') !== 'true';
+          toggle.setAttribute('aria-expanded', String(expanded));
+          replies.forEach(reply => { reply.hidden = !expanded; });
+          toggle.textContent = expanded ? 'Hide other replies' : `View other replies (${replies.length})`;
+        });
+      });
+      const dialog = section.querySelector('dialog');
+      const title = dialog.querySelector('h3');
+      const defaultTitle = title.textContent;
+      const context = dialog.querySelector('.product-qa__reply-context');
+      const subject = dialog.querySelector('[name="contact[subject]"]');
+      const defaultSubject = subject?.value;
+      const bodyLabel = dialog.querySelector('label[for^="ProductQuestionBody-"]');
+      const submit = dialog.querySelector('[type="submit"]');
+      const defaultSubmit = submit?.textContent;
+      section.addEventListener('click', event => {
+        const button = event.target.closest('[data-qa-open]');
+        if (!button) return;
+        const question = button.dataset.question || '';
+        title.textContent = question ? 'Reply to this question' : defaultTitle;
+        context.textContent = question;
+        context.hidden = !question;
+        if (subject) {
+          subject.value = question ? 'Product Q&A reply: ' + question : defaultSubject;
+          dialog.querySelector('[name="contact[original question]"]').value = question;
+          dialog.querySelector('[name="contact[question ID]"]').value = button.dataset.questionId || '';
+          bodyLabel.textContent = question ? 'Your reply' : 'Question';
+          submit.textContent = question ? 'Send reply' : defaultSubmit;
+        }
+        dialog.showModal();
+      });
+    })();
+  </script>
+
+  <style>
+    #product-qa { padding-block: 4rem; scroll-margin-top: calc(var(--header-height, 0px) + 2rem); }
+    @media (prefers-reduced-motion: no-preference) { html:has(#product-qa) { scroll-behavior: smooth; } }
+    #product-qa .product-qa__inner { width: 100%; min-width: 0; }
+    #product-qa .product-qa__header { display: grid; grid-template-columns: 1fr auto; gap: 12px 24px; align-items: center; margin-bottom: 2.4rem; padding-bottom: 24px; border-bottom: 1px solid var(--color-border); }
+    #product-qa h2, #product-qa h3 { margin: 0; color: var(--color-foreground-heading); }
+    #product-qa .product-qa__header p, #product-qa .product-qa__form > p, #product-qa__empty { color: rgb(var(--color-foreground-rgb) / .68); }
+    #product-qa .product-qa__grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3rem; align-items: start; }
+    #product-qa .product-qa__list { display: grid; gap: .8rem; }
+    #product-qa .product-qa__item { padding: 24px 0; border-bottom: 1px solid var(--color-border); }
+    #product-qa .product-qa__replies { display: grid; gap: 12px; margin: 20px 0 0 32px; padding: 0; list-style: none; }
+    #product-qa .product-qa__answer { margin: 0; padding: 20px; border: 0; border-radius: 10px; background: rgb(var(--color-foreground-rgb) / .035); line-height: 1.7; overflow-wrap: anywhere; color: rgb(var(--color-foreground-rgb) / .72); }
+    #product-qa .product-qa__answer > :last-child { margin-bottom: 0; }
+    #product-qa .product-qa__asker { display: flex; align-items: center; gap: 8px; margin: 12px 0 0; color: rgb(var(--color-foreground-rgb) / .56); font-size: var(--font-size--xs); }
+    #product-qa .product-qa__form { width: min(560px, calc(100% - 32px)); max-height: calc(100dvh - 32px); overflow: auto; margin: auto; padding: 28px; color: var(--color-foreground); background: var(--color-background); border: 0; border-radius: 16px; box-shadow: 0 24px 80px #0003; }
+    #product-qa .product-qa__form form { display: grid; gap: .8rem; margin-top: 1.6rem; }
+    #product-qa .product-qa__form label { font-size: var(--font-size--sm); font-weight: 650; }
+    #product-qa .product-qa__form :is(input, textarea) { width: 100%; min-height: 48px; font: inherit; font-size: 16px; padding: 1rem 1.2rem; color: var(--color-foreground); background: var(--color-background); border: .1rem solid rgb(var(--color-foreground-rgb) / .18); border-radius: .4rem; }
+    #product-qa .product-qa__form textarea { resize: vertical; }
+    #product-qa .product-qa__form button { margin-top: .8rem; }
+    #product-qa :is(.product-qa__success, .product-qa__error) { padding: 1rem 1.2rem; border-radius: .4rem; }
+    #product-qa .product-qa__success { color: #176b3a; background: #eaf6ee; }
+    #product-qa .product-qa__error { color: #a62929; background: #fff0f0; }
+    @media screen and (max-width: 749px) { #product-qa { padding-block: 3rem; } #product-qa .product-qa__grid { grid-template-columns: 1fr; gap: 2rem; } #product-qa .product-qa__form { padding: 1.6rem; } }
+    #product-qa .product-qa__header > p { grid-column: 1; margin: 0; }
+    #product-qa .product-qa__ask { grid-column: 2; grid-row: 1 / 3; min-height: 48px; border-radius: 8px; }
+    #product-qa .product-qa__count { display: inline-block; margin-inline-start: 8px; font-size: 16px; color: rgb(var(--color-foreground-rgb) / .6); }
+    #product-qa .product-qa__question { font-size: clamp(20px, 2vw, 24px); font-weight: 750; line-height: 1.4; overflow-wrap: anywhere; }
+    #product-qa .product-qa__question > span { color: var(--color-primary); margin-inline-end: 6px; }
+    #product-qa .product-qa__avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: rgb(var(--color-foreground-rgb) / .06); font-weight: 700; }
+    #product-qa .product-qa__answer-label { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; font-size: 14px; font-weight: 700; color: var(--color-foreground); }
+    #product-qa .product-qa__merchant { padding: 3px 8px; border-radius: 4px; background: var(--color-background); font-size: 11px; font-weight: 600; }
+    #product-qa .product-qa__reply { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-top: 12px; padding: 10px; border: 1px solid var(--color-border); border-radius: 50%; background: transparent; color: var(--color-primary); cursor: pointer; }
+    #product-qa .product-qa__reply:hover { background: rgb(var(--color-foreground-rgb) / .05); }
+    #product-qa .product-qa__date { display: block; margin-block: 6px; color: rgb(var(--color-foreground-rgb) / .56); font-size: 12px; font-weight: 400; line-height: 1.5; }
+    #product-qa .product-qa__answer-label .product-qa__date { margin: 0; margin-inline-start: auto; }
+    #product-qa .product-qa__meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; }
+    #product-qa .product-qa__meta .product-qa__asker { margin: 0; }
+    #product-qa .product-qa__meta .product-qa__date { margin: 0; margin-inline-start: auto; }
+    #product-qa .product-qa__date { text-align: right; white-space: nowrap; }
+    #product-qa .product-qa__toggle { margin: 12px 0 0 32px; min-height: 44px; padding: 8px 0; background: transparent; border: 0; color: var(--color-primary); font: inherit; font-size: 14px; cursor: pointer; }
+    #product-qa .product-qa__load-more { justify-self: center; min-height: 48px; border-radius: 8px; }
+    #product-qa [hidden] { display: none !important; }
+    @media (max-width: 749px) { #product-qa .product-qa__replies { margin-inline-start: 16px; gap: 10px; } #product-qa .product-qa__answer { padding: 16px; } }
+    #product-qa .product-qa__reply-context { margin: 16px 0; padding: 16px; border-inline-start: 3px solid var(--color-primary); background: rgb(var(--color-foreground-rgb) / .04); font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+    #product-qa .product-qa__empty { padding: 40px 20px; text-align: center; background: rgb(var(--color-foreground-rgb) / .03); border-radius: 12px; }
+    #product-qa dialog:not([open]) { display: none; }
+    #product-qa dialog::backdrop { background: #0008; }
+    #product-qa .product-qa__close { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; background: transparent; color: inherit; font-size: 28px; cursor: pointer; }
+    #product-qa .product-qa__form h3 { padding-inline-end: 32px; }
+    #product-qa :is(button, input, textarea):focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; }
+    @media (max-width: 749px) { #product-qa .product-qa__header { grid-template-columns: 1fr; } #product-qa .product-qa__ask { grid-column: 1; grid-row: auto; width: 100%; } }
+  </style>
+
+{% schema %}
+{
+  "name": "Product Q&A",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions & Answers" },
+    { "type": "textarea", "id": "intro", "label": "Intro", "default": "Find answers to common questions or send us yours." },
+    { "type": "text", "id": "empty_text", "label": "Empty state", "default": "No published questions yet." },
+    { "type": "text", "id": "form_heading", "label": "Form heading", "default": "Ask a question" },
+    { "type": "textarea", "id": "form_text", "label": "Form text", "default": "We’ll review your question and reply by email." },
+    { "type": "text", "id": "submit_label", "label": "Submit label", "default": "Send question" },
+    { "type": "select", "id": "section_width", "label": "Width", "options": [{ "value": "page-width", "label": "Page" }, { "value": "full-width", "label": "Full" }], "default": "page-width" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Color scheme", "default": "scheme-1" }
+  ],
+  "presets": [{ "name": "Product Q&A" }]
+}
+{% endschema %}

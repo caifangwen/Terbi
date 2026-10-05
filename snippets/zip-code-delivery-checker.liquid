@@ -1,0 +1,178 @@
+{% doc %}
+  @prompt
+    Create a ZIP code delivery checker block with full interactive functionality. When the user enters a ZIP code and clicks the "Check" button, it should validate the ZIP code against a configurable list of serviceable ZIP codes and display a success or error message. Style: light/white background, centered layout, bold title "Check delivery availability", subtitle "Enter your ZIP code to see if we deliver to your area", wide input field with placeholder "Enter ZIP code", dark navy blue button with white text "Check". The block settings should allow merchants to configure: the list of valid ZIP codes, success message, error message, button text, title, and subtitle.
+{% enddoc %}
+{% assign ai_gen_id = instance_id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-zip-checker-{{ ai_gen_id }} {
+    display: block;
+    width: {{ settings.desktop_width_percent }}%;
+    max-width: 100%;
+    background-color: {{ settings.background_color }};
+    padding: 40px;
+    border-radius: {{ settings.border_radius }}px;
+    text-align: center;
+  }
+
+  .ai-zip-checker__title-{{ ai_gen_id }} {
+    font-size: {{ settings.title_size }}px;
+    font-weight: 700;
+    color: {{ settings.text_color }};
+    margin: 0 0 12px 0;
+  }
+
+  .ai-zip-checker__subtitle-{{ ai_gen_id }} {
+    font-size: {{ settings.subtitle_size }}px;
+    color: {{ settings.text_color }};
+    margin: 0 0 24px 0;
+    opacity: 0.8;
+  }
+
+  .ai-zip-checker__form-{{ ai_gen_id }} {
+    display: flex;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .ai-zip-checker__input-{{ ai_gen_id }} {
+    flex: 1;
+    padding: 14px 18px;
+    border: 1px solid {{ settings.input_border_color }};
+    border-radius: {{ settings.input_border_radius }}px;
+    font-size: 16px;
+    background-color: {{ settings.input_background_color }};
+    color: {{ settings.input_text_color }};
+  }
+
+  .ai-zip-checker__input-{{ ai_gen_id }}:focus {
+    outline: none;
+    border-color: {{ settings.button_background_color }};
+  }
+
+  .ai-zip-checker__button-{{ ai_gen_id }} {
+    padding: 14px 32px;
+    background-color: {{ settings.button_background_color }};
+    color: {{ settings.button_text_color }};
+    border: none;
+    border-radius: {{ settings.button_border_radius }}px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .ai-zip-checker__button-{{ ai_gen_id }}:hover {
+    background-color: {{ settings.button_hover_color }};
+  }
+
+  .ai-zip-checker__message-{{ ai_gen_id }} {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: {{ settings.message_border_radius }}px;
+    font-size: 15px;
+    display: none;
+  }
+
+  .ai-zip-checker__message-{{ ai_gen_id }}.success {
+    background-color: {{ settings.success_background_color }};
+    color: {{ settings.success_text_color }};
+    display: block;
+  }
+
+  .ai-zip-checker__message-{{ ai_gen_id }}.error {
+    background-color: {{ settings.error_background_color }};
+    color: {{ settings.error_text_color }};
+    display: block;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-zip-checker-{{ ai_gen_id }} {
+      padding: 30px 20px;
+    }
+
+    .ai-zip-checker__form-{{ ai_gen_id }} {
+      flex-direction: column;
+    }
+
+    .ai-zip-checker__button-{{ ai_gen_id }} {
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<zip-code-checker-{{ ai_gen_id }} class="ai-zip-checker-{{ ai_gen_id }}">
+  <p class="ai-zip-checker__title-{{ ai_gen_id }}">{{ settings.title }}</p>
+  <p class="ai-zip-checker__subtitle-{{ ai_gen_id }}">{{ settings.subtitle }}</p> 
+
+
+
+  <form class="ai-zip-checker__form-{{ ai_gen_id }}" data-zip-form>
+    <input
+      type="text"
+      class="ai-zip-checker__input-{{ ai_gen_id }}"
+      placeholder="{{ settings.input_placeholder }}"
+      data-zip-input
+      required
+      aria-label="ZIP code input"
+    >
+    <button
+      type="submit"
+      class="ai-zip-checker__button-{{ ai_gen_id }}"
+    >
+      {{ settings.button_text }}
+    </button>
+  </form>
+
+  <div class="ai-zip-checker__message-{{ ai_gen_id }}" data-message role="alert" aria-live="polite"></div>
+</zip-code-checker-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ZipCodeChecker{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.form = this.querySelector('[data-zip-form]');
+        this.input = this.querySelector('[data-zip-input]');
+        this.message = this.querySelector('[data-message]');
+        this.validZipCodes = {{ settings.valid_zip_codes | split: ',' | json }};
+        this.successMessage = {{ settings.success_message | json }};
+        this.errorMessage = {{ settings.error_message | json }};
+      }
+
+      connectedCallback() {
+        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+      }
+
+      handleSubmit(event) {
+        event.preventDefault();
+        
+        const zipCode = this.input.value.trim();
+        
+        if (!zipCode) {
+          this.showMessage('Please enter a ZIP code', 'error');
+          return;
+        }
+
+        const isValid = this.validZipCodes.some(validZip => 
+          validZip.trim().toLowerCase() === zipCode.toLowerCase()
+        );
+
+        if (isValid) {
+          this.showMessage(this.successMessage, 'success');
+        } else {
+          this.showMessage(this.errorMessage, 'error');
+        }
+      }
+
+      showMessage(text, type) {
+        this.message.textContent = text;
+        this.message.className = 'ai-zip-checker__message-{{ ai_gen_id }} ' + type;
+      }
+    }
+
+    customElements.define('zip-code-checker-{{ ai_gen_id }}', ZipCodeChecker{{ ai_gen_id }});
+  })();
+</script>

@@ -1,0 +1,182 @@
+{%- comment -%}
+  TERKKIN Product Q&A — formal version
+
+  Required Shopify data:
+  - Metaobject type: product_question (publishable + storefront public read)
+  - Product metafield: custom.product_questions (list.metaobject_reference)
+
+  IMPORTANT:
+  1) Deploy the Cloudflare Worker first.
+  2) Replace qa_api_url below with your Worker URL.
+  3) Optional: add a Cloudflare Turnstile site key to qa_turnstile_site_key.
+{%- endcomment -%}
+
+{% assign qa_api_url = 'https://YOUR-WORKER.workers.dev/api/questions' %}
+{% assign qa_turnstile_site_key = '' %}
+
+{% assign qa_questions = product.metafields.custom.product_questions.value %}
+{% assign qa_count = 0 %}
+{% if qa_questions != blank %}
+  {% assign qa_count = qa_questions.size %}
+{% endif %}
+
+<div
+  class="tqa"
+  id="terkkin-product-qa-{{ product.id }}"
+  data-api-url="{{ qa_api_url | escape }}"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle | escape }}"
+  data-product-url="{{ canonical_url | escape }}"
+  data-turnstile-site-key="{{ qa_turnstile_site_key | escape }}"
+>
+  <div class="tqa__heading">
+    <h2>Questions</h2>
+  </div>
+
+  <div class="tqa__ask-panel">
+    <label class="tqa__search-label" for="tqa-search-{{ product.id }}">
+      Ask a question about this product.
+    </label>
+
+    <div class="tqa__search-wrap">
+      <input
+        id="tqa-search-{{ product.id }}"
+        class="tqa__search"
+        type="search"
+        autocomplete="off"
+        placeholder="Example: Shipping information"
+        aria-label="Search product questions"
+      >
+      <span class="tqa__search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-4-4"></path>
+        </svg>
+      </span>
+      <div class="tqa__suggestions" hidden></div>
+    </div>
+
+    <div class="tqa__ask-row">
+      <p>Start typing your question and we'll check if it was already asked and answered.</p>
+      <button class="tqa__ask-button" type="button">Ask a question</button>
+    </div>
+  </div>
+
+  <div class="tqa__toolbar">
+    <div class="tqa__count">
+      <span class="tqa__visible-count">{{ qa_count }}</span>
+      <span class="tqa__count-label">
+        {% if qa_count == 1 %}Question{% else %}Questions{% endif %}
+      </span>
+    </div>
+
+    <label class="tqa__sort-label">
+      <span>Sort by</span>
+      <select class="tqa__sort">
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="az">A–Z</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="tqa__results">
+    {% if qa_questions != blank %}
+      {% for qa in qa_questions %}
+        {% assign qa_question = qa.question.value | default: qa.question %}
+        {% assign qa_answer = qa.answer.value | default: qa.answer %}
+        {% assign qa_answered_by = qa.answered_by.value | default: qa.answered_by | default: 'TERKKIN Support' %}
+        {% assign qa_published_at = qa.published_at.value | default: qa.published_at %}
+        {% assign qa_submitted_at = qa.submitted_at.value | default: qa.submitted_at %}
+        {% assign qa_sort_date = qa_published_at | default: qa_submitted_at %}
+
+        <article
+          class="tqa__item"
+          data-question="{{ qa_question | strip_html | escape }}"
+          data-answer="{{ qa_answer | strip_html | escape }}"
+          data-date="{{ qa_sort_date | escape }}"
+        >
+          <h3 class="tqa__question">
+            <span class="tqa__qa-prefix">Q:</span>
+            <span>{{ qa_question }}</span>
+          </h3>
+
+          {% if qa_answer != blank %}
+            <div class="tqa__answer">
+              <span class="tqa__qa-prefix">A:</span>
+              <div class="tqa__answer-body">
+                {{ qa_answer | newline_to_br }}
+                <div class="tqa__meta">
+                  <span>{{ qa_answered_by }}</span>
+                  {% if qa_published_at != blank %}
+                    <span aria-hidden="true">·</span>
+                    <time datetime="{{ qa_published_at | escape }}">
+                      {{ qa_published_at | date: '%b %d, %Y' }}
+                    </time>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="tqa__answer tqa__answer--pending">
+              <span class="tqa__qa-prefix">A:</span>
+              <div class="tqa__answer-body">Awaiting an answer from TERKKIN Support.</div>
+            </div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    {% endif %}
+
+    <div class="tqa__empty" {% if qa_count > 0 %}hidden{% endif %}>
+      <strong>No questions yet.</strong>
+      <span>Be the first to ask about this product.</span>
+    </div>
+
+    <div class="tqa__no-results" hidden>
+      No matching questions were found.
+    </div>
+  </div>
+
+  <div class="tqa__modal" hidden>
+    <div class="tqa__modal-backdrop" data-tqa-close></div>
+
+    <div class="tqa__dialog" role="dialog" aria-modal="true" aria-labelledby="tqa-dialog-title-{{ product.id }}">
+      <button class="tqa__close" type="button" data-tqa-close aria-label="Close">&times;</button>
+
+      <h2 id="tqa-dialog-title-{{ product.id }}">Ask a question</h2>
+      <p class="tqa__product-name">{{ product.title }}</p>
+
+      <form class="tqa__form">
+        <input class="tqa__honeypot" type="text" name="website" tabindex="-1" autocomplete="off">
+
+        <label>
+          <span>Name</span>
+          <input name="customer_name" type="text" maxlength="100" autocomplete="name" required>
+        </label>
+
+        <label>
+          <span>Email</span>
+          <input name="customer_email" type="email" maxlength="320" autocomplete="email" required>
+        </label>
+
+        <label>
+          <span>Question</span>
+          <textarea name="question" rows="5" maxlength="1000" required></textarea>
+        </label>
+
+        <p class="tqa__privacy-note">
+          Your email is used only to manage this question and is not published on the product page.
+        </p>
+
+        <div class="tqa__turnstile"></div>
+
+        <div class="tqa__form-message" role="status" aria-live="polite"></div>
+
+        <button class="tqa__submit" type="submit">Submit question</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{{ 'product-questions.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-questions.js' | asset_url }}" defer="defer"></script>

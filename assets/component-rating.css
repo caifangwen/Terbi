@@ -1,0 +1,51 @@
+.rating {
+  display: inline-block;
+  margin: 0;
+}
+
+.product .rating-star {
+  --letter-spacing: 0.8;
+  --font-size: 1.7;
+}
+
+.card-wrapper .rating-star {
+  --letter-spacing: 0.7;
+  --font-size: 1.4;
+}
+
+.rating-star {
+  --color-rating-star: var(--color-foreground);
+  --star-size: calc(var(--font-size) * 1rem);
+  --star-step: calc((var(--font-size) + var(--letter-spacing)) * 1rem);
+  --percent: calc((var(--rating) + var(--rating-decimal)) / var(--rating-max) * 100%);
+  width: calc(5 * var(--star-step) - var(--letter-spacing) * 1rem);
+  height: var(--star-size);
+  display: inline-block;
+  margin: 0;
+  background: linear-gradient(
+    90deg,
+    var(--color-rating-star) var(--percent),
+    rgb(var(--color-foreground-rgb) / var(--opacity-15)) var(--percent)
+  );
+  -webkit-mask: url('icon-star.svg') left center / var(--star-step) var(--star-size) repeat-x;
+  mask: url('icon-star.svg') left center / var(--star-step) var(--star-size) repeat-x;
+}
+
+.rating-text {
+  display: none;
+}
+
+.rating-count {
+  display: inline-block;
+  margin: 0;
+}
+
+@media (forced-colors: active) {
+  .rating {
+    display: none;
+  }
+
+  .rating-text {
+    display: block;
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "tech": {
+      "type": "terbi-tech-storefront",
+      "settings": {
+        "show_intro": false,
+        "collection": "terbi-tech",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "guide": {
+      "type": "image-with-text-rows",
+      "settings": {
+        "items": "{{ closest.collection.metafields.custom.description_rows.value }}",
+        "image_ratio": "1 / 1",
+        "display_layout": "alternate",
+        "first_image_position": "left",
+        "padding-block-start": 32,
+        "padding-block-end": 48
+      },
+      "blocks": {
+        "description-rows": {
+          "type": "image-with-text",
+          "static": true,
+          "settings": {},
+          "blocks": {}
+        }
+      }
+    }
+  },
+  "order": [
+    "tech",
+    "guide"
+  ]
+}

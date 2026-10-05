@@ -1,0 +1,724 @@
+{
+  "entries": [
+    {
+      "id": "gid://shopify/Metaobject/623217639705",
+      "type": "page_card",
+      "handle": "terbi-demo-card-charging",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "value": "3C DEMO COLLECTION"
+        },
+        {
+          "key": "heading",
+          "value": "Charging"
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"A charger and power bank concept for your bag or bedside setup. Check your device connector and power requirements before choosing.\"}]}]}"
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317602017561"
+        },
+        {
+          "key": "link_label",
+          "value": "Explore charging"
+        },
+        {
+          "key": "link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-charging"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217672473",
+      "type": "image_with_text",
+      "handle": "terbi-demo-guide-charging",
+      "fields": [
+        {
+          "key": "heading",
+          "value": "Charging — start with your setup"
+        },
+        {
+          "key": "description",
+          "value": "A charger and power bank concept for your bag or bedside setup. Check your device connector and power requirements before choosing."
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317602017561"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217705241",
+      "type": "page_card",
+      "handle": "terbi-demo-card-audio",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "value": "3C DEMO COLLECTION"
+        },
+        {
+          "key": "heading",
+          "value": "Audio"
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"A wireless earbuds concept for everyday listening. Connection features and battery details are simulated sample specifications.\"}]}]}"
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317602672921"
+        },
+        {
+          "key": "link_label",
+          "value": "Explore audio"
+        },
+        {
+          "key": "link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-audio"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217738009",
+      "type": "image_with_text",
+      "handle": "terbi-demo-guide-audio",
+      "fields": [
+        {
+          "key": "heading",
+          "value": "Audio — start with your setup"
+        },
+        {
+          "key": "description",
+          "value": "A wireless earbuds concept for everyday listening. Connection features and battery details are simulated sample specifications."
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317602672921"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217770777",
+      "type": "page_card",
+      "handle": "terbi-demo-card-desk",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "value": "3C DEMO COLLECTION"
+        },
+        {
+          "key": "heading",
+          "value": "Desk essentials"
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"Keyboard, mouse and USB-C hub concepts for a simple workspace. Compare port types, dimensions and your device requirements.\"}]}]}"
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317603000601"
+        },
+        {
+          "key": "link_label",
+          "value": "Explore desk essentials"
+        },
+        {
+          "key": "link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-desk"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217803545",
+      "type": "image_with_text",
+      "handle": "terbi-demo-guide-desk",
+      "fields": [
+        {
+          "key": "heading",
+          "value": "Desk essentials — start with your setup"
+        },
+        {
+          "key": "description",
+          "value": "Keyboard, mouse and USB-C hub concepts for a simple workspace. Compare port types, dimensions and your device requirements."
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317603000601"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217836313",
+      "type": "page_card_group",
+      "handle": "terbi-demo-category-guide",
+      "fields": [
+        {
+          "key": "heading",
+          "value": "Find your everyday setup"
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"Three ways to explore the simulated 3C catalogue.\"}]}]}"
+        },
+        {
+          "key": "style",
+          "value": "cards"
+        },
+        {
+          "key": "columns",
+          "value": "3"
+        },
+        {
+          "key": "cards",
+          "value": "[\"gid://shopify/Metaobject/623217639705\",\"gid://shopify/Metaobject/623217705241\",\"gid://shopify/Metaobject/623217770777\"]"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217869081",
+      "type": "page_hero",
+      "handle": "terbi-demo-home-hero",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "value": "EVERYDAY TECH / 3C CONCEPT STORE"
+        },
+        {
+          "key": "heading",
+          "value": "Small essentials. A better everyday setup."
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"Explore charging, audio and desk essentials designed as product concepts for this 3C demo store.\"}]}]}"
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317602672921"
+        },
+        {
+          "key": "button_label",
+          "value": "Explore the collection"
+        },
+        {
+          "key": "button_link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-tech"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217934617",
+      "type": "page_hero",
+      "handle": "terbi-demo-guide-hero",
+      "fields": [
+        {
+          "key": "eyebrow",
+          "value": "3C DEMO / TECH GUIDE"
+        },
+        {
+          "key": "heading",
+          "value": "Build a simple everyday setup"
+        },
+        {
+          "key": "description",
+          "value": "{\"type\":\"root\",\"children\":[{\"type\":\"paragraph\",\"children\":[{\"type\":\"text\",\"value\":\"Start with your devices, then compare connections, power requirements and dimensions. All examples on this store use simulated data.\"}]}]}"
+        },
+        {
+          "key": "image",
+          "value": "gid://shopify/MediaImage/53317603000601"
+        },
+        {
+          "key": "button_label",
+          "value": "Browse product concepts"
+        },
+        {
+          "key": "button_link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-tech"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623217967385",
+      "type": "cta",
+      "handle": "terbi-demo-browse-tech",
+      "fields": [
+        {
+          "key": "heading",
+          "value": "Make room for a simpler setup."
+        },
+        {
+          "key": "content",
+          "value": "Start with your devices, then check connections, power and dimensions."
+        },
+        {
+          "key": "button",
+          "value": "Explore all product concepts"
+        },
+        {
+          "key": "link",
+          "value": "https://terbi-gjlghl4q.myshopify.com/collections/terbi-tech"
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218000153",
+      "type": "faq",
+      "handle": "terbi-demo-sample-products",
+      "fields": [
+        {
+          "key": "question",
+          "value": "Are these real product listings?"
+        },
+        {
+          "key": "answer",
+          "value": "These six listings are product concepts for a demonstration store. Names, illustrations, prices and specifications are sample content."
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218065689",
+      "type": "faq",
+      "handle": "terbi-demo-sample-specifications",
+      "fields": [
+        {
+          "key": "question",
+          "value": "Are the specifications verified?"
+        },
+        {
+          "key": "answer",
+          "value": "No. The technical parameters are simulated to demonstrate product content and comparison. Replace them with verified specifications before real retail use."
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218098457",
+      "type": "faq",
+      "handle": "terbi-demo-compatibility",
+      "fields": [
+        {
+          "key": "question",
+          "value": "How should I check device compatibility?"
+        },
+        {
+          "key": "answer",
+          "value": "For a real purchase, check the connector, supported connection protocols, required power and physical dimensions against your device documentation. The demo does not guarantee compatibility."
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218131225",
+      "type": "faq",
+      "handle": "terbi-demo-product-images",
+      "fields": [
+        {
+          "key": "question",
+          "value": "What do the product images represent?"
+        },
+        {
+          "key": "answer",
+          "value": "The images are concept illustrations created for this demonstration. They are not photographs of manufactured products."
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218196761",
+      "type": "faq",
+      "handle": "terbi-demo-shipping",
+      "fields": [
+        {
+          "key": "question",
+          "value": "Does the demo include a delivery promise?"
+        },
+        {
+          "key": "answer",
+          "value": "No delivery estimate, stock availability or fulfilment promise is provided for these simulated products."
+        }
+      ]
+    },
+    {
+      "id": "gid://shopify/Metaobject/623218262297",
+      "type": "faq",
+      "handle": "terbi-demo-catalogue-use",
+      "fields": [
+        {
+          "key": "question",
+          "value": "What is this catalogue intended for?"
+        },
+        {
+          "key": "answer",
+          "value": "The catalogue demonstrates collection browsing, product specifications and cart interactions. Sample pricing is displayed in the store currency."
+        }
+      ]
+    }
+  ],
+  "bindings": [
+    {
+      "ownerId": "gid://shopify/Collection/519057309977",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057309977",
+      "key": "description_rows",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217672473\",\"gid://shopify/Metaobject/623217738009\",\"gid://shopify/Metaobject/623217803545\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057309977",
+      "key": "hero",
+      "type": "metaobject_reference",
+      "value": "gid://shopify/Metaobject/623217869081"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057309977",
+      "key": "cta",
+      "type": "metaobject_reference",
+      "value": "gid://shopify/Metaobject/623217967385"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057375513",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057375513",
+      "key": "description_rows",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217672473\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057408281",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057408281",
+      "key": "description_rows",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217738009\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057441049",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Collection/519057441049",
+      "key": "description_rows",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217803545\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189316377",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189381913",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189447449",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189512985",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189545753",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Product/15418189611289",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657308441",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657308441",
+      "key": "hero",
+      "type": "metaobject_reference",
+      "value": "gid://shopify/Metaobject/623217934617"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657308441",
+      "key": "card_groups",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217836313\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657308441",
+      "key": "content_section",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623217672473\",\"gid://shopify/Metaobject/623217738009\",\"gid://shopify/Metaobject/623217803545\"]"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657308441",
+      "key": "cta",
+      "type": "metaobject_reference",
+      "value": "gid://shopify/Metaobject/623217967385"
+    },
+    {
+      "ownerId": "gid://shopify/Page/167657341209",
+      "key": "faq",
+      "type": "list.metaobject_reference",
+      "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+    }
+  ],
+  "verifiedOwners": [
+    {
+      "id": "gid://shopify/Product/15418189316377",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189381913",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189447449",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189512985",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189545753",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Product/15418189611289",
+      "metafield": {
+        "references": {
+          "nodes": [
+            {
+              "id": "gid://shopify/Metaobject/623218000153"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218065689"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218098457"
+            },
+            {
+              "id": "gid://shopify/Metaobject/623218131225"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "gid://shopify/Collection/519057309977",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          },
+          {
+            "key": "description_rows",
+            "value": "[\"gid://shopify/Metaobject/623217672473\",\"gid://shopify/Metaobject/623217738009\",\"gid://shopify/Metaobject/623217803545\"]"
+          },
+          {
+            "key": "hero",
+            "value": "gid://shopify/Metaobject/623217869081"
+          },
+          {
+            "key": "cta",
+            "value": "gid://shopify/Metaobject/623217967385"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Collection/519057375513",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          },
+          {
+            "key": "description_rows",
+            "value": "[\"gid://shopify/Metaobject/623217672473\"]"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Collection/519057408281",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          },
+          {
+            "key": "description_rows",
+            "value": "[\"gid://shopify/Metaobject/623217738009\"]"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Collection/519057441049",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          },
+          {
+            "key": "description_rows",
+            "value": "[\"gid://shopify/Metaobject/623217803545\"]"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Page/167657308441",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          },
+          {
+            "key": "hero",
+            "value": "gid://shopify/Metaobject/623217934617"
+          },
+          {
+            "key": "card_groups",
+            "value": "[\"gid://shopify/Metaobject/623217836313\"]"
+          },
+          {
+            "key": "content_section",
+            "value": "[\"gid://shopify/Metaobject/623217672473\",\"gid://shopify/Metaobject/623217738009\",\"gid://shopify/Metaobject/623217803545\"]"
+          },
+          {
+            "key": "cta",
+            "value": "gid://shopify/Metaobject/623217967385"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gid://shopify/Page/167657341209",
+      "metafields": {
+        "nodes": [
+          {
+            "key": "faq",
+            "value": "[\"gid://shopify/Metaobject/623218000153\",\"gid://shopify/Metaobject/623218065689\",\"gid://shopify/Metaobject/623218098457\",\"gid://shopify/Metaobject/623218131225\",\"gid://shopify/Metaobject/623218196761\",\"gid://shopify/Metaobject/623218262297\"]"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+<link rel="stylesheet" href="{{ 'component-product-compare.css' | asset_url }}" media="print" onload="this.media='all'">
+<noscript>{{ 'component-product-compare.css' | asset_url | stylesheet_tag }}</noscript>
+
+<product-compare class="product-compare-controller hidden" aria-hidden="true"></product-compare>
+
+<side-drawer
+	class="halo-popup product-compare-popup modal-shell modal-shell--fullscreen modal--popup drawer fixed top-0 left-0 z-9 w-screen h-full flex justify-center no-js-hidden"
+	element-s-popup
+	data-product-compare-popup
+	id="ProductComparePopup"
+	data-drawer-direction="center"
+>
+	<div id="Drawer-Overlay-Compare" class="drawer__overlay modal-shell__overlay fixed inset-0 cursor-pointer"></div>
+	<div
+		class="popup__inner modal-shell__panel compare-modal__content w-full h-full absolute-c-c flex flex-column global-settings-popup"
+		role="dialog"
+		aria-modal="true"
+		aria-label="{{ 'content.compare.title' | t | escape }}"
+		tabindex="-1"
+		data-drawer-content
+	>
+		<div class="halo-popup-wrapper">
+			<div class="halo-popup-header">
+				<button
+					onclick="this.closest('side-drawer').close()"
+					type="button"
+					class="drawer__close modal-shell__close block t-button bor-none rounded-full cursor-pointer"
+					data-close-product-compare-popup
+					aria-label="{{ 'accessibility.close_dialog' | t }}"
+				>
+					{{- 'icon-close.svg' | inline_asset_content -}}
+				</button>
+				<h4 class="halo-popup-title center">{{ 'content.compare.title' | t }}</h4>
+			</div>
+			<div class="halo-popup-content">
+				<div class="product-compare-table-content">
+					<div class="product-compare-table-scroll relative max-w-full max-h-full overflow-x-a">
+						<table class="productCompareTable relative">
+							<tbody>
+								{%- assign fields = 'product,sku,nominal_size_ft,overall_length_cm,interior_length_cm,interior_volume_m3,wall_panel_length_cm,base_length_cm,window_quantity,net_weight_kg,carton_count,collection,availability,product_type,other_details' | split: ',' -%}
+								{%- assign field_labels = 'Product|SKU|Nominal Size (ft)|Exterior Dimensions (W × D × H)|Interior Dimensions (W × D × H)|Footprint|Door Opening Width|Door Height|Front Door Window Dimensions|Side Window Dimensions|Door Swing Clearance|Collection|Availability|Product type|Other details' | split: '|' -%}
+								{%- for field in fields -%}
+									<tr class="productCompareTable-row" data-product-compare-field="{{ field }}">
+										<th scope="row" class="productCompareTable-heading body-l-font-size">
+											<span>{{ field_labels[forloop.index0] }}</span>
+										</th>
+									</tr>
+								{%- endfor -%}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</side-drawer>

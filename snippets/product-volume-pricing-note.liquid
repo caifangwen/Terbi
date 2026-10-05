@@ -1,0 +1,97 @@
+{% comment %}
+  Renders product card volume pricing note and bulk quick-add popover.
+
+  Accepts:
+  - product: {Object} Product Liquid object.
+  - quick_add: {String} Quick add mode. Uses bulk popover when value is "bulk".
+  - context: {String} Render context. Currently supports "card".
+{% endcomment %}
+
+{%- liquid
+  assign volume_product = product | default: volume_product
+  assign volume_context = context | default: 'card'
+-%}
+
+{%- if volume_context == 'card' and volume_product.quantity_price_breaks_configured? -%}
+  {%- liquid
+    assign volume_variant = volume_product.selected_or_first_available_variant
+    assign show_bulk_popover = false
+    if volume_product.variants.size == 1 and quick_add == 'bulk'
+      assign show_bulk_popover = true
+      assign quantity_rule = volume_variant.quantity_rule
+      assign has_qty_rules = false
+      if quantity_rule.increment > 1 or quantity_rule.min > 1 or quantity_rule.max != null
+        assign has_qty_rules = true
+      endif
+    endif
+  -%}
+
+  {%- if show_bulk_popover -%}
+    <quantity-popover>
+      <button class="card__information-volume-pricing-note card__information-volume-pricing-note--button quantity-popover__info-button--icon-only button button button--tertiary medium-hide small-hide">
+        <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
+      </button>
+      <button class="card__information-volume-pricing-note card__information-volume-pricing-note--button quantity-popover__info-button--icon-with-label button button--tertiary large-up-hide">
+        <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
+      </button>
+      <div
+        class="global-settings-popup quantity-popover__info"
+        tabindex="-1"
+        hidden
+        id="quantity-popover-info-{{ volume_variant.id }}"
+      >
+        {%- if has_qty_rules -%}
+          <div class="quantity__rules caption no-js-hidden">
+            {%- if quantity_rule.increment > 1 -%}
+              <span class="divider">
+                {{- 'products.product.quantity.multiples_of' | t: quantity: quantity_rule.increment -}}
+              </span>
+            {%- endif -%}
+            {%- if quantity_rule.min > 1 -%}
+              <span class="divider">
+                {{- 'products.product.quantity.min_of' | t: quantity: quantity_rule.min -}}
+              </span>
+            {%- endif -%}
+            {%- if quantity_rule.max != null -%}
+              <span class="divider">
+                {{- 'products.product.quantity.max_of' | t: quantity: quantity_rule.max -}}
+              </span>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        <button
+          class="button-close button button--tertiary large-up-hide"
+          type="button"
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          {{- 'icon-close.svg' | inline_asset_content -}}
+        </button>
+        {%- if volume_variant.quantity_price_breaks.size > 0 -%}
+          <volume-pricing class="parent-display">
+            <ul class="list-unstyled">
+              <li>
+                <span>{{ volume_variant.quantity_rule.min }}+</span>
+                {%- assign price = volume_variant.price | money_with_currency -%}
+                <span>{{ 'content.each' | t: money: price }}</span>
+              </li>
+              {%- for price_break in volume_variant.quantity_price_breaks -%}
+                <li>
+                  <span>
+                    {{- price_break.minimum_quantity -}}
+                    <span aria-hidden="true">+</span>
+                  </span>
+                  {%- assign price = price_break.price | money_with_currency -%}
+                  <span> {{ 'content.each' | t: money: price }}</span>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </volume-pricing>
+        {%- endif -%}
+      </div>
+    </quantity-popover>
+  {%- else -%}
+    <div class="card__information-volume-pricing-note">
+      <span class="caption">{{ 'products.product.volume_pricing.note' | t }}</span>
+    </div>
+  {%- endif -%}
+{%- endif -%}

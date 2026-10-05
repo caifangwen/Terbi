@@ -1,0 +1,108 @@
+/* Split from base.css: section-fetcher layout. */
+/* section-fetcher */
+section-fetcher {
+  pointer-events: none;
+}
+
+.button-close-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--minimum-touch-target);
+  height: var(--minimum-touch-target);
+  border: 0.1rem solid rgb(var(--color-foreground-rgb) / var(--opacity-10));
+  border-radius: var(--style-border-radius-50);
+  background: rgb(var(--color-background-rgb) / 0.95);
+  color: var(--color-foreground);
+  box-shadow: 0 0.8rem 2.4rem rgb(var(--color-shadow-rgb) / 0.12);
+
+  &.button-unstyled {
+    overflow: visible;
+  }
+
+  .svg-wrapper,
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+
+  @media (hover: hover) {
+    transition:
+      transform var(--animation-speed) var(--animation-easing),
+      background-color var(--duration-short) ease,
+      border-color var(--duration-short) ease,
+      box-shadow var(--duration-short) ease;
+    will-change: transform;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border: 0.1rem solid var(--color-foreground);
+      border-radius: 50%;
+      z-index: -1;
+      transform: scale(0.8);
+      transition: transform var(--animation-speed) var(--animation-easing), opacity var(--animation-speed) var(--animation-easing);
+      will-change: transform, opacity;
+      opacity: 0;
+    }
+    &:hover {
+      transform: rotate(90deg);
+      border-color: rgb(var(--color-foreground-rgb) / var(--opacity-20));
+      background: var(--color-background);
+      box-shadow: 0 1rem 2.8rem rgb(var(--color-shadow-rgb) / 0.18);
+
+      &::after {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.image-block {
+  display: flex;
+  justify-content: var(--horizontal-alignment, 'inline-start');
+}
+
+.image-block--height-fill .image-block__image {
+  height: 100%;
+}
+
+.image-block__image {
+  object-fit: var(--object-fit);
+  aspect-ratio: var(--ratio);
+}
+
+.image-block.image-zoomin {
+  overflow: hidden;
+  .image-block__image {
+    transition: transform var(--hover-transition-duration) var(--hover-transition-timing);
+  }
+
+  &:hover .image-block__image {
+    transform: scale(var(--hover-subtle-zoom-amount));
+  }
+}
+
+.image-block__link,
+.image-block__link:empty {
+  display: block;
+  position: absolute;
+  inset: 0;
+}
+
+.image-block__link ~ :is(.image-block__image) {
+  pointer-events: none;
+  :is(a) {
+    pointer-events: auto;
+  }
+}
+
+.image-block__link ~ :is(img, .collection-banner__caption) {
+  pointer-events: none;
+  :is(a, button, input, textarea, select) {
+    pointer-events: auto;
+  }
+}
+

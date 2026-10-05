@@ -1,0 +1,283 @@
+{
+  "name": "Header group",
+  "type": "header",
+  "sections": {
+    "announcement_bar_4tGfEp": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement_text_BXhKCE": {
+          "type": "_announcement-text",
+          "settings": {
+            "text": "3C concept store · Sample products, prices and specifications",
+            "font": "body",
+            "font_size": "1.4rem",
+            "font_weight": "default",
+            "text_align": "center"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_text_BXhKCE"
+      ],
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "color_scheme": "scheme-12053da9-a052-4e2b-8bca-f2429aa57b36",
+        "autoplay": false,
+        "autoplay_speed": 4,
+        "margin_bottom": 0,
+        "padding_top": 10,
+        "padding_bottom": 10
+      }
+    },
+    "header_default": {
+      "type": "header",
+      "blocks": {},
+      "block_order": [],
+      "custom_css": [
+        ".header__mega-submenu ul li {margin-bottom: 0;}",
+        "#Details-HeaderMenu-8 .link.mega-menu__link--level-2 {font-size: 16px; font-weight: 600;}",
+        "#Details-HeaderMenu-8 .link.mega-menu__link--level-3 {font-size: 14px; font-weight: 400;}",
+        ".header__heading-link {padding: 0;}",
+        "@media screen and (min-width: 750px) {.collage {gap: 2rem; }}",
+        ".mega-menu__content {border-top: 1px solid #ededed;}",
+        ".header__row--top:not(.divider--page-width) {border-color: #ededed;}",
+        ".header__icon .icon {height: 2rem; width: 2rem;}"
+      ],
+      "name": "Header - Default",
+      "settings": {
+        "gap": 0,
+        "align_items": "center",
+        "logo_width": 120,
+        "logo_width_mobile": 100,
+        "logo_spacing_left": 0,
+        "logo_spacing_right": 0,
+        "logo_position": "left",
+        "logo_row": "top",
+        "reveal_logo_on_sticky": false,
+        "menu": "terbi-demo-main",
+        "menu_position": "center",
+        "menu_row": "top",
+        "icon_type": "none",
+        "menu_gap": 0,
+        "button_type_font_link": "body",
+        "button_type_size_link": "1.6rem",
+        "button_font_weight_link": "600",
+        "case": "none",
+        "button_type_font_link_2": "body",
+        "button_type_size_link_2": "1.6rem",
+        "button_font_weight_link_2": "600",
+        "case_link_2": "none",
+        "button_type_font_link_3": "body",
+        "button_type_size_link_3": "1.4rem",
+        "button_font_weight_link_3": "default",
+        "case_link_3": "none",
+        "show_message": false,
+        "message": "",
+        "font": "var(--font-body--family)",
+        "font_size": "1.2rem",
+        "message_position": "top",
+        "message_row": "top",
+        "show_account": true,
+        "enable_account_drawer": true,
+        "account_type": "icon",
+        "account_display_type": "block",
+        "account_row": "top",
+        "show_search": true,
+        "search_display_type": "icon",
+        "search_display": "block",
+        "search_type": "frame",
+        "search_position": "right",
+        "search_row": "top",
+        "show_country": false,
+        "show_language": false,
+        "country_selector_style": true,
+        "localization_font": "body",
+        "localization_font_size": "1.2rem",
+        "localization_type": "icon",
+        "localization_position": "right",
+        "localization_row": "top",
+        "gift_cards_enabled": false,
+        "link_giftcards": "",
+        "actions_type": "icon",
+        "actions_display_type": "block",
+        "actions_row": "top",
+        "header_actions_order": "search,account,actions,localization",
+        "custom_header_utility": false,
+        "header_utility_size": "1.2rem",
+        "header_utility_font": "var(--font-body--family)",
+        "header_utility_weight": "",
+        "header_utility_line_height": "normal",
+        "header_utility_letter_spacing": "normal",
+        "header_utility_case": "none",
+        "header_utility_wrap": "pretty",
+        "section_width": "full-width",
+        "page_width_custom": 1570,
+        "enable_sticky_header": "always",
+        "divider_width": 0,
+        "divider_size": "page-width",
+        "border_width": 1,
+        "enable_shadow": false,
+        "color_scheme_top": "scheme-11",
+        "color_scheme_top_mb": "scheme-11",
+        "color_scheme_search_inline": "scheme-11",
+        "color_scheme_bottom": "",
+        "color_scheme_transparent": "scheme-4",
+        "menu_mobile_color_scheme": "scheme-11",
+        "highlighted_item_1": "",
+        "highlighted_item_2": "",
+        "highlighted_item_3": "",
+        "highlighted_item_color": "#d12442",
+        "new_label_1": "",
+        "new_label_2": "",
+        "new_label_3": "",
+        "new_label_color": "#ffffff",
+        "new_label_bg": "#06bfe2",
+        "sale_label_1": "",
+        "sale_label_2": "",
+        "sale_label_3": "",
+        "sale_label_color": "#ffffff",
+        "sale_label_bg": "#ff1a00",
+        "hot_label_1": "",
+        "hot_label_2": "",
+        "hot_label_3": "",
+        "hot_label_color": "#ffffff",
+        "hot_label_bg": "#ffbb49",
+        "enable_transparent_header_home": false,
+        "home_color_scheme": "inverse",
+        "enable_transparent_header_product": false,
+        "product_color_scheme": "default",
+        "enable_transparent_header_collection": false,
+        "collection_color_scheme": "default",
+        "padding-block-start-top": 12,
+        "padding-block-end-top": 12,
+        "padding-block-start-bottom": 0,
+        "padding-block-end-bottom": 0
+      }
+    },
+    "header_mobile_MqfLk9": {
+      "type": "header-mobile",
+      "blocks": {
+        "menu_tab_item_aUDAAR": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": false,
+            "scheme_border": "#e6e6e6",
+            "title": "Home",
+            "link": "#",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        },
+        "menu_tab_item_gFEwXm": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": false,
+            "scheme_border": "#e6e6e6",
+            "title": "New Arrivals",
+            "link": "shopify://pages/new-arrivals",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        },
+        "menu_tab_item_UbTwFE": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": true,
+            "scheme_border": "#e6e6e6",
+            "title": "Sheds",
+            "link": "shopify://collections/sheds",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        },
+        "menu_tab_item_FiUPrt": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": true,
+            "scheme_border": "#e6e6e6",
+            "title": "Outdoor Storages",
+            "link": "shopify://collections/outdoor-storage",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        },
+        "menu_tab_item_kUtUi9": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": true,
+            "scheme_border": "#e6e6e6",
+            "title": "Guide",
+            "link": "shopify://pages/guides-resources",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        },
+        "menu_tab_item_jPiHNw": {
+          "type": "_menu-tab-item",
+          "name": "Menu item",
+          "settings": {
+            "tab_for": "Menu",
+            "divider": true,
+            "scheme_border": "#e6e6e6",
+            "title": "Track Your Order",
+            "link": "https://www.terkkin.com/apps/17TRACK",
+            "sub_menu": "",
+            "image_type_level_1": "image",
+            "svg_upload_level_1": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "menu_tab_item_aUDAAR",
+        "menu_tab_item_gFEwXm",
+        "menu_tab_item_UbTwFE",
+        "menu_tab_item_FiUPrt",
+        "menu_tab_item_kUtUi9",
+        "menu_tab_item_jPiHNw"
+      ],
+      "name": "Header mobile multi-tab",
+      "settings": {
+        "tab_1_title": "",
+        "tab_2_title": "",
+        "show_image_level_1": false,
+        "media_type": "circle",
+        "media_width": 35,
+        "show_image_sub_menu": false,
+        "sub_media_type": "rectangle",
+        "media_width_sub_menu": 70,
+        "show_country": false,
+        "country_selector_style": true,
+        "show_language": false,
+        "localization_font": "body",
+        "localization_font_size": "1.4rem"
+      }
+    }
+  },
+  "order": [
+    "announcement_bar_4tGfEp",
+    "header_default",
+    "header_mobile_MqfLk9"
+  ]
+}

@@ -1,0 +1,48 @@
+{%- comment -%}
+  Renders a reusable mega menu link.
+
+  Accepts:
+  - menu_link: {Object} link object
+  - level: {String} menu depth, usually '2' or '3'
+  - id: {String} optional id attribute
+  - keys: {String} highlight setting keys
+  - sec_settings: {Object} section settings used by highlight snippets
+  - show_item_image: {Boolean} render automatic item media before the text
+{%- endcomment -%}
+
+{%- liquid
+  assign level = level | default: '2'
+  assign show_item_image = show_item_image | default: false
+-%}
+
+<a
+  {% if id != blank %}
+    id="{{ id }}"
+  {% endif %}
+  href="{{ menu_link.url }}"
+  {% if menu_link.title != blank %}
+    title="{{ menu_link.title | escape }}"
+  {% endif %}
+  class="
+    header__menu-item mega-menu__link link link--hover-underline mega-menu__link--level-{{ level }}
+    {% if menu_link.current %} list-menu__item--active{% endif %}
+    {% render 'highlight-class', order: level, keys: keys, compare: menu_link.title, settings: sec_settings %}
+  "
+  {% if menu_link.current %}
+    aria-current="page"
+  {% endif %}
+  style="{% render 'highlight-style', order: level, keys: keys, compare: menu_link.title, settings: sec_settings %}"
+>
+  {%- if show_item_image -%}
+    {% render 'header-mega-menu-item-image', menu_link: menu_link %}
+  {%- endif -%}
+  <span class="text">
+    {{ menu_link.title | escape }}
+  </span>
+  {% render 'highlight-label-menu',
+    order: level,
+    keys: keys,
+    compare: menu_link.title,
+    settings: sec_settings
+  %}
+</a>

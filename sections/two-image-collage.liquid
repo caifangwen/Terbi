@@ -1,0 +1,108 @@
+{% render 'two-image-collage', settings: section.settings, instance_id: section.id %}
+
+{% schema %}
+{
+  "name": "Two image collage",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Main image"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main image"
+    },
+    {
+      "type": "range",
+      "id": "main_image_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Overlay image"
+    },
+    {
+      "type": "image_picker",
+      "id": "overlay_image",
+      "label": "Overlay image"
+    },
+    {
+      "type": "range",
+      "id": "overlay_width",
+      "label": "Width on desktop",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "overlay_width_mobile",
+      "label": "Width on mobile",
+      "min": 40,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "overlay_position_bottom",
+      "label": "Position from bottom",
+      "min": -20,
+      "max": 40,
+      "step": 5,
+      "unit": "%",
+      "default": -10
+    },
+    {
+      "type": "range",
+      "id": "overlay_position_right",
+      "label": "Position from right",
+      "min": -20,
+      "max": 40,
+      "step": 5,
+      "unit": "%",
+      "default": -10
+    },
+    {
+      "type": "range",
+      "id": "overlay_border_width",
+      "label": "Border width",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "color",
+      "id": "overlay_border_color",
+      "label": "Border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Two image collage"
+    }
+  ]
+}
+{% endschema %}

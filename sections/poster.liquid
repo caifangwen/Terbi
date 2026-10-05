@@ -1,0 +1,78 @@
+{%- liquid
+  assign poster = section.settings.poster | default: product.metafields.custom.poster.value
+  if section.settings.collection_poster != 'none' and section.settings.collection_poster != blank
+    assign poster = collection.metafields.custom[section.settings.collection_poster].value
+  endif
+  if poster == blank and request.page_type == 'product'
+    assign poster = shop.metaobjects.poster['great-for-backyards-and-gardens']
+  endif
+  assign banner = poster.banner.value | default: poster.banner | default: section.settings.banner
+  assign mobile_banner = poster.banner_mobile.value | default: section.settings.banner_mobile | default: banner
+  assign heading = poster.heading.value | default: poster.heading | default: section.settings.heading
+  assign description = poster.description.value | default: poster.description | default: section.settings.description
+-%}
+
+{%- if banner != blank -%}
+  <section class="section section--full-width poster poster--{{ section.settings.content_position }}" style="--poster-height: {{ section.settings.height }}px; --poster-height-mobile: {{ section.settings.height_mobile }}px; --poster-color: {{ section.settings.text_color }};">
+    <div class="poster__media">
+      <picture class="poster__picture">
+        <source media="(max-width: 749px)" srcset="{{ mobile_banner | image_url: width: 450, height: 600, crop: 'center' }} 450w, {{ mobile_banner | image_url: width: 750, height: 1000, crop: 'center' }} 750w, {{ mobile_banner | image_url: width: 1125, height: 1500, crop: 'center' }} 1125w" sizes="calc(100vw - 32px)">
+        {{ banner | image_url: width: 2400 | image_tag: widths: '750, 1100, 1570, 2400', sizes: '(min-width: 750px) min(100vw - 40px, 1570px), calc(100vw - 32px)', loading: 'lazy', class: 'poster__image', alt: heading }}
+      </picture>
+      {%- if heading != blank or description != blank -%}
+        <div class="poster__content">
+          {%- if heading != blank -%}<h2>{{ heading | escape }}</h2>{%- endif -%}
+          {%- if description != blank -%}<p>{{ description | escape | newline_to_br }}</p>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% style %}
+  .poster { padding-block: 0; }
+  .poster__media { min-height: var(--poster-height); position: relative; display: flex; align-items: center; overflow: hidden; }
+  .poster__picture { position: absolute; inset: 0; display: block; }
+  .poster__image { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+  .poster__content { position: relative; max-width: 600px; padding: 48px; color: var(--poster-color); }
+  .poster--center .poster__content { margin-inline: auto; text-align: center; }
+  .poster--right .poster__content { margin-left: auto; }
+  .poster__content h2 { margin: 0 0 12px; color: inherit; }
+  .poster__content p { margin: 0; color: inherit; }
+  @media screen and (max-width: 749px) {
+    .poster__media { aspect-ratio: 3 / 4; min-height: var(--poster-height-mobile); align-items: flex-end; }
+    .poster__content { width: 100%; max-width: none; padding: 32px 24px; }
+    .poster__content h2 { font-size: clamp(24px, 6vw, 36px); overflow-wrap: anywhere; }
+    .poster__content p { font-size: 15px; line-height: 1.6; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Poster",
+  "class": "section-wrapper",
+  "settings": [
+    { "type": "select", "id": "collection_poster", "label": "Collection poster", "default": "none", "options": [{ "value": "none", "label": "Selected poster" }, { "value": "poster_intro", "label": "Intro poster" }, { "value": "poster_outro", "label": "Closing poster" }] },
+    { "type": "metaobject", "id": "poster", "label": "Poster", "metaobject_type": "poster" },
+    { "type": "image_picker", "id": "banner", "label": "Fallback image" },
+    { "type": "image_picker", "id": "banner_mobile", "label": "Fallback mobile image (3:4)" },
+    { "type": "text", "id": "heading", "label": "Fallback heading" },
+    { "type": "textarea", "id": "description", "label": "Fallback description" },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    { "type": "color", "id": "text_color", "label": "Text color", "default": "#ffffff" },
+    { "type": "range", "id": "height", "label": "Desktop height", "min": 240, "max": 800, "step": 20, "unit": "px", "default": 420 },
+    { "type": "range", "id": "height_mobile", "label": "Mobile height", "min": 180, "max": 600, "step": 20, "unit": "px", "default": 300 }
+  ],
+"presets": [{ "name": "Poster" }]
+}
+{% endschema %}
